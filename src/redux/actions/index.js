@@ -1,2 +1,4 @@
 // episode anime
-export const GET_EPISODE = "GET_EPISODE";
+export const SET_CURRENT_USER = "SET_CURRENT_USER";
+export const GET_ERRORS = "GET_ERRORS";
+export const SET_SUCESS = "SET_SUCESS";

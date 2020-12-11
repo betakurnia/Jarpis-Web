@@ -1,6 +1,12 @@
 import { combineReducers } from "redux";
-// import animeReducer from "./animeReducer";
+import userReducer from "./userReducer.js";
+import announcementReducer from "./announcementReducer.js";
+import errorReducer from "./errorReducer.js";
+import sucessReducer from "./sucessReducer.js";
 
 export default combineReducers({
-  //   anime: animeReducer,
+  announcement: announcementReducer,
+  user: userReducer,
+  error: errorReducer,
+  sucess: sucessReducer,
 });
