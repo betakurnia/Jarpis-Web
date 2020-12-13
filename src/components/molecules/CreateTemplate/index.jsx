@@ -44,8 +44,8 @@ function Register({ registerUser, error, sucess, title, children }) {
   const classes = useStyles();
 
   return (
-    <Grid container>
-      <Grid item xs={12}>
+    <Grid container justify="center">
+      <Grid item xs={12} md={8}>
         <div className={classes.root}>
           <Typography
             variant="h4"

@@ -11,15 +11,24 @@ import CreateTemplate from "../../molecules/CreateTemplate";
 function Admin() {
   const [isRegister, setIsRegister] = React.useState(true);
   const [isAnnouncement, setIsAnnouncement] = React.useState(false);
+  const [isMajor, setIsMajor] = React.useState(false);
 
   const handleRegister = () => {
     setIsRegister(true);
     setIsAnnouncement(false);
+    setIsMajor(false);
   };
 
   const handleAnnouncement = () => {
     setIsRegister(false);
     setIsAnnouncement(true);
+    setIsMajor(false);
+  };
+
+  const handleIsMajor = () => {
+    setIsMajor(true);
+    setIsAnnouncement(false);
+    setIsMajor(false);
   };
 
   const useStyles = makeStyles({
@@ -55,6 +64,11 @@ function Admin() {
       {isRegister && <Register />}
       {isAnnouncement && (
         <CreateTemplate title="Buat Pengumuman">
+          <CKEditor titles="Buat" />{" "}
+        </CreateTemplate>
+      )}
+      {isMajor && (
+        <CreateTemplate title="Buat mata pelajaran">
           <CKEditor titles="Buat" />{" "}
         </CreateTemplate>
       )}

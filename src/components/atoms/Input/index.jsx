@@ -3,13 +3,22 @@ import { TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import color from "../../../utils/color";
 
-function Input({ id, label, placeholder, handleChange, isPassword, value }) {
+function Input({
+  id,
+  label,
+  placeholder,
+  handleChange,
+  isPassword,
+  value,
+  idx,
+}) {
   const useStyles = makeStyles({
     root: {
       marginTop: "1.5rem",
     },
     label: {
       color: color.label,
+      fontSize: "1rem",
     },
     form: {
       marginTop: "0.5rem",
@@ -35,7 +44,7 @@ function Input({ id, label, placeholder, handleChange, isPassword, value }) {
         type={isPassword && "password"}
         value={value}
         onChange={(e) => {
-          handleChange(e, id);
+          handleChange(e, id, idx);
         }}
       />
     </div>

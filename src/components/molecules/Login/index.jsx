@@ -56,7 +56,7 @@ function Login({ loginUser, error, history, user }) {
 
   return (
     <Grid container justify="center">
-      <Grid item xs={10} md={5}>
+      <Grid item xs={12} md={4}>
         <form onSubmit={onSubmit}>
           <div className={classes.root}>
             <Typography
@@ -70,7 +70,7 @@ function Login({ loginUser, error, history, user }) {
 
             <Input
               id="username"
-              label="Username"
+              label="Email / Username"
               placeholder="contoh jarpis@gmail.com"
               handleChange={handleChange}
             />
@@ -88,7 +88,7 @@ function Login({ loginUser, error, history, user }) {
             )}
             <Button
               type="submit"
-              variant="outlined"
+              variant="contained"
               color="primary"
               fullWidth
               className={classes.btn}

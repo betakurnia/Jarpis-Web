@@ -1,24 +1,17 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
 import CardAnnouncement from "../../molecules/CardAnnouncement";
-import axios from "axios";
-import proxy from "../../../utils/proxy";
+import { viewAnnouncement } from "../../../redux/actions/announcementAction";
+import { connect } from "react-redux";
 
-function Announcement() {
-  const [announcements, setAnnouncements] = React.useState([]);
-
+function Announcement({ announcements, viewAnnouncement }) {
   React.useEffect(() => {
-    axios
-      .get(`${proxy}/api/announcement/view`)
-      .then((res) => {
-        setAnnouncements(res.data);
-      })
-      .catch((err) => console.log(err));
+    viewAnnouncement();
   }, []);
 
   return (
     <Grid container spacing={2}>
-      {announcements.map((announcement) => (
+      {announcements.announcement.map((announcement) => (
         <CardAnnouncement
           id={announcement._id}
           title={announcement.title}
@@ -29,4 +22,8 @@ function Announcement() {
   );
 }
 
-export default Announcement;
+const mapStateToProps = (state) => ({
+  announcements: state.announcements,
+});
+
+export default connect(mapStateToProps, { viewAnnouncement })(Announcement);

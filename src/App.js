@@ -17,8 +17,15 @@ import Footer from "./components/layout/Footer";
 import Dashboard from "./components/pages/Dashboard";
 import Announcment from "./components/pages/Announcment";
 import Major from "./components/pages/Major";
+import Pengumuman from "./components/pages/Pengumuman";
 import Admins from "./components/pages/Admins";
 import AnnouncementUpdate from "./components/pages/AnnouncementUpdate";
+import Present from "./components/pages/Present";
+import Theory from "./components/pages/Theory";
+// import CKEditor from "./components/atoms/CKEditor";
+import Register from "./components/molecules/Register";
+import Exams from "./components/pages/Exams";
+// import CreateTemplate from "../../molecules/CreateTemplate";
 
 // Check for token
 if (localStorage.jwtToken) {
@@ -59,7 +66,24 @@ const App = () => {
               <Announcment />
             </Route>
             <PrivateRoute component={Major} path="/mata-pelajaran/:id" exact />
-            <PrivateRouteAdmin component={Admins} path="/admin" exact />
+            <PrivateRoute
+              component={Present}
+              path="/mata-pelajaran/presensi/:id"
+              exact
+            />
+            <PrivateRoute component={Present} path="/presensi/:id" exact />
+            <PrivateRoute component={Theory} path="/guru/materi/:i" exact />
+            <PrivateRoute component={Exams} path="/guru/ujian/:ujian" exact />
+            <PrivateRouteAdmin
+              component={Register}
+              path="/admin/register"
+              exact
+            />
+            <PrivateRouteAdmin
+              component={Pengumuman}
+              path="/admin/pengumuman"
+              exact
+            />
             <PrivateRouteAdmin
               component={AnnouncementUpdate}
               path="/admin/pengumuman/:id"

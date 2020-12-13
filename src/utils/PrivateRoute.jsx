@@ -11,7 +11,6 @@ const PrivateRoute = ({ component: Component, user, ...rest }) => {
         !isEmpty(user.isAuthenticated) === true ? (
           <Component {...props} />
         ) : (
-          // console.log(!isEmpty(user.isAuthenticated) === true)
           <Redirect to="/" />
         )
       }

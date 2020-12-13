@@ -1,17 +1,15 @@
-import { SET_CURRENT_USER } from "../actions";
+import { GET_ANNOUNCMENT } from "../actions";
 
 const initialState = {
-  isAuthenticated: false,
-  user: {},
+  announcement: [],
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case SET_CURRENT_USER:
+    case GET_ANNOUNCMENT:
       return {
         ...state,
-        isAuthenticated: action.payload,
-        user: action.payload,
+        announcement: action.payload,
       };
     default:
       return state;

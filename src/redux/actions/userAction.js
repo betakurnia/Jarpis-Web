@@ -48,16 +48,27 @@ export const registerUser = (userData) => (dispatch) => {
     .post(`${proxy}/api/users/register?role=${userData.role}`, userData)
     .then(() => {
       dispatch({
+        type: GET_ERRORS,
+        payload: {},
+      });
+      dispatch({
         type: SET_SUCESS,
         payload: true,
       });
+      setTimeout(() => {
+        window.location.href = "/admin/register";
+      }, 1000);
     })
-    .catch((err) =>
+    .catch((err) => {
+      dispatch({
+        type: SET_SUCESS,
+        payload: false,
+      });
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data,
-      })
-    );
+      });
+    });
 };
 
 export const setCurrentUser = (decoded) => {

@@ -30,6 +30,16 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { logoutUser } from "../../../redux/actions/userAction";
 import { withRouter } from "react-router-dom";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
+import axios from "axios";
+import proxy from "../../../utils/proxy";
+import CastForEducationIcon from "@material-ui/icons/CastForEducation";
+import TabIcon from "@material-ui/icons/Tab";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import AnnouncementIcon from "@material-ui/icons/Announcement";
+import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
+import ClassIcon from "@material-ui/icons/Class";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import BookIcon from "@material-ui/icons/Book";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +59,27 @@ const useStyles = makeStyles((theme) => ({
   announcement: {
     padding: "0 2rem",
     display: "inline-block",
+    [theme.breakpoints.only("xs")]: {
+      padding: "0 0 0 1rem",
+    },
+  },
+  disabled: {
+    cursor: "default",
+    "&:hover": {
+      backgroundColor: "inherit",
+    },
+    "&:visited": {
+      backgroundColor: "inherit",
+    },
+    "&:active": {
+      backgroundColor: "inherit",
+    },
+  },
+  subTab: {
+    paddingLeft: "2rem",
+  },
+  subSubTab: {
+    paddingLeft: "4rem",
   },
 }));
 
@@ -57,7 +88,33 @@ function MenuAppBar({ user, logoutUser, history }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  const [majors, setMajors] = React.useState([]);
+
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [isShowTheory, setIsShowTheory] = React.useState(true);
+
+  const [admins, setAdmins] = React.useState([
+    {
+      name: "Register",
+      link: "/admin/register",
+      icon: <LockOpenIcon />,
+    },
+    {
+      name: "Pengumuman",
+      link: "/admin/pengumuman",
+      icon: <AnnouncementIcon />,
+    },
+  ]);
+
+  const [teachers, setTeachers] = React.useState([
+    {
+      name: "Topik",
+      link: "/guru/topik",
+      icon: <LibraryAddIcon />,
+    },
+  ]);
+
+  const [subTopic, setSubTopic] = React.useState(new Array(14));
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -73,9 +130,28 @@ function MenuAppBar({ user, logoutUser, history }) {
     logoutUser(history);
   };
 
-  const handleToggleDrawer = () => {
+  const handleShowTheory = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const handleToggleDrawer = (e) => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+
+  React.useEffect(() => {
+    if (user.isAuthenticated.role === "teacher") {
+      axios
+        .post(`${proxy}/api/majors/viewByArray`, user.isAuthenticated.majorId)
+        .then((res) => {
+          console.log(res.data);
+          setMajors(res.data);
+        });
+    } else {
+      axios.get(`${proxy}/api/majors/view`).then((res) => {
+        setMajors(res.data);
+      });
+    }
+  }, [user.isAuthenticated.role]);
 
   return (
     <div className={classes.root}>
@@ -158,22 +234,131 @@ function MenuAppBar({ user, logoutUser, history }) {
                   <ListItemText primary="Dashboard" />
                 </ListItem>
               </Link>
-              {["mapel", "mapel"].map((text, index) => (
-                <ListItem button key={text} className={classes.menuItem}>
-                  <ListItemIcon>{"I"}</ListItemIcon>
-                  <ListItemText primary={text} />
+              {user.isAuthenticated.role === "siswa" ? (
+                <ListItem
+                  button
+                  className={(classes.menuItem, classes.disabled)}
+                >
+                  <ListItemIcon>{<ClassIcon />}</ListItemIcon>
+                  <ListItemText primary="Kelas" />
                 </ListItem>
+              ) : (
+                <ListItem
+                  button
+                  className={(classes.menuItem, classes.disabled)}
+                >
+                  <ListItemIcon>{<TabIcon />}</ListItemIcon>
+                  <ListItemText primary="Mata Pelajaran" />
+                </ListItem>
+              )}
+
+              {majors.map((major, index) => (
+                <Link to={`/mata-pelajaran/${major._id}`}>
+                  <ListItem
+                    button
+                    key={major.majorName}
+                    className={(classes.menuItem, classes.subTab)}
+                  >
+                    <ListItemIcon>
+                      <CastForEducationIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={major.majorName} />
+                  </ListItem>
+                </Link>
               ))}
               {user.isAuthenticated.role === "admin" && (
-                <Link to="/admin">
-                  <ListItem button key="Admin" className={classes.menuItem}>
+                <React.Fragment>
+                  <ListItem
+                    button
+                    key="Admin"
+                    className={(classes.menuItem, classes.disabled)}
+                  >
                     <ListItemIcon>
                       {" "}
-                      <SupervisorAccountIcon />{" "}
+                      <TabIcon />
                     </ListItemIcon>
                     <ListItemText primary="Admin Panel" />
                   </ListItem>
-                </Link>
+                  {admins.map((admin) => (
+                    <Link to={`${admin.link}`}>
+                      <ListItem
+                        button
+                        key={admin.name}
+                        className={(classes.menuItem, classes.subTab)}
+                      >
+                        <ListItemIcon> {admin.icon}</ListItemIcon>
+                        <ListItemText primary={admin.name} />
+                      </ListItem>
+                    </Link>
+                  ))}
+                </React.Fragment>
+              )}
+
+              {user.isAuthenticated.role === "teacher" && (
+                <React.Fragment>
+                  <ListItem
+                    button
+                    key="Teacher"
+                    className={(classes.menuItem, classes.disabled)}
+                  >
+                    <ListItemIcon>
+                      {" "}
+                      <TabIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Guru Panel" />
+                  </ListItem>
+
+                  {majors.map((major) => (
+                    <React.Fragment>
+                      <ListItem
+                        name="subTab"
+                        onClick={handleShowTheory}
+                        button
+                        className={(classes.menuItem, classes.subTab)}
+                      >
+                        <ListItemIcon>
+                          {" "}
+                          <BookIcon />
+                        </ListItemIcon>
+                        <ListItemText>{major.majorName} </ListItemText>
+                        <ListItemIcon>
+                          {" "}
+                          <ArrowDropDownIcon />
+                        </ListItemIcon>
+                      </ListItem>
+                      {isShowTheory &&
+                        [...new Array(14)].map((a, i) => (
+                          <Link
+                            to={`${i + 1 === 7 ? "/guru/ujian/UTS" : ""}${
+                              i + 1 === 14 ? "/guru/ujian/UAS" : ""
+                            }${
+                              !(i + 1 === 7) && !(i + 1 === 14)
+                                ? `/guru/materi/${i + 1}`
+                                : ""
+                            }`}
+                          >
+                            <ListItem
+                              key={i}
+                              button
+                              className={(classes.menuItem, classes.subSubTab)}
+                            >
+                              <ListItemIcon>
+                                {" "}
+                                <LibraryAddIcon />
+                              </ListItemIcon>
+                              <ListItemText>
+                                {i + 1 === 7 && "UTS"} {i + 1 === 14 && "UAS"}{" "}
+                                {!(i + 1 === 7) &&
+                                  !(i + 1 === 14) &&
+                                  `Materi ke ${i + 1}`}{" "}
+                              </ListItemText>
+                            </ListItem>
+                          </Link>
+                        ))}{" "}
+                      )
+                    </React.Fragment>
+                  ))}
+                </React.Fragment>
               )}
             </List>
           </div>

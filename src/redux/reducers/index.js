@@ -5,7 +5,7 @@ import errorReducer from "./errorReducer.js";
 import sucessReducer from "./sucessReducer.js";
 
 export default combineReducers({
-  announcement: announcementReducer,
+  announcements: announcementReducer,
   user: userReducer,
   error: errorReducer,
   sucess: sucessReducer,

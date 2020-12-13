@@ -20,6 +20,7 @@ function CardAnnouncement({
   description,
   user,
   deleteAnnouncement,
+  sucess,
 }) {
   const useStyles = makeStyles({
     root: {
@@ -79,7 +80,7 @@ function CardAnnouncement({
           </Link>
           <DeleteIcon
             style={{
-              color: "red",
+              color: "#dc3545",
               padding: "1rem",
               cursor: "pointer",
               backgroundColor: color.white,
@@ -120,13 +121,13 @@ function CardAnnouncement({
           <Button
             onClick={handleClose}
             color="primary"
-            style={{ color: "red" }}
+            style={{ color: "#dc3545" }}
           >
             Batal
           </Button>
           <Button
             onClick={handleDeleteAnnnouncement}
-            style={{ backgroundColor: "red", color: color.white }}
+            style={{ backgroundColor: "#dc3545", color: color.white }}
             autoFocus
           >
             Hapus
@@ -139,8 +140,9 @@ function CardAnnouncement({
 
 const mapStateToProps = (state) => ({
   user: state.user,
+  sucess: state.sucess,
 });
 
-export default connect(mapStateToProps, { deleteAnnouncement })(
-  CardAnnouncement
-);
+export default connect(mapStateToProps, {
+  deleteAnnouncement,
+})(CardAnnouncement);
