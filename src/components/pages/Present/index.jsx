@@ -33,7 +33,7 @@ function Present() {
 
   return (
     <div className={classes.root}>
-      <Typography variant="h4" component="h1">
+      <Typography variant="h4" component="h1" style={{ fontWeight: 500 }}>
         Daftar hadir siswa
       </Typography>
       <Table id={id} major={major} />

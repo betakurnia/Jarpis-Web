@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import Input from "../../atoms/Input";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import color from "../../../utils/color";
 import { connect } from "react-redux";
 import { registerUser } from "../../../redux/actions/userAction";
@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import InputBase from "@material-ui/core/InputBase";
 import Select from "@material-ui/core/Select";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -23,6 +24,42 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 import axios from "axios";
 import proxy from "../../../utils/proxy";
+import NativeSelect from "@material-ui/core/NativeSelect";
+
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    "label + &": {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}))(InputBase);
 
 function Register({ registerUser, error, sucess, clearErrorSucess }) {
   const [users, setUser] = React.useState({
@@ -32,7 +69,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     name: "",
     age: "",
     address: "",
-    class: "",
     religion: "",
     majorId: [],
     kelas: "",
@@ -91,6 +127,8 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
   const classes = useStyles();
 
   const onSubmit = (e) => {
+    console.log(users);
+
     e.preventDefault();
 
     registerUser(users);
@@ -230,34 +268,62 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
                     ))}
                   </FormGroup>
                 </FormControl>
-                <div style={{ marginTop: "1.5rem" }}></div>
-                <label>Kelas</label>
+                <label
+                  style={{
+                    marginTop: "1.5rem",
+                    display: "block",
+                    color: color.label,
+                    fontSize: "1rem",
+                  }}
+                >
+                  Kelas
+                </label>
                 {/* <InputLabel id="demo-simple-select-outlined-label">
                     Kelas
                   </InputLabel> */}
-                <Select
-                  style={{ display: "inline-block", width: "100%" }}
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
+                <NativeSelect
+                  id="demo-customized-select-native"
+                  style={{ marginTop: "0.5rem" }}
                   value={users.kelas}
-                  onChange={(e) => handleChange(e, "kelas")}
+                  onChange={(e) => {
+                    handleChange(e, "kelas");
+                  }}
+                  input={<BootstrapInput />}
                   fullWidth
                 >
                   {kelass.map((kelas) => (
-                    <MenuItem value={kelas._id}>{kelas.kelas}</MenuItem>
+                    <option value={kelas._id}>{kelas.kelas}</option>
                   ))}
-                </Select>
+                </NativeSelect>
               </React.Fragment>
             )}
 
             {users.role === "siswa" && (
               <React.Fragment>
-                <Input
-                  id="class"
-                  label="Kelas"
-                  placeholder="contoh: 7a"
-                  handleChange={handleChange}
-                />
+                <label
+                  style={{
+                    marginTop: "1.5rem",
+                    display: "block",
+                    color: color.label,
+                    fontSize: "1rem",
+                  }}
+                >
+                  Kelas
+                </label>
+                <NativeSelect
+                  id="demo-customized-select-native"
+                  style={{ marginTop: "0.5rem" }}
+                  value={users.kelas}
+                  onChange={(e) => {
+                    handleChange(e, "kelas");
+                  }}
+                  input={<BootstrapInput />}
+                  fullWidth
+                >
+                  {kelass.map((kelas) => (
+                    <option value={kelas._id}>{kelas.kelas}</option>
+                  ))}
+                </NativeSelect>
                 <Input
                   id="age"
                   label="Umur"

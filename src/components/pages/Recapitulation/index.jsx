@@ -27,6 +27,7 @@ import isEmpty from "../../../utils/is-empty";
 import color from "../../../utils/color";
 import dateformat from "dateformat";
 import Badge from "../../atoms/Badge";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles({
   table: {
@@ -104,6 +105,8 @@ function BasicTable({ id, user, major }) {
 
   const [open, setOpen] = React.useState(false);
 
+  const [recapitulation, setRecapitulation] = React.useState([]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -141,160 +144,94 @@ function BasicTable({ id, user, major }) {
 
   const [undoneArray, setUndoneArray] = React.useState([]);
 
-  let i = 0;
-
   React.useEffect(() => {
     present["userId"] = user.user.id;
     present["majorId"] = id;
     setPresent({ ...present });
 
     axios
-      .get(`${proxy}/api/presents/view/${user.user.id}/${id}`)
+      .get(`${proxy}/api/users/view`)
       .then((res) => {
-        console.log(res.data);
-        setPresents({ ...res.data });
-        if (!isEmpty(res.data)) {
-          setUndoneArray([...new Array(14 - res.data.status.length)]);
-        } else {
-          setUndoneArray([...new Array(14)]);
-        }
+        setRecapitulation([...res.data]);
       })
       .catch((err) => console.log(err));
   }, []);
 
+  console.log(recapitulation);
+
   return (
     <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
-      <Table className={classes.table} aria-label="simple table">
+      <Alert severity="warning">
+        Dapat mengikuti ujian ketika kehadiran lebih dari 8
+      </Alert>
+      <Table
+        className={classes.table}
+        aria-label="simple table"
+        style={{ marginTop: "2rem" }}
+      >
         <TableHead style={{ backgroundColor: color.primary }}>
           <TableRow>
-            <TableCell style={{ color: color.white }}>Tanggal</TableCell>
-            <TableCell style={{ color: color.white }}>Deskripsi</TableCell>
-            <TableCell style={{ color: color.white }}>Status</TableCell>
+            <TableCell style={{ color: color.white }}>Siswa</TableCell>
+            <TableCell style={{ color: color.white }}>
+              Total Kehadiran
+            </TableCell>
+            <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
+            <TableCell style={{ color: color.white }}>
+              Dapat mengikuti ujian
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {!isEmpty(presents.status) &&
-            presents.status.map((status) => (
-              <TableRow key={status}>
+          {!isEmpty(recapitulation) &&
+            recapitulation.map((recapitulatio) => (
+              <TableRow key={recapitulatio}>
                 <TableCell>
                   {" "}
-                  <p>
-                    {dateFormat(
-                      i * 604800000 + Date.parse(major.hoursOfSubject),
-                      "mmmm d, yyyy "
-                    )}
-                  </p>
-                  <p style={{ lineHeight: 0.5 }} test={i++}>
-                    {dateFormat(major.hoursOfSubject, "dddd hh:MM TT")} -{" "}
-                    {dateFormat(major.hoursOfSubjectFinish, "hh:MM TT")}
-                  </p>
-                </TableCell>
-                <TableCell style={{ color: "#9e9e9e" }}>
-                  Absen sudah ditutup
+                  <p>{recapitulatio.userId.name}</p>
                 </TableCell>
                 <TableCell>
-                  <Badge status={status} />
+                  <p>
+                    {recapitulatio.status.map((rec, i) => (
+                      <p total={rec == "Hadir" ? i++ : ""}>{i} / 14</p>
+                    ))}
+                  </p>
+                </TableCell>
+                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
+                <TableCell>
+                  <p>
+                    {recapitulatio.status.map((rec, i) => (
+                      <p total={rec == "Hadir" ? i++ : ""}>
+                        {i === "8" ? (
+                          <span
+                            style={{
+                              backgroundColor: "green",
+                              padding: "0.5rem 1rem",
+                              color: "#ffffff",
+                              borderRadius: "0.5rem",
+                            }}
+                          >
+                            Diizinkan
+                          </span>
+                        ) : (
+                          <span
+                            style={{
+                              backgroundColor: "#dc3545",
+                              padding: "0.5rem 1rem",
+                              color: "#ffffff",
+                              borderRadius: "0.5rem",
+                            }}
+                          >
+                            Tidak
+                          </span>
+                        )}{" "}
+                      </p>
+                    ))}
+                  </p>
                 </TableCell>
               </TableRow>
             ))}
-          {undoneArray.map((undone, index) => (
-            <TableRow key={undone}>
-              <TableCell>
-                {" "}
-                <p>
-                  {dateFormat(
-                    i * 604800000 + Date.parse(major.hoursOfSubject),
-                    "mmmm d, yyyy "
-                  )}
-                </p>
-                <p style={{ lineHeight: 0.5 }} test={i++}>
-                  {dateFormat(major.hoursOfSubject, "dddd hh:MM TT")} -{" "}
-                  {dateFormat(major.hoursOfSubjectFinish, "hh:MM TT")}
-                </p>
-              </TableCell>
-              {console.log(Date.parse(new Date()))}
-              {console.log(
-                (i - 1) * 604800000 + Date.parse(major.hoursOfSubject)
-              )}
-              {Date.parse(new Date()) >
-              (i - 1) * 604800000 + Date.parse(major.hoursOfSubject) ? (
-                <TableCell
-                  onClick={handleClickOpen}
-                  style={{ cursor: "pointer" }}
-                >
-                  Absen disini
-                </TableCell>
-              ) : (
-                <TableCell style={{ color: "#9e9e9e" }}>
-                  Absen belum tersedia
-                </TableCell>
-              )}
-
-              <TableCell>
-                <span className={classes.blue}>Belum absen</span>
-              </TableCell>
-            </TableRow>
-          ))}
         </TableBody>
       </Table>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent style={{ minWidth: 480 }}>
-          <DialogTitle id="alert-dialog-title">
-            <Typography variant="h5" component="h2" style={{ fontWeight: 500 }}>
-              Kehadiran
-            </Typography>
-          </DialogTitle>
-          <DialogContentText id="alert-dialog-description">
-            <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="gender"
-                name="gender1"
-                value={present.status}
-                onChange={handleChange}
-              >
-                <FormControlLabel
-                  value="Hadir"
-                  control={<Radio />}
-                  label="Hadir"
-                />
-                <FormControlLabel
-                  value="Sakit"
-                  control={<Radio />}
-                  label="Sakit"
-                />
-                <FormControlLabel
-                  value="Tidak Hadir"
-                  control={<Radio />}
-                  label="Tidak hadir"
-                />
-              </RadioGroup>
-            </FormControl>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            style={{ color: "#dc3545" }}
-          >
-            Batal
-          </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-            color="primary"
-            autoFocus
-            style={{ backgroundColor: "#008000", color: "#ffffff" }}
-          >
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
     </TableContainer>
   );
 }

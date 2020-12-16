@@ -4,7 +4,7 @@ import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 
-function Section({ description, icon, title, isLink, id, isStudent }) {
+function ExamSection({ description, icon, title, isLink, id, isStudent }) {
   const useStyles = makeStyles({
     icon: {
       width: "100%",
@@ -21,10 +21,10 @@ function Section({ description, icon, title, isLink, id, isStudent }) {
 
   return (
     <React.Fragment>
-      <Grid item xs={2}>
+      <Grid item xs={4} md={2}>
         <span className={classes.icon}> {icon}</span>
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={8} md={10}>
         {isLink ? (
           <React.Fragment>
             {isStudent ? (
@@ -59,4 +59,4 @@ function Section({ description, icon, title, isLink, id, isStudent }) {
   );
 }
 
-export default Section;
+export default ExamSection;

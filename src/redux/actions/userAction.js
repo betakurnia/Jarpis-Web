@@ -1,7 +1,13 @@
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
-import { SET_CURRENT_USER, GET_ERRORS, SET_SUCESS } from ".";
+import {
+  SET_CURRENT_USER,
+  GET_ERRORS,
+  SET_SUCESS,
+  SET_USER,
+  SET_LOADING,
+} from ".";
 import proxy from "../../utils/proxy";
 
 // Login - Get User Token
@@ -69,6 +75,15 @@ export const registerUser = (userData) => (dispatch) => {
         payload: err.response.data,
       });
     });
+};
+
+export const getUserById = (id) => (dispatch) => {
+  dispatch({ type: SET_LOADING, payload: true });
+
+  axios.get(`${proxy}/api/users/view/${id}`).then((res) => {
+    dispatch({ type: SET_USER, payload: res.data });
+    dispatch({ type: SET_LOADING, payload: false });
+  });
 };
 
 export const setCurrentUser = (decoded) => {

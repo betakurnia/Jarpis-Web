@@ -40,6 +40,8 @@ import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
 import ClassIcon from "@material-ui/icons/Class";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import BookIcon from "@material-ui/icons/Book";
+import SchoolIcon from "@material-ui/icons/School";
+import TableChartIcon from "@material-ui/icons/TableChart";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,6 +91,7 @@ function MenuAppBar({ user, logoutUser, history }) {
   const open = Boolean(anchorEl);
 
   const [majors, setMajors] = React.useState([]);
+  const [theorys, setTheorys] = React.useState([]);
 
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [isShowTheory, setIsShowTheory] = React.useState(true);
@@ -103,6 +106,11 @@ function MenuAppBar({ user, logoutUser, history }) {
       name: "Pengumuman",
       link: "/admin/pengumuman",
       icon: <AnnouncementIcon />,
+    },
+    {
+      name: "Rekapitulasi",
+      link: "/admin/rekapitulasi",
+      icon: <TableChartIcon />,
     },
   ]);
 
@@ -120,7 +128,12 @@ function MenuAppBar({ user, logoutUser, history }) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const [recapitulation, setRecapitulation] = React.useState([]);
+
+  const handleClose = (e, status) => {
+    if (status === "profile") {
+      history.push("/profile");
+    }
     setAnchorEl(null);
   };
 
@@ -145,7 +158,14 @@ function MenuAppBar({ user, logoutUser, history }) {
         .then((res) => {
           console.log(res.data);
           setMajors(res.data);
+          setRecapitulation([...res.data]);
         });
+      axios
+        .post(`${proxy}/api/theorys/view`, user.isAuthenticated.majorId)
+        .then((res) => {
+          setTheorys([...res.data]);
+        })
+        .catch((err) => console.log(err));
     } else {
       axios.get(`${proxy}/api/majors/view`).then((res) => {
         setMajors(res.data);
@@ -182,7 +202,10 @@ function MenuAppBar({ user, logoutUser, history }) {
           )}
 
           <Typography variant="h6" className={classes.title}>
-            <Link to="/">Jarpis</Link>
+            <Link to="/">
+              <SchoolIcon style={{ padding: "0 0.4rem" }} />
+              Jarpis
+            </Link>
             <Link to="/pengumuman" className={classes.announcement}>
               <Typography className={classes.announcement}>
                 Pengumuman
@@ -217,7 +240,15 @@ function MenuAppBar({ user, logoutUser, history }) {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                {user.isAuthenticated.role === "siswa" && (
+                  <MenuItem
+                    onClick={(e) => {
+                      handleClose(e, "profile");
+                    }}
+                  >
+                    Profile
+                  </MenuItem>
+                )}
                 <MenuItem onClick={handleLogOut}>
                   Log Out <ExitToAppIcon style={{ paddingLeft: "0.5rem" }} />
                 </MenuItem>
@@ -329,11 +360,17 @@ function MenuAppBar({ user, logoutUser, history }) {
                       {isShowTheory &&
                         [...new Array(14)].map((a, i) => (
                           <Link
-                            to={`${i + 1 === 7 ? "/guru/ujian/UTS" : ""}${
-                              i + 1 === 14 ? "/guru/ujian/UAS" : ""
+                            to={`${
+                              i + 1 === 7
+                                ? `/guru/ujian/UTS-${major.majorName}/${major._id}`
+                                : ""
+                            }${
+                              i + 1 === 14
+                                ? `/guru/ujian/UAS-${major.majorName}/${major._id}`
+                                : ""
                             }${
                               !(i + 1 === 7) && !(i + 1 === 14)
-                                ? `/guru/materi/${i + 1}`
+                                ? `/guru/materi/${i + 1}/${major._id}`
                                 : ""
                             }`}
                           >
@@ -360,6 +397,49 @@ function MenuAppBar({ user, logoutUser, history }) {
                   ))}
                 </React.Fragment>
               )}
+              <ListItem
+                button
+                key="Rekapitulasi Nilai"
+                // className={(classes.menuItem, classes.disabled)}
+              >
+                <ListItemIcon>
+                  {" "}
+                  <TableChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Rekapitulasi Nilai" />
+              </ListItem>
+              {recapitulation.map((recap) => (
+                <React.Fragment>
+                  <Link
+                    to={`/guru/rekapitulasi/UTS-${recap.majorName}/${recap._id}`}
+                  >
+                    <ListItem
+                      button
+                      key={recap.majorName}
+                      className={(classes.menuItem, classes.subTab)}
+                    >
+                      <ListItemIcon>
+                        <CastForEducationIcon />
+                      </ListItemIcon>
+                      <ListItemText>UTS {recap.majorName}</ListItemText>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to={`/guru/rekapitulasi/UAS-${recap.majorName}/${recap._id}`}
+                  >
+                    <ListItem
+                      button
+                      key={recap.majorName}
+                      className={(classes.menuItem, classes.subTab)}
+                    >
+                      <ListItemIcon>
+                        <CastForEducationIcon />
+                      </ListItemIcon>
+                      <ListItemText>UAS {recap.majorName}</ListItemText>
+                    </ListItem>
+                  </Link>
+                </React.Fragment>
+              ))}
             </List>
           </div>
         </Drawer>

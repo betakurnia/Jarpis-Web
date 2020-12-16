@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button, Container } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import Input from "../../atoms/Input";
 import { makeStyles } from "@material-ui/styles";
@@ -55,50 +55,48 @@ function Login({ loginUser, error, history, user }) {
   }, []);
 
   return (
-    <Grid container justify="center">
-      <Grid item xs={12} md={4}>
-        <form onSubmit={onSubmit}>
-          <div className={classes.root}>
-            <Typography
-              variant="h4"
-              component="h1"
-              align="center"
-              className={classes.title}
-            >
-              Masuk ke Jarpis
-            </Typography>
+    <Container maxWidth="sm">
+      <form onSubmit={onSubmit}>
+        <div className={classes.root}>
+          <Typography
+            variant="h4"
+            component="h1"
+            align="center"
+            className={classes.title}
+          >
+            Masuk ke Jarpis
+          </Typography>
 
-            <Input
-              id="username"
-              label="Email / Username"
-              placeholder="contoh jarpis@gmail.com"
-              handleChange={handleChange}
-            />
-            <Input
-              id="password"
-              label="Password"
-              placeholder="*********"
-              handleChange={handleChange}
-              isPassword={true}
-            />
-            {!isEmpty(error) && (
-              <Alert className={classes.alert} severity="error">
-                {error.username || error.password}
-              </Alert>
-            )}
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              className={classes.btn}
-            >
-              Masuk
-            </Button>
-          </div>
-        </form>
-      </Grid>
-    </Grid>
+          <Input
+            id="username"
+            label="Email / Username"
+            placeholder="contoh jarpis@gmail.com"
+            handleChange={handleChange}
+          />
+          <Input
+            id="password"
+            label="Password"
+            placeholder="*********"
+            handleChange={handleChange}
+            isPassword={true}
+          />
+          {!isEmpty(error) && (
+            <Alert className={classes.alert} severity="error">
+              {error.username || error.password}
+            </Alert>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            className={classes.btn}
+          >
+            Masuk
+          </Button>
+        </div>
+      </form>
+    </Container>
   );
 }
 

@@ -29,11 +29,11 @@ function Input({
 
   return (
     <div className={classes.root}>
-      <label htmlFor={id} className={classes.label}>
+      <label htmlFor={`${id}` + `${idx && idx}`} className={classes.label}>
         {label}
       </label>
       <TextField
-        id={id}
+        id={`${id}` + `${idx && idx}`}
         placeholder={placeholder}
         fullWidth
         InputLabelProps={{

@@ -14,29 +14,49 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import Input from "../../atoms/Input";
 import axios from "axios";
 import proxy from "../../../utils/proxy";
+import isEmpty from "../../../utils/is-empty";
+import { connect } from "react-redux";
+import { createExam } from "../../../redux/actions/examAction";
+import { clearErrorSucess } from "../../../redux/actions/announcementAction";
+import { Alert } from "@material-ui/lab";
+import AddIcon from "@material-ui/icons/Add";
 
-function Exams() {
-  const [role, setRole] = React.useState("5");
+function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
+  const [role, setRole] = React.useState(5);
   // const [arrLen, setArrLen] = React.useState([...new Array(20)]);
 
   const [loading, setLoading] = React.useState(true);
 
   const [exam, setExam] = React.useState([...new Array(5)]);
 
-  const { ujian } = useParams();
+  const { ujian, id } = useParams();
 
   const handleMenu = (e) => {
     setRole(e.target.value);
-    setExam([...new Array(Number(e.target.value))]);
+
+    setExam([...new Array(e.target.value)]);
   };
 
   const handleMenus = (e, i) => {
     exam[i].answer = e.target.value;
+
     setExam([...exam]);
     console.log(exam);
   };
 
   const [tipes, setTipes] = React.useState([]);
+
+  const handleAdd = (e) => {
+    const a = [
+      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
+      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
+      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
+      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
+      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
+    ];
+    // console.log([...exam]);
+    setExam([...exam, ...a]);
+  };
 
   const handleTipe = (e, val) => {
     tipes.push({
@@ -56,31 +76,38 @@ function Exams() {
   };
 
   React.useEffect(() => {
-    exam.forEach((a, i) => {
-      let obj = {
-        examName: "",
-        possibilitesAnswer: ["", "", "", ""],
-        answer: "",
-      };
-      exam[i] = obj;
+    clearErrorSucess();
+    axios.get(`${proxy}/api/exams/view/${id}?type=${ujian}`).then((res) => {
+      if (res.data) {
+        console.log(res.data);
+        setExam([...res.data.question]);
+      } else {
+        exam.forEach((a, i) => {
+          let obj = {
+            examName: "",
+            possibilitesAnswer: ["", "", "", ""],
+            answer: "",
+          };
+          exam[i] = obj;
+        });
+        setExam([...exam]);
+      }
+      setLoading(false);
     });
-    setExam([...exam]);
-    setLoading(false);
-  }, []);
+  }, [id, ujian]);
 
   const handleSubmit = () => {
-    axios
-      .post(`${proxy}/api/exams/create`, {
-        question: exam,
-        type: ujian,
-      })
-      .then((exam) => {
-        console.log("Sucess");
-      });
+    createExam({
+      userId: "guru",
+      teacherId: user.user.id,
+      majorId: id,
+      question: exam,
+      type: ujian,
+    });
   };
 
   return (
-    <CreateTemplate title={`Ujian ${ujian}`}>
+    <CreateTemplate title={`${ujian}`}>
       <div
         style={{
           paddingBottom: "2rem",
@@ -92,22 +119,6 @@ function Exams() {
           <TheoryTemplate title={tipe}></TheoryTemplate>
         </React.Fragment>
       ))}
-
-      <FormLabel component="legend" style={{ marginTop: "2rem" }}></FormLabel>
-      <Typography variant="h5" component="p" style={{ paddingRight: "2rem" }}>
-        Jumlah Soal
-      </Typography>
-      <RadioGroup
-        aria-label="gender"
-        name="Role"
-        value={role}
-        onChange={handleMenu}
-        row
-      >
-        <FormControlLabel value="5" control={<Radio />} label={`5`} />
-        <FormControlLabel value="10" control={<Radio />} label="10" />
-        <FormControlLabel value="20" control={<Radio />} label="20" />
-      </RadioGroup>
       {!loading &&
         exam.map((arr, i) => (
           <React.Fragment>
@@ -176,9 +187,22 @@ function Exams() {
             </ul>
           </React.Fragment>
         ))}
+      <Button
+        variant="contained"
+        color="secondary"
+        style={{ marginTop: "2rem" }}
+        onClick={handleAdd}
+      >
+        Tambah 5 Soal <AddIcon style={{ paddingLeft: "0.5rem" }} />
+      </Button>{" "}
+      {sucess && <Alert style={{ marginTop: "2rem" }}>Berhasil dibuat </Alert>}
+      {!isEmpty(error) && (
+        <Alert severity="error" style={{ marginTop: "2rem" }}>
+          {error.examStudentAnswer}
+        </Alert>
+      )}
       <Grid container justify="center">
         <Grid item xs={12} md={6}>
-          {" "}
           <Button
             variant="contained"
             color="primary"
@@ -194,4 +218,12 @@ function Exams() {
   );
 }
 
-export default Exams;
+const mapStateToProps = (state) => ({
+  user: state.user,
+  error: state.error,
+  sucess: state.sucess,
+});
+
+export default connect(mapStateToProps, { createExam, clearErrorSucess })(
+  Exams
+);

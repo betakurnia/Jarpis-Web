@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Sections from "../../molecules/Sections";
 import color from "../../../utils/color";
@@ -21,9 +21,6 @@ function Topic({ id, major, user }) {
       borderTopLeftRadius: "0.5rem",
       borderTopRightRadius: "0.5rem",
     },
-    // major: {
-
-    // }
   });
 
   const classes = useStyles();
@@ -31,14 +28,19 @@ function Topic({ id, major, user }) {
   return (
     <React.Fragment>
       <div className={classes.header}>
-        <Typography variant="h4" component="h1">
+        <Typography variant="h4" component="h1" style={{ fontWeight: 500 }}>
           {major.majorName}
         </Typography>
       </div>
       <div className={classes.root}>
-        <Grid container>
-          <Sections id={id} isStudent={user.isAuthenticated.role === "siswa"} />
-        </Grid>
+        <Container maxWidth="lg">
+          <Sections
+            id={id}
+            isStudent={user.isAuthenticated.role === "siswa"}
+            isTeacher={user.isAuthenticated.role === "teacher"}
+            majorName={major.majorName}
+          />
+        </Container>
       </div>
     </React.Fragment>
   );
