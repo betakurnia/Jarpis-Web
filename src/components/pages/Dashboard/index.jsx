@@ -16,9 +16,11 @@ function Dashboard({ user }) {
           setMajors(res.data);
         });
     } else {
-      axios.get(`${proxy}/api/majors/view`).then((res) => {
-        setMajors(res.data);
-      });
+      axios
+        .get(`${proxy}/api/majors/view?kelasId=${user.user.kelasId}`)
+        .then((res) => {
+          setMajors(res.data);
+        });
     }
   }, []);
 

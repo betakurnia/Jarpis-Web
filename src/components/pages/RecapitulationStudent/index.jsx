@@ -28,6 +28,7 @@ import color from "../../../utils/color";
 import dateformat from "dateformat";
 import Badge from "../../atoms/Badge";
 import Alert from "@material-ui/lab/Alert";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles({
   table: {
@@ -53,7 +54,7 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-function BasicTable({ id, user, major }) {
+function BasicTable({ user, major }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -142,15 +143,13 @@ function BasicTable({ id, user, major }) {
       .catch((err) => console.log(err.response.data));
   };
 
-  const [undoneArray, setUndoneArray] = React.useState([]);
-
   React.useEffect(() => {
-    present["userId"] = user.user.id;
-    present["majorId"] = id;
-    setPresent({ ...present });
+    // present["userId"] = user.user.id;
+    // present["majorId"] = id;
+    // setPresent({ ...present });
 
     axios
-      .get(`${proxy}/api/users/view`)
+      .get(`${proxy}/api/exams/view/recapitulations/${user.isAuthenticated.id}`)
       .then((res) => {
         setRecapitulation([...res.data]);
       })
@@ -161,9 +160,6 @@ function BasicTable({ id, user, major }) {
 
   return (
     <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
-      <Alert severity="warning">
-        Dapat mengikuti ujian ketika kehadiran lebih dari 8
-      </Alert>
       <Table
         className={classes.table}
         aria-label="simple table"
@@ -172,13 +168,8 @@ function BasicTable({ id, user, major }) {
         <TableHead style={{ backgroundColor: color.primary }}>
           <TableRow>
             <TableCell style={{ color: color.white }}>Siswa</TableCell>
-            <TableCell style={{ color: color.white }}>
-              Total Kehadiran
-            </TableCell>
+            <TableCell style={{ color: color.white }}>Nilai</TableCell>
             <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
-            <TableCell style={{ color: color.white }}>
-              Dapat mengikuti ujian
-            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -190,38 +181,31 @@ function BasicTable({ id, user, major }) {
                   <p>{recapitulatio.userId.name}</p>
                 </TableCell>
                 <TableCell>
-                  <p>
-                    <p>{recapitulatio.status.length} / 14</p>
-                  </p>
+                  {recapitulatio.result > 70 ? (
+                    <TableCell
+                      style={{
+                        backgroundColor: "green",
+                        padding: "0.5rem 1rem",
+                        color: "#ffffff",
+                        borderRadius: "0.5rem",
+                      }}
+                    >
+                      {recapitulatio.result}
+                    </TableCell>
+                  ) : (
+                    <TableCell
+                      style={{
+                        backgroundColor: "#dc3545",
+                        padding: "0.5rem 1rem",
+                        color: "#ffffff",
+                        borderRadius: "0.5rem",
+                      }}
+                    >
+                      {recapitulatio.result}
+                    </TableCell>
+                  )}
                 </TableCell>
                 <TableCell>{recapitulatio.majorId.majorName}</TableCell>
-                <TableCell>
-                  <p>
-                    {recapitulatio.status.length > 7 ? (
-                      <span
-                        style={{
-                          backgroundColor: "#dc3545",
-                          padding: "0.5rem 1rem",
-                          color: "green",
-                          borderRadius: "0.5rem",
-                        }}
-                      >
-                        Diizinkan
-                      </span>
-                    ) : (
-                      <span
-                        style={{
-                          backgroundColor: "#dc3545",
-                          padding: "0.5rem 1rem",
-                          color: "#ffffff",
-                          borderRadius: "0.5rem",
-                        }}
-                      >
-                        Tidak
-                      </span>
-                    )}
-                  </p>
-                </TableCell>
               </TableRow>
             ))}
         </TableBody>

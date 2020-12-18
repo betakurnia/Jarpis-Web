@@ -119,7 +119,7 @@ function BasicTable({ id, user, major }) {
   const [present, setPresent] = React.useState({
     userId: "",
     majorId: "",
-    status: "hadir",
+    status: "Hadir",
   });
 
   const handleChange = (event) => {

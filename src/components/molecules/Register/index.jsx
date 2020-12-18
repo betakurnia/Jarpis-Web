@@ -67,6 +67,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     username: "",
     password: "",
     name: "",
+    nis: "",
     age: "",
     address: "",
     religion: "",
@@ -127,8 +128,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
   const classes = useStyles();
 
   const onSubmit = (e) => {
-    console.log(users);
-
     e.preventDefault();
 
     registerUser(users);
@@ -159,12 +158,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
             >
               Daftar ke Jarpis
             </Typography>
-            {/* <Input
-              id="role"
-              label="Role"
-              placeholder="contoh: siswa"
-              handleChange={handleChange}
-            /> */}
             <FormLabel component="legend" style={{ marginTop: "2rem" }}>
               <Typography variant="h5" component="p">
                 Role
@@ -300,6 +293,12 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
 
             {users.role === "siswa" && (
               <React.Fragment>
+                <Input
+                  id="nis"
+                  label="NIS"
+                  placeholder="contoh: 1234567890"
+                  handleChange={handleChange}
+                />
                 <label
                   style={{
                     marginTop: "1.5rem",

@@ -11,11 +11,12 @@ import proxy from "../../../utils/proxy";
 import { deleteExam } from "../../../redux/actions/examAction";
 import { Alert } from "@material-ui/lab";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import axios from "axios";
 import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
+import { GET_ERRORS, SET_SUCESS } from "../../../redux/actions";
 
-function Sections({ id, isStudent, isTeacher, majorName, deleteExam }) {
+function Sections({ id, isStudent, isTeacher, majorName }) {
   const useStyles = makeStyles({
     root: {
       padding: "1rem 0 2rem",
@@ -28,6 +29,8 @@ function Sections({ id, isStudent, isTeacher, majorName, deleteExam }) {
 
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const [theorys, setTheorys] = React.useState([]);
 
   const [exams, setExams] = React.useState([]);
@@ -36,6 +39,20 @@ function Sections({ id, isStudent, isTeacher, majorName, deleteExam }) {
     axios.post(`${proxy}/api/theorys/delete/${i}/${majorId}`).then((res) => {
       setTheorys([...res.data]);
     });
+  };
+
+  const deleteExam = (id, type) => {
+    axios
+      .post(`${proxy}/api/exams/delete/${id}/${type}`)
+      .then((res) => {
+        setExams([...res.data]);
+        dispatch({ type: GET_ERRORS, payload: {} });
+        dispatch({ type: SET_SUCESS, payload: true });
+      })
+      .catch((err) => {
+        dispatch({ type: SET_SUCESS, payload: false });
+        dispatch({ type: GET_ERRORS, payload: err.response.data });
+      });
   };
 
   React.useEffect(() => {
@@ -128,8 +145,8 @@ function Sections({ id, isStudent, isTeacher, majorName, deleteExam }) {
           </TheorySection>
         ))}
       </Grid>
-      {exams.map((exam) => (
-        <Grid container spacing={2} className={classes.subRoot}>
+      <Grid container spacing={2} className={classes.subRoot}>
+        {exams.map((exam, i) => (
           <ExamSection
             icon={
               <img
@@ -147,9 +164,10 @@ function Sections({ id, isStudent, isTeacher, majorName, deleteExam }) {
             handleDelete={deleteExam}
             type={exam.type}
             isTeacher={isTeacher}
+            i={i}
           />
-        </Grid>
-      ))}
+        ))}
+      </Grid>
     </div>
   );
 }

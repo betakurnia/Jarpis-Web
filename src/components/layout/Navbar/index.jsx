@@ -32,6 +32,7 @@ import { withRouter } from "react-router-dom";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import axios from "axios";
 import proxy from "../../../utils/proxy";
+import isEmpty from "../../../utils/is-empty";
 import CastForEducationIcon from "@material-ui/icons/CastForEducation";
 import TabIcon from "@material-ui/icons/Tab";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
@@ -134,6 +135,10 @@ function MenuAppBar({ user, logoutUser, history }) {
     if (status === "profile") {
       history.push("/profile");
     }
+    if (status === "nilai") {
+      history.push("/nilai");
+    }
+
     setAnchorEl(null);
   };
 
@@ -241,13 +246,22 @@ function MenuAppBar({ user, logoutUser, history }) {
                 onClose={handleClose}
               >
                 {user.isAuthenticated.role === "siswa" && (
-                  <MenuItem
-                    onClick={(e) => {
-                      handleClose(e, "profile");
-                    }}
-                  >
-                    Profile
-                  </MenuItem>
+                  <React.Fragment>
+                    <MenuItem
+                      onClick={(e) => {
+                        handleClose(e, "profile");
+                      }}
+                    >
+                      Profile
+                    </MenuItem>{" "}
+                    <MenuItem
+                      onClick={(e) => {
+                        handleClose(e, "nilai");
+                      }}
+                    >
+                      Nilai{" "}
+                    </MenuItem>
+                  </React.Fragment>
                 )}
                 <MenuItem onClick={handleLogOut}>
                   Log Out <ExitToAppIcon style={{ paddingLeft: "0.5rem" }} />
@@ -270,20 +284,34 @@ function MenuAppBar({ user, logoutUser, history }) {
                   button
                   className={(classes.menuItem, classes.disabled)}
                 >
-                  <ListItemIcon>{<ClassIcon />}</ListItemIcon>
-                  <ListItemText primary="Kelas" />
+                  <ListItemIcon>
+                    <ClassIcon />
+                  </ListItemIcon>
+                  <ListItemText> Kelas {user.user.kelas}</ListItemText>
                 </ListItem>
               ) : (
                 <ListItem
                   button
                   className={(classes.menuItem, classes.disabled)}
                 >
-                  <ListItemIcon>{<TabIcon />}</ListItemIcon>
-                  <ListItemText primary="Mata Pelajaran" />
+                  <ListItemIcon>
+                    {" "}
+                    {user.isAuthenticated.role === "teacher" ? (
+                      <ClassIcon />
+                    ) : (
+                      <TabIcon />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText>
+                    {user.isAuthenticated.role === "teacher"
+                      ? "Kelas"
+                      : "Mata Pelajaran"}
+                    {!isEmpty(user.user.kelas) && user.user.kelas.split("")[0]}
+                  </ListItemText>
                 </ListItem>
               )}
 
-              {majors.map((major, index) => (
+              {majors.map((major) => (
                 <Link to={`/mata-pelajaran/${major._id}`}>
                   <ListItem
                     button
@@ -391,27 +419,28 @@ function MenuAppBar({ user, logoutUser, history }) {
                               </ListItemText>
                             </ListItem>
                           </Link>
-                        ))}{" "}
-                      )
+                        ))}
                     </React.Fragment>
                   ))}
+                  <ListItem
+                    button
+                    key="Rekapitulasi Nilai"
+                    // className={(classes.menuItem, classes.disabled)}
+                  >
+                    <ListItemIcon>
+                      {" "}
+                      <TableChartIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Rekapitulasi Nilai" />
+                  </ListItem>
                 </React.Fragment>
               )}
-              <ListItem
-                button
-                key="Rekapitulasi Nilai"
-                // className={(classes.menuItem, classes.disabled)}
-              >
-                <ListItemIcon>
-                  {" "}
-                  <TableChartIcon />
-                </ListItemIcon>
-                <ListItemText primary="Rekapitulasi Nilai" />
-              </ListItem>
+
               {recapitulation.map((recap) => (
-                <React.Fragment>
+                <div>
                   <Link
                     to={`/guru/rekapitulasi/UTS-${recap.majorName}/${recap._id}`}
+                    style={{ marginTop: 0 }}
                   >
                     <ListItem
                       button
@@ -438,7 +467,7 @@ function MenuAppBar({ user, logoutUser, history }) {
                       <ListItemText>UAS {recap.majorName}</ListItemText>
                     </ListItem>
                   </Link>
-                </React.Fragment>
+                </div>
               ))}
             </List>
           </div>

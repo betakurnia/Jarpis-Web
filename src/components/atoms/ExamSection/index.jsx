@@ -25,6 +25,7 @@ function Section({
   history,
   type,
   isTeacher,
+  i,
 }) {
   const useStyles = makeStyles({
     icon: {
@@ -70,7 +71,7 @@ function Section({
   return (
     <React.Fragment>
       <Grid item xs={12}>
-        {!isStudent && (
+        {!isStudent && i === 0 && (
           <React.Fragment>
             <Alert
               severity="warning"

@@ -21,6 +21,7 @@ import Major from "./components/pages/Major";
 import Pengumuman from "./components/pages/Pengumuman";
 import Admins from "./components/pages/Admins";
 import RecapitulationValue from "./components/pages/RecapitulationValue";
+import RecapitulationStudent from "./components/pages/RecapitulationStudent";
 import Recapitulation from "./components/pages/Recapitulation";
 import Present from "./components/pages/Present";
 import Theory from "./components/pages/Theory";
@@ -66,7 +67,7 @@ const App = () => {
           <Container>
             <PrivateRoute component={Dashboard} path="/dashboard" />
             <PrivateRoute component={Profile} path="/profile" />
-
+            <PrivateRoute component={RecapitulationStudent} path="/nilai" />
             <Route path="/pengumuman">
               <Announcment />
             </Route>
