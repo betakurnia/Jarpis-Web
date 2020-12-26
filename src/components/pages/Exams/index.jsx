@@ -1,68 +1,49 @@
 import React from "react";
-import CKEditor from "../../atoms/CKEditor";
-import CreateTemplate from "../../molecules/CreateTemplate";
-import TheoryTemplate from "../../molecules/TheoryTemplate";
-import { useParams } from "react-router-dom";
-import FormLabel from "@material-ui/core/FormLabel";
+
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import Input from "../../atoms/Input";
+import Alert from "@material-ui/lab/Alert";
+import AddIcon from "@material-ui/icons/Add";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { connect } from "react-redux";
+
+import Input from "../../atoms/Input";
+import CreateTemplate from "../../atoms/CreateTemp";
+import TheoryTemplate from "../../molecules/TheoryTemplate";
+
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
-import { connect } from "react-redux";
 import { createExam } from "../../../redux/actions/examAction";
-import { clearErrorSucess } from "../../../redux/actions/announcementAction";
-import { Alert } from "@material-ui/lab";
-import AddIcon from "@material-ui/icons/Add";
+import { clearErrorSucess } from "../../../redux/actions/helperAction";
 
 function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
-  const [role, setRole] = React.useState(5);
-  // const [arrLen, setArrLen] = React.useState([...new Array(20)]);
-
   const [loading, setLoading] = React.useState(true);
 
   const [exam, setExam] = React.useState([...new Array(5)]);
 
   const { ujian, id } = useParams();
 
-  const handleMenu = (e) => {
-    setRole(e.target.value);
-
-    setExam([...new Array(e.target.value)]);
-  };
-
   const handleMenus = (e, i) => {
     exam[i].answer = e.target.value;
 
     setExam([...exam]);
-    console.log(exam);
   };
 
-  const [tipes, setTipes] = React.useState([]);
+  const [tipes] = React.useState([]);
 
   const handleAdd = (e) => {
-    const a = [
+    const question = [
       { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
       { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
       { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
       { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
       { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
     ];
-    // console.log([...exam]);
-    setExam([...exam, ...a]);
-  };
-
-  const handleTipe = (e, val) => {
-    tipes.push({
-      tipe: val,
-    });
-    setTipes([...tipes]);
+    setExam([...exam, ...question]);
   };
 
   const handleChange = (e, id, idx = false) => {
@@ -94,7 +75,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
       }
       setLoading(false);
     });
-  }, [id, ujian]);
+  }, [id, ujian, exam, clearErrorSucess]);
 
   const handleSubmit = () => {
     createExam({

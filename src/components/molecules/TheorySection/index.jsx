@@ -1,47 +1,57 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
-import color from "../../../utils/color";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import axios from "axios";
+import clsx from "clsx";
+
+import color from "../../../utils/color";
 
 function TheorySection({
-  description,
   icon,
   title,
   isLink,
   id,
   isStudent,
-  majorName,
   children,
   i,
   handleDelete,
   isTeacher,
 }) {
   const useStyles = makeStyles({
-    icon: {
-      width: "100%",
-    },
     link: {
       cursor: "pointer",
     },
     description: {
-      color: "#424242",
+      color: color.grey,
     },
+    icon: {
+      width: "100%",
+      padding: "1rem",
+      cursor: "pointer",
+      backgroundColor: color.white,
+    },
+    info: {
+      color: color.info,
+    },
+    danger: {
+      color: color.danger,
+    },
+    btnInfo: { backgroundColor: color.danger, color: color.white },
+    btnDanger: { backgroundColor: color.white, color: color.danger },
   });
 
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
+
   const [open2, setOpen2] = React.useState(false);
 
   const handleClickOpen = (e, isDelete) => {
@@ -69,22 +79,10 @@ function TheorySection({
           <React.Fragment>
             {" "}
             <Link to={`/guru/materi/${i}/${id}`}>
-              <EditIcon
-                style={{
-                  color: "green",
-                  padding: "1rem",
-                  cursor: "pointer",
-                  backgroundColor: color.white,
-                }}
-              />
+              <EditIcon className={clsx(classes.icon, classes.info)} />
             </Link>
             <DeleteIcon
-              style={{
-                color: "#dc3545",
-                padding: "1rem",
-                cursor: "pointer",
-                backgroundColor: color.white,
-              }}
+              className={clsx(classes.icon, classes.danger)}
               onClick={(e) => {
                 handleClickOpen(e, "delete");
               }}
@@ -139,7 +137,7 @@ function TheorySection({
               <Button
                 onClick={handleClose}
                 color="primary"
-                style={{ backgroundColor: "#28a745", color: "#ffffff" }}
+                className={classes.btnInfo}
               >
                 <Link to={`/guru/materi/1/${title}${i}/${id}`}>Ya</Link>
               </Button>
@@ -147,7 +145,7 @@ function TheorySection({
                 onClick={handleClose}
                 color="primary"
                 autoFocus
-                style={{ backgroundColor: "#ffffff", color: "#dc3545" }}
+                className={classes.btnDanger}
               >
                 Tidak
               </Button>
@@ -168,7 +166,7 @@ function TheorySection({
               <Button
                 onClick={handleClose}
                 color="primary"
-                style={{ color: "#dc3545" }}
+                className={classes.btnDanger}
               >
                 Batal
               </Button>
@@ -176,7 +174,7 @@ function TheorySection({
                 onClick={handleClose2}
                 color="primary"
                 autoFocus
-                style={{ backgroundColor: "#dc3545", color: "#ffffff" }}
+                className={classes.btnInfo}
               >
                 Ok
               </Button>

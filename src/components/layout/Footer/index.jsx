@@ -1,6 +1,8 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
+
 import color from "../../../utils/color";
 import size from "../../../utils/size";
 

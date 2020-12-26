@@ -1,38 +1,20 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import {
-  Grid,
-  Box,
-  Drawer,
-  Container,
-  Hidden,
-  List,
-  ListItemText,
-  ListItem,
-  ListItemIcon,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
-import size from "../../../utils/size";
+import Drawer from "@material-ui/core/Drawer";
+import MenuItem from "@material-ui/core/MenuItem";
+import List from "@material-ui/core/List";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import { connect } from "react-redux";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { logoutUser } from "../../../redux/actions/userAction";
-import { withRouter } from "react-router-dom";
-import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
-import axios from "axios";
-import proxy from "../../../utils/proxy";
-import isEmpty from "../../../utils/is-empty";
 import CastForEducationIcon from "@material-ui/icons/CastForEducation";
 import TabIcon from "@material-ui/icons/Tab";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
@@ -43,6 +25,16 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import BookIcon from "@material-ui/icons/Book";
 import SchoolIcon from "@material-ui/icons/School";
 import TableChartIcon from "@material-ui/icons/TableChart";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import axios from "axios";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { logoutUser } from "../../../redux/actions/userAction";
+import proxy from "../../../utils/proxy";
+import isEmpty from "../../../utils/is-empty";
+import size from "../../../utils/size";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,18 +78,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function MenuAppBar({ user, logoutUser, history }) {
+function Navbar({ user, logoutUser, history }) {
   const classes = useStyles();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const open = Boolean(anchorEl);
 
   const [majors, setMajors] = React.useState([]);
-  const [theorys, setTheorys] = React.useState([]);
 
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const [isShowTheory, setIsShowTheory] = React.useState(true);
 
-  const [admins, setAdmins] = React.useState([
+  const [isShowTheory] = React.useState(true);
+
+  const [admins] = React.useState([
     {
       name: "Register",
       link: "/admin/register",
@@ -114,16 +108,6 @@ function MenuAppBar({ user, logoutUser, history }) {
       icon: <TableChartIcon />,
     },
   ]);
-
-  const [teachers, setTeachers] = React.useState([
-    {
-      name: "Topik",
-      link: "/guru/topik",
-      icon: <LibraryAddIcon />,
-    },
-  ]);
-
-  const [subTopic, setSubTopic] = React.useState(new Array(14));
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -161,37 +145,22 @@ function MenuAppBar({ user, logoutUser, history }) {
       axios
         .post(`${proxy}/api/majors/viewByArray`, user.isAuthenticated.majorId)
         .then((res) => {
-          console.log(res.data);
           setMajors(res.data);
           setRecapitulation([...res.data]);
         });
       axios
         .post(`${proxy}/api/theorys/view`, user.isAuthenticated.majorId)
-        .then((res) => {
-          setTheorys([...res.data]);
-        })
+        .then((res) => {})
         .catch((err) => console.log(err));
     } else {
       axios.get(`${proxy}/api/majors/view`).then((res) => {
         setMajors(res.data);
       });
     }
-  }, [user.isAuthenticated.role]);
+  }, [user.isAuthenticated.role, user.isAuthenticated.majorId]);
 
   return (
     <div className={classes.root}>
-      <FormGroup>
-        {/* <FormControlLabel
-          control={
-            <Switch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={auth ? "Logout" : "Login"}
-        /> */}
-      </FormGroup>
       <AppBar position="static">
         <Toolbar>
           {user.isAuthenticated && (
@@ -304,7 +273,7 @@ function MenuAppBar({ user, logoutUser, history }) {
                   </ListItemIcon>
                   <ListItemText>
                     {user.isAuthenticated.role === "teacher"
-                      ? "Kelas"
+                      ? "Kelas "
                       : "Mata Pelajaran"}
                     {!isEmpty(user.user.kelas) && user.user.kelas.split("")[0]}
                   </ListItemText>
@@ -422,11 +391,7 @@ function MenuAppBar({ user, logoutUser, history }) {
                         ))}
                     </React.Fragment>
                   ))}
-                  <ListItem
-                    button
-                    key="Rekapitulasi Nilai"
-                    // className={(classes.menuItem, classes.disabled)}
-                  >
+                  <ListItem button key="Rekapitulasi Nilai">
                     <ListItemIcon>
                       {" "}
                       <TableChartIcon />
@@ -481,4 +446,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default withRouter(connect(mapStateToProps, { logoutUser })(MenuAppBar));
+export default withRouter(connect(mapStateToProps, { logoutUser })(Navbar));

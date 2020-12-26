@@ -4,7 +4,7 @@ const initialState = {
   announcement: [],
 };
 
-export default function (state = initialState, action) {
+export default function announcementReducer(state = initialState, action) {
   switch (action.type) {
     case GET_ANNOUNCMENT:
       return {

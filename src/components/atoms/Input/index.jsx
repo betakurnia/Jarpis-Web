@@ -1,6 +1,8 @@
 import React from "react";
+
 import { TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+
 import color from "../../../utils/color";
 
 function Input({
@@ -29,11 +31,11 @@ function Input({
 
   return (
     <div className={classes.root}>
-      <label htmlFor={`${id}` + `${idx && idx}`} className={classes.label}>
+      <label htmlFor={id + idx} className={classes.label}>
         {label}
       </label>
       <TextField
-        id={`${id}` + `${idx && idx}`}
+        id={id + idx}
         placeholder={placeholder}
         fullWidth
         InputLabelProps={{

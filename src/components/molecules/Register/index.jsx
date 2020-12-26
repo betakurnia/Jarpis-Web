@@ -1,30 +1,31 @@
 import React from "react";
-import { Grid, Typography, Button } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import Input from "../../atoms/Input";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import color from "../../../utils/color";
-import { connect } from "react-redux";
-import { registerUser } from "../../../redux/actions/userAction";
-import { clearErrorSucess } from "../../../redux/actions/announcementAction";
-import isEmpty from "../../../utils/is-empty";
-import { withRouter } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputBase from "@material-ui/core/InputBase";
-import Select from "@material-ui/core/Select";
+
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
+import InputBase from "@material-ui/core/InputBase";
+import Alert from "@material-ui/lab/alert";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import axios from "axios";
-import proxy from "../../../utils/proxy";
 import NativeSelect from "@material-ui/core/NativeSelect";
+
+import Input from "../../atoms/Input";
+
+import { registerUser } from "../../../redux/actions/userAction";
+import { clearErrorSucess } from "../../../redux/actions/helperAction";
+import color from "../../../utils/color";
+import isEmpty from "../../../utils/is-empty";
+
+import proxy from "../../../utils/proxy";
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -40,7 +41,6 @@ const BootstrapInput = withStyles((theme) => ({
     fontSize: 16,
     padding: "10px 26px 10px 12px",
     transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",
@@ -89,7 +89,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
           ...users,
         });
       } else {
-        // const majorId = users.majorId.slice(0);
         users.majorId.push(e.target.value);
         setUser({
           ...users,
@@ -123,6 +122,18 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     alert: {
       marginTop: "1.5rem",
     },
+    formControl: {
+      marginTop: "1.5rem",
+    },
+    formLabel: {
+      marginTop: "2rem",
+    },
+    label: {
+      marginTop: "1.5rem",
+      display: "block",
+      color: color.label,
+      fontSize: "1rem",
+    },
   });
 
   const classes = useStyles();
@@ -133,8 +144,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     registerUser(users);
   };
 
-  const dispatch = useDispatch();
-
   React.useEffect(() => {
     clearErrorSucess();
     axios.get(`${proxy}/api/majors/view`).then((res) => {
@@ -143,7 +152,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     axios.get(`${proxy}/api/class/view`).then((res) => {
       setClasss(res.data);
     });
-  }, []);
+  }, [clearErrorSucess]);
 
   return (
     <Grid container justify="center">
@@ -158,7 +167,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
             >
               Daftar ke Jarpis
             </Typography>
-            <FormLabel component="legend" style={{ marginTop: "2rem" }}>
+            <FormLabel component="legend" className={classes.formLabel}>
               <Typography variant="h5" component="p">
                 Role
               </Typography>
@@ -186,34 +195,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
                 label="Admin"
               />
             </RadioGroup>
-            {/* <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={users.role}
-              onChange={handleMenu}
-              fullWidth
-            >
-              <MenuItem value="siswa">Siswa</MenuItem>
-              <MenuItem value="teacher">Guru</MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
-            </Select> */}
-            {/* <InputLabel
-              id="demo-simple-select-label"
-              style={{ marginTop: "2rem" }}
-            >
-              Role
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={users.role}
-              onChange={handleMenu}
-              fullWidth
-            >
-              <MenuItem value="Siswa">Siswa</MenuItem>
-              <MenuItem value="Guru">Guru</MenuItem>
-              <MenuItem value="Admin">Admin</MenuItem>
-            </Select> */}
             <Input
               id="username"
               label="Email / Username"
@@ -238,7 +219,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
               <React.Fragment>
                 <FormControl
                   component="fieldset"
-                  style={{ marginTop: "1.5rem" }}
+                  className={classes.formControl}
                 >
                   <FormLabel component="legend">Mata Pelajaran</FormLabel>
                   <FormGroup row>
@@ -261,19 +242,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
                     ))}
                   </FormGroup>
                 </FormControl>
-                <label
-                  style={{
-                    marginTop: "1.5rem",
-                    display: "block",
-                    color: color.label,
-                    fontSize: "1rem",
-                  }}
-                >
-                  Kelas
-                </label>
-                {/* <InputLabel id="demo-simple-select-outlined-label">
-                    Kelas
-                  </InputLabel> */}
+                <label className={classes.label}>Kelas</label>
                 <NativeSelect
                   id="demo-customized-select-native"
                   style={{ marginTop: "0.5rem" }}
@@ -299,18 +268,11 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
                   placeholder="contoh: 1234567890"
                   handleChange={handleChange}
                 />
-                <label
-                  style={{
-                    marginTop: "1.5rem",
-                    display: "block",
-                    color: color.label,
-                    fontSize: "1rem",
-                  }}
-                >
+                <label className={classes.label} htmlFor="class">
                   Kelas
                 </label>
                 <NativeSelect
-                  id="demo-customized-select-native"
+                  id="class"
                   style={{ marginTop: "0.5rem" }}
                   value={users.kelas}
                   onChange={(e) => {

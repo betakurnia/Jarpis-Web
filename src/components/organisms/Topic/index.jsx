@@ -1,9 +1,13 @@
 import React from "react";
-import { Grid, Typography, Container } from "@material-ui/core";
+
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/styles";
-import Sections from "../../molecules/Sections";
-import color from "../../../utils/color";
 import { connect } from "react-redux";
+
+import Sections from "../../organisms/Sections";
+
+import color from "../../../utils/color";
 
 function Topic({ id, major, user }) {
   const useStyles = makeStyles({
@@ -21,6 +25,9 @@ function Topic({ id, major, user }) {
       borderTopLeftRadius: "0.5rem",
       borderTopRightRadius: "0.5rem",
     },
+    title: {
+      fontWeight: 500,
+    },
   });
 
   const classes = useStyles();
@@ -28,7 +35,7 @@ function Topic({ id, major, user }) {
   return (
     <React.Fragment>
       <div className={classes.header}>
-        <Typography variant="h4" component="h1" style={{ fontWeight: 500 }}>
+        <Typography variant="h4" component="h1" className={classes.title}>
           {major.majorName}
         </Typography>
       </div>

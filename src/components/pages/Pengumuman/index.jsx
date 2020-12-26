@@ -1,11 +1,12 @@
 import React from "react";
-import CKEditor from "../../atoms/CKEditor";
-import CreateTemplate from "../../molecules/CreateTemplate";
+
+import CreateTemplate from "../../atoms/CreateTemp";
+import CKEditor from "../../molecules/CKEditor";
 
 function Pengumuman() {
   return (
-    <CreateTemplate title="Buat Pengumuman">
-      <CKEditor titles="Buat" />{" "}
+    <CreateTemplate title="Pengumuman">
+      <CKEditor titles="Submit" />{" "}
     </CreateTemplate>
   );
 }

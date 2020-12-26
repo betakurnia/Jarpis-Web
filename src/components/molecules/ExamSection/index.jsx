@@ -1,47 +1,62 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/styles";
-import { withRouter } from "react-router-dom";
-import { Link } from "react-router-dom";
-import color from "../../../utils/color";
+import makeStyles from "@material-ui/styles/makeStyles";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Section({
+import color from "../../../utils/color";
+
+function ExakSection({
   description,
   icon,
-  title,
-  isLink,
   id,
-  isStudent,
-  majorName,
-  handleDelete,
-  history,
-  type,
-  isTeacher,
   i,
+  isStudent,
+  isTeacher,
+  majorName,
+  title,
+  type,
+  history,
+  handleDelete,
 }) {
   const useStyles = makeStyles({
-    icon: {
-      width: "100%",
+    alert: { marginTop: "0", marginBottom: "1.5rem" },
+    description: {
+      color: color.grey,
     },
     link: {
       cursor: "pointer",
     },
-    description: {
-      color: "#424242",
+    icon: {
+      width: "100%",
+      padding: "1rem",
+      cursor: "pointer",
+      backgroundColor: color.white,
     },
+    info: {
+      color: color.info,
+    },
+    danger: {
+      color: color.danger,
+    },
+    btnInfo: { backgroundColor: color.danger, color: color.white },
+    btnDanger: { backgroundColor: color.white, color: color.danger },
   });
 
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
+
   const [open2, setOpen2] = React.useState(false);
 
   const handleClickOpen = (e, isDelete) => {
@@ -52,9 +67,9 @@ function Section({
     }
   };
 
-  const handleClose = (e, a) => {
+  const handleClose = (e, status) => {
     setOpen(false);
-    if (a == "a") {
+    if (status === "yes") {
       history.push(`/mata-pelajaran/${title}${majorName}/${id}`);
     }
   };
@@ -72,34 +87,16 @@ function Section({
     <React.Fragment>
       <Grid item xs={12}>
         {!isStudent && i === 0 && (
-          <React.Fragment>
-            <Alert
-              severity="warning"
-              style={{ marginTop: "0", marginBottom: "1.5rem" }}
-            >
-              Ujian hanya tersedia untuk siswa
-            </Alert>{" "}
-          </React.Fragment>
+          <Alert severity="warning">Ujian hanya tersedia untuk siswa</Alert>
         )}
+
         {isTeacher && (
           <React.Fragment>
             <Link to={`/guru/ujian/${title}/${id}`}>
-              <EditIcon
-                style={{
-                  color: "green",
-                  padding: "1rem",
-                  cursor: "pointer",
-                  backgroundColor: color.white,
-                }}
-              />
+              <EditIcon clasName={(classes.icon, classes.info)} />
             </Link>
             <DeleteIcon
-              style={{
-                color: "#dc3545",
-                padding: "1rem",
-                cursor: "pointer",
-                backgroundColor: color.white,
-              }}
+              clasName={(classes.icon, classes.danger)}
               onClick={(e) => {
                 handleClickOpen(e, "delete");
               }}
@@ -111,29 +108,18 @@ function Section({
         <Grid item xs={4} md={2}>
           <span className={classes.icon}> {icon}</span>
         </Grid>
+
         <Grid item xs={8} md={10}>
-          {isLink ? (
-            <React.Fragment>
-              {isStudent ? (
-                <Link to={`/mata-pelajaran/${title}/${id}`}>
-                  <Typography variant="h6" component="p">
-                    {title}a
-                  </Typography>
-                </Link>
-              ) : (
-                <React.Fragment>
-                  <Typography variant="h6" component="p">
-                    {title}
-                  </Typography>
-                </React.Fragment>
-              )}
-            </React.Fragment>
-          ) : (
+          {isStudent ? (
             <Link to={`/mata-pelajaran/${title}/${id}`}>
               <Typography variant="h6" component="p">
-                {title}a
+                {title.split("-").join(" ")}
               </Typography>
             </Link>
+          ) : (
+            <Typography variant="h6" component="p">
+              {title.split("-").join(" ")}
+            </Typography>
           )}
 
           <Typography
@@ -146,7 +132,6 @@ function Section({
           <Dialog
             open={open}
             onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogContent>
@@ -157,10 +142,10 @@ function Section({
             <DialogActions>
               <Button
                 onClick={(e) => {
-                  handleClose(e, "a");
+                  handleClose(e, "yes");
                 }}
                 color="primary"
-                style={{ backgroundColor: "#28a745", color: "#ffffff" }}
+                className={classes.btnInfo}
               >
                 Ya
               </Button>
@@ -168,7 +153,7 @@ function Section({
                 onClick={handleClose}
                 color="primary"
                 autoFocus
-                style={{ backgroundColor: "#ffffff", color: "#dc3545" }}
+                className={classes.btnDanger}
               >
                 Tidak
               </Button>
@@ -177,7 +162,6 @@ function Section({
           <Dialog
             open={open2}
             onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogContent>
@@ -189,7 +173,7 @@ function Section({
               <Button
                 onClick={handleClose3}
                 color="primary"
-                style={{ color: "#dc3545" }}
+                className={classes.danger}
               >
                 Batal
               </Button>
@@ -197,7 +181,7 @@ function Section({
                 onClick={handleClose2}
                 color="primary"
                 autoFocus
-                style={{ backgroundColor: "#dc3545", color: "#ffffff" }}
+                className={classes.btnInfo}
               >
                 Ok
               </Button>
@@ -209,4 +193,4 @@ function Section({
   );
 }
 
-export default withRouter(Section);
+export default withRouter(ExakSection);

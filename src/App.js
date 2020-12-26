@@ -1,13 +1,14 @@
 import React from "react";
 import "./App.css";
+
 import { Container } from "@material-ui/core";
 import { Provider } from "react-redux";
-import store from "./store";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 import PrivateRoute from "./utils/PrivateRoute";
 import PrivateRouteAdmin from "./utils/PrivateRouteAdmin";
-import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
+import store from "./store";
 import { setCurrentUser, logoutUser } from "./redux/actions/userAction";
 
 // components
@@ -19,7 +20,6 @@ import Profile from "./components/pages/Profile";
 import Announcment from "./components/pages/Announcment";
 import Major from "./components/pages/Major";
 import Pengumuman from "./components/pages/Pengumuman";
-import Admins from "./components/pages/Admins";
 import RecapitulationValue from "./components/pages/RecapitulationValue";
 import RecapitulationStudent from "./components/pages/RecapitulationStudent";
 import Recapitulation from "./components/pages/Recapitulation";

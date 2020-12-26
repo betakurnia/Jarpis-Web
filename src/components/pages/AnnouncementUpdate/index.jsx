@@ -1,14 +1,16 @@
 import React from "react";
-import CreateTemplate from "../../molecules/CreateTemplate";
-import CKEditor from "../../atoms/CKEditor";
+
 import { useParams } from "react-router-dom";
+
+import CreateTemplate from "../../atoms/CreateTemp";
+import CKEditor from "../../molecules/CKEditor";
 
 function AnnouncementUpdate() {
   const { id } = useParams();
 
   return (
-    <CreateTemplate title="Update Pengumuman">
-      <CKEditor id={id} titles="Update"></CKEditor>
+    <CreateTemplate title="Pengumuman">
+      <CKEditor id={id} titles="Submit"></CKEditor>
     </CreateTemplate>
   );
 }

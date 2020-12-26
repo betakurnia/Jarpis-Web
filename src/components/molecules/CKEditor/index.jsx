@@ -1,21 +1,24 @@
 import React from "react";
+
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import Input from "../Input";
-import { Button } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
+import { withRouter } from "react-router-dom";
+import makeStyles from "@material-ui/styles/makeStyles";
 import { connect } from "react-redux";
+import axios from "axios";
+
+import Input from "../../atoms/Input";
+
 import {
   addAnnouncement,
   updateAnnouncement,
-  clearErrorSucess,
 } from "../../../redux/actions/announcementAction";
-import { makeStyles } from "@material-ui/styles";
-import axios from "axios";
-import proxy from "../../../utils/proxy";
+import { clearErrorSucess } from "../../../redux/actions/helperAction";
 import isEmpty from "../../../utils/is-empty";
-import { withRouter } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
+import proxy from "../../../utils/proxy";
 
 function CKEditors({
   addAnnouncement,
@@ -71,7 +74,7 @@ function CKEditors({
         })
         .catch((err) => console.log(err));
     }
-  }, []);
+  }, [announcement, clearErrorSucess, id]);
 
   return (
     <div>

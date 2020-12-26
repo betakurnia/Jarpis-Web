@@ -1,7 +1,12 @@
-export default {
-  grey: "#62646a",
+const color = {
   white: "#ffffff",
   black: "#000000",
   primary: "#3f51b5",
   label: "rgba(0, 0, 0, 0.54)",
+  danger: "#dc3545",
+  info: "#198754",
+  warning: "#ffc107",
+  grey: "#62646a",
 };
+
+export default color;

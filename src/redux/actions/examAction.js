@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CREATE_EXAM_STUDENT, SET_SUCESS, GET_ERRORS } from ".";
+import { SET_SUCESS, GET_ERRORS } from ".";
 import proxy from "../../utils/proxy";
 
 export const createExam = (exams) => (dispatch) => {
@@ -33,19 +33,6 @@ export const createExamStudent = (exams) => (dispatch) => {
       dispatch({ type: GET_ERRORS, payload: err.response.data });
     });
 };
-
-// export const updateExam = (id) => (dispatch) => {
-//   axios
-//     .post(`${proxy}/api/exams/delete/${id}` )
-//     .then(() => {
-//       dispatch({ type: GET_ERRORS, payload: {} });
-//       dispatch({ type: SET_SUCESS, payload: true });
-//     })
-//     .catch((err) => {
-//       dispatch({ type: SET_SUCESS, payload: false });
-//       dispatch({ type: GET_ERRORS, payload: err.response.data });
-//     });
-// };
 
 export const deleteExam = (id, type) => (dispatch) => {
   axios

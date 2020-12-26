@@ -1,3 +1,5 @@
-export default {
-  big: 6.7,
+const size = {
+  big: 6.5,
 };
+
+export default size;

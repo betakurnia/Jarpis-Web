@@ -1,9 +1,11 @@
 import React from "react";
-import Card from "../../molecules/Card";
 import { Grid } from "@material-ui/core";
 import axios from "axios";
-import proxy from "../../../utils/proxy";
 import { connect } from "react-redux";
+
+import Card from "../../atoms/Card";
+
+import proxy from "../../../utils/proxy";
 
 function Dashboard({ user }) {
   const [majors, setMajors] = React.useState([]);
@@ -22,7 +24,11 @@ function Dashboard({ user }) {
           setMajors(res.data);
         });
     }
-  }, []);
+  }, [
+    user.isAuthenticated.majorId,
+    user.user.kelasId,
+    user.isAuthenticated.role,
+  ]);
 
   return (
     <div>

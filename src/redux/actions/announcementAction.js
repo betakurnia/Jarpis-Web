@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS, SET_SUCESS, GET_ANNOUNCMENT } from ".";
+import { GET_ERRORS, GET_ANNOUNCMENT } from ".";
 import proxy from "../../utils/proxy";
 
 export const viewAnnouncement = () => (dispatch) => {
@@ -63,10 +63,4 @@ export const deleteAnnouncement = (id) => (dispatch) => {
         payload: err.response.data,
       })
     );
-};
-
-// clear
-export const clearErrorSucess = () => (dispatch) => {
-  dispatch({ type: GET_ERRORS, payload: {} });
-  dispatch({ type: SET_SUCESS, payload: false });
 };

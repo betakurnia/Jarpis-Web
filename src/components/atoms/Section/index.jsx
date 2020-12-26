@@ -1,10 +1,13 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
 
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 
-function ExamSection({ description, icon, title, isLink, id, isStudent }) {
+import color from "../../../utils/color";
+
+function ExamSection({ description, icon, title, id, isStudent }) {
   const useStyles = makeStyles({
     icon: {
       width: "100%",
@@ -13,7 +16,7 @@ function ExamSection({ description, icon, title, isLink, id, isStudent }) {
       cursor: "pointer",
     },
     description: {
-      color: "#424242",
+      color: color.grey,
     },
   });
 
@@ -25,26 +28,18 @@ function ExamSection({ description, icon, title, isLink, id, isStudent }) {
         <span className={classes.icon}> {icon}</span>
       </Grid>
       <Grid item xs={8} md={10}>
-        {isLink ? (
-          <React.Fragment>
-            {isStudent ? (
-              <Link to={`/mata-pelajaran/presensi/${id}`}>
-                <Typography variant="h6" component="p">
-                  {title}
-                </Typography>
-              </Link>
-            ) : (
-              <React.Fragment>
-                <Typography variant="h6" component="p">
-                  {title}
-                </Typography>
-              </React.Fragment>
-            )}
-          </React.Fragment>
+        {isStudent ? (
+          <Link to={`/mata-pelajaran/presensi/${id}`}>
+            <Typography variant="h6" component="p">
+              {title}
+            </Typography>
+          </Link>
         ) : (
-          <Typography variant="h6" component="p">
-            {title}
-          </Typography>
+          <React.Fragment>
+            <Typography variant="h6" component="p">
+              {title}
+            </Typography>
+          </React.Fragment>
         )}
 
         <Typography

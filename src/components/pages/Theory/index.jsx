@@ -1,30 +1,28 @@
 import React from "react";
-import CKEditor from "../../atoms/CKEditor";
-import CreateTemplate from "../../molecules/CreateTemplate";
-import TheoryTemplate from "../../molecules/TheoryTemplate";
-import { useParams } from "react-router-dom";
-import FormLabel from "@material-ui/core/FormLabel";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
+
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import AssignmentIcon from "@material-ui/icons/Assignment";
+import FormLabel from "@material-ui/core/FormLabel";
 import Alert from "@material-ui/lab/Alert";
-import Input from "../../atoms/Input";
-import { makeStyles } from "@material-ui/styles";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import makeStyles from "@material-ui/styles/makeStyles";
 import axios from "axios";
-import proxy from "../../../utils/proxy";
-import isEmpty from "../../../utils/is-empty";
+import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { SET_SUCESS, GET_ERRORS } from "../../../redux/actions";
 import { connect } from "react-redux";
+
+import Input from "../../atoms/Input";
+import CreateTemplate from "../../atoms/CreateTemp";
+import TheoryTemplate from "../../molecules/TheoryTemplate";
+
+import isEmpty from "../../../utils/is-empty";
+import proxy from "../../../utils/proxy";
+import { SET_SUCESS, GET_ERRORS } from "../../../redux/actions";
 
 function Pengumuman({ sucess, error }) {
   const { i, id } = useParams();
 
-  const [tipes, setTipes] = React.useState([]);
+  const [tipes] = React.useState([]);
 
   const [theory, setTheory] = React.useState({
     numberOfTheory: i,

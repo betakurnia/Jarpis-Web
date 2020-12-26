@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -7,7 +7,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Link } from "react-router-dom";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -18,39 +18,16 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import Typography from "@material-ui/core/Typography";
-import { connect } from "react-redux";
 import axios from "axios";
+import { connect } from "react-redux";
+import clsx from "clsx";
+
+import Badge from "../../atoms/Badge";
+
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
 import color from "../../../utils/color";
-import dateformat from "dateformat";
-import Badge from "../../atoms/Badge";
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  blue: {
-    backgroundColor: "#3f51b5",
-    padding: "0.5rem 1rem",
-    color: "#ffffff",
-    borderRadius: "0.5rem",
-  },
-});
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
 
 function BasicTable({ id, user, major }) {
   var dateFormat = require("dateformat");
@@ -99,6 +76,24 @@ function BasicTable({ id, user, major }) {
     ],
     timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"],
   };
+
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 650,
+    },
+    blue: {
+      backgroundColor: color.primary,
+      padding: "0.5rem 1rem",
+      color: color.white,
+      borderRadius: "0.5rem",
+    },
+    textWhite: {
+      color: color.white,
+    },
+    bgPrimary: {
+      backgroundColor: color.primary,
+    },
+  });
 
   const classes = useStyles();
 
@@ -151,7 +146,6 @@ function BasicTable({ id, user, major }) {
     axios
       .get(`${proxy}/api/presents/view/${user.user.id}/${id}`)
       .then((res) => {
-        console.log(res.data);
         setPresents({ ...res.data });
         if (!isEmpty(res.data)) {
           setUndoneArray([...new Array(14 - res.data.status.length)]);
@@ -160,16 +154,16 @@ function BasicTable({ id, user, major }) {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [id, present, user.user.id]);
 
   return (
     <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead style={{ backgroundColor: color.primary }}>
+      <Table className={clsx(classes.table)} aria-label="simple table">
+        <TableHead className={classes.blue}>
           <TableRow>
-            <TableCell style={{ color: color.white }}>Tanggal</TableCell>
-            <TableCell style={{ color: color.white }}>Deskripsi</TableCell>
-            <TableCell style={{ color: color.white }}>Status</TableCell>
+            <TableCell className={classes.textWhite}>Tanggal</TableCell>
+            <TableCell className={classes.textWhite}>Deskripsi</TableCell>
+            <TableCell className={classes.textWhite}>Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -212,10 +206,6 @@ function BasicTable({ id, user, major }) {
                   {dateFormat(major.hoursOfSubjectFinish, "hh:MM TT")}
                 </p>
               </TableCell>
-              {console.log(Date.parse(new Date()))}
-              {console.log(
-                (i - 1) * 604800000 + Date.parse(major.hoursOfSubject)
-              )}
               {Date.parse(new Date()) >
               (i - 1) * 604800000 + Date.parse(major.hoursOfSubject) ? (
                 <TableCell

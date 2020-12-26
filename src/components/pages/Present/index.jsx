@@ -1,10 +1,12 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import color from "../../../utils/color";
-import Table from "../../atoms/Table";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+
+import Table from "../../molecules/Table";
+
+import color from "../../../utils/color";
 import proxy from "../../../utils/proxy";
 
 function Present() {
@@ -29,7 +31,7 @@ function Present() {
         setMajor(res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [id]);
 
   return (
     <div className={classes.root}>

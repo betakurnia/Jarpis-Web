@@ -1,25 +1,25 @@
 import React from "react";
+
 import { makeStyles } from "@material-ui/styles";
+import clsx from "clsx";
+
+import color from "../../../utils/color";
 
 function Badge({ status }) {
   const useStyles = makeStyles({
-    green: {
-      backgroundColor: "green",
+    badge: {
       padding: "0.5rem 1rem",
-      color: "#ffffff",
+      color: color.white,
       borderRadius: "0.5rem",
     },
-    red: {
-      backgroundColor: "#dc3545",
-      padding: "0.5rem 1rem",
-      color: "#ffffff",
-      borderRadius: "0.5rem",
+    bgInfo: {
+      backgroundColor: color.info,
     },
-    yellow: {
-      backgroundColor: "#ffc107",
-      padding: "0.5rem 1rem",
-      color: "#ffffff",
-      borderRadius: "0.5rem",
+    bgDanger: {
+      backgroundColor: color.danger,
+    },
+    bgWarning: {
+      backgroundColor: color.warning,
     },
   });
 
@@ -27,13 +27,21 @@ function Badge({ status }) {
 
   switch (status) {
     case "Hadir":
-      return <span className={classes.green}>Hadir</span>;
+      return <span className={clsx(classes.bgInfo, classes.badge)}>Hadir</span>;
     case "Tidak Hadir":
-      return <span className={classes.red}>Tidak Hadir</span>;
+      return (
+        <span className={clsx(classes.bgDanger, classes.badge)}>
+          Tidak Hadir
+        </span>
+      );
     case "Sakit":
-      return <span className={classes.yellow}>Sakit</span>;
+      return (
+        <span className={clsx(classes.bgWarning, classes.badge)}>Sakit</span>
+      );
     default:
-      return <span className={classes.yellow}>{status}</span>;
+      return (
+        <span className={clsx(classes.badge, classes.badge)}>{status}</span>
+      );
   }
 }
 

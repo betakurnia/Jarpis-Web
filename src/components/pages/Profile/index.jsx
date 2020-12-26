@@ -1,15 +1,14 @@
 import React from "react";
-import { Grid, Typography, Avatar } from "@material-ui/core";
+
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/styles";
 import { connect } from "react-redux";
+
 import { getUserById } from "../../../redux/actions/userAction";
-import { isEmpty } from "../../../utils/is-empty";
 
 function Profile({ user, getUserById }) {
-  React.useEffect(() => {
-    getUserById(user.isAuthenticated.id);
-  }, []);
-
   const useStyles = makeStyles({
     root: {
       padding: "4rem 0rem ",
@@ -25,6 +24,10 @@ function Profile({ user, getUserById }) {
   });
 
   const classes = useStyles();
+
+  React.useEffect(() => {
+    getUserById(user.isAuthenticated.id);
+  }, [getUserById, user.isAuthenticated.id]);
 
   return (
     <div className={classes.root}>
@@ -61,7 +64,7 @@ function Profile({ user, getUserById }) {
                 color: "#757575",
               }}
             >
-              Umur: {user.userData.age}
+              Umur: {user.userData.age} Tahun
             </Typography>
             <Typography
               variant="body1"

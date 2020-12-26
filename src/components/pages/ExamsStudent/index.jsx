@@ -1,39 +1,26 @@
 import React from "react";
-import CKEditor from "../../atoms/CKEditor";
-import CreateTemplate from "../../molecules/CreateTemplate";
-import TheoryTemplate from "../../molecules/TheoryTemplate";
-import { useParams } from "react-router-dom";
-import FormLabel from "@material-ui/core/FormLabel";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
+
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import Input from "../../atoms/Input";
-import axios from "axios";
-import proxy from "../../../utils/proxy";
-import IsEmpty from "../../../utils/is-empty";
-import QuestionExam from "../../molecules/QuestionExam";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+
+import CreateTemplate from "../../atoms/CreateTemp";
+import QuestionExam from "../../molecules/QuestionExam";
+
+import proxy from "../../../utils/proxy";
 import { createExamStudent } from "../../../redux/actions/examAction";
-import { clearErrorSucess } from "../../../redux/actions/announcementAction";
+import { clearErrorSucess } from "../../../redux/actions/helperAction";
 import { Alert } from "@material-ui/lab";
 import isEmpty from "../../../utils/is-empty";
 
 function ExamsStudent({ user, createExamStudent, error, sucess }) {
-  const dispatch = useDispatch();
-
   const [suces, setSucess] = React.useState(false);
-
-  const [role, setRole] = React.useState("5");
-  // const [arrLen, setArrLen] = React.useState([...new Array(20)]);
 
   const [loading, setLoading] = React.useState(true);
 
@@ -44,11 +31,6 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
   const [exam, setExam] = React.useState([...new Array(5)]);
 
   const { ujian, id } = useParams();
-
-  const handleMenu = (e) => {
-    setRole(e.target.value);
-    setExam([...new Array(Number(e.target.value))]);
-  };
 
   const handleExamStudentAnswer = (e, i) => {
     examStudentAnswer[i] = e.target.value;
@@ -65,18 +47,7 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
     setOpen(false);
   };
 
-  const handleChange = (e, id, idx = false) => {
-    if (idx === false) {
-      exam[id].examName = e.target.value;
-      setExam([...exam]);
-    } else {
-      exam[id].possibilitesAnswer[idx] = e.target.value;
-      setExam([...exam]);
-    }
-  };
-
   React.useEffect(() => {
-    // window.scrollTo(0);
     clearErrorSucess();
     axios
       .get(
@@ -99,7 +70,7 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [id, ujian, user.isAuthenticated.id]);
 
   const handleSubmit = () => {
     setOpen(false);

@@ -4,7 +4,7 @@ const initialState = {
   exams: [],
 };
 
-export default function (state = initialState, action) {
+export default function examsReducer(state = initialState, action) {
   switch (action.type) {
     case CREATE_EXAM_STUDENT:
       return {

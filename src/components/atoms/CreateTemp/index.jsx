@@ -1,29 +1,16 @@
 import React from "react";
-import { Grid, Typography, Button } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import Input from "../../atoms/Input";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
-import color from "../../../utils/color";
 import { connect } from "react-redux";
-import { registerUser } from "../../../redux/actions/userAction";
-import isEmpty from "../../../utils/is-empty";
 import { withRouter } from "react-router-dom";
 
-function Register({ registerUser, error, sucess, title, children }) {
-  const [users, setUser] = React.useState({
-    username: "",
-    password: "",
-    role: "",
-  });
+import color from "../../../utils/color";
+import { registerUser } from "../../../redux/actions/userAction";
 
-  const handleChange = (e, name) => {
-    users[name] = e.target.value;
-    setUser(users);
-  };
-
+function CreateTemp({ registerUser, error, sucess, title, children }) {
   const useStyles = makeStyles({
     root: {
-      // border: `1px solid ${color.white}`,
       borderRadius: "0.5rem",
       padding: "2rem",
       backgroundColor: color.white,
@@ -68,4 +55,6 @@ const mapStateToProps = (state) => ({
   sucess: state.sucess,
 });
 
-export default withRouter(connect(mapStateToProps, { registerUser })(Register));
+export default withRouter(
+  connect(mapStateToProps, { registerUser })(CreateTemp)
+);

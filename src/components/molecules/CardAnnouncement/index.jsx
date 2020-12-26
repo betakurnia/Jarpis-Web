@@ -1,18 +1,23 @@
 import React from "react";
+
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { Grid, Typography, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import color from "../../../utils/color";
-import parse from "html-react-parser";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import makeStyles from "@material-ui/styles/makeStyles";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import parse from "html-react-parser";
+
+import ButtonDanger from "../../atoms/ButtonDanger";
+import ButtonRed from "../../atoms/ButtonRed";
+
 import { deleteAnnouncement } from "../../../redux/actions/announcementAction";
-import { useParams, Link } from "react-router-dom";
+import color from "../../../utils/color";
 
 function CardAnnouncement({
   id,
@@ -20,9 +25,11 @@ function CardAnnouncement({
   description,
   user,
   deleteAnnouncement,
-  sucess,
 }) {
   const useStyles = makeStyles({
+    description: {
+      color: color.black,
+    },
     root: {
       backgroundColor: color.white,
       boxShadow: "0 .5rem 1rem rgba(0,0,0,.15)",
@@ -41,9 +48,6 @@ function CardAnnouncement({
     },
     title: {
       color: color.white,
-    },
-    description: {
-      color: color.black,
     },
   });
 
@@ -109,7 +113,6 @@ function CardAnnouncement({
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogContent>
@@ -118,20 +121,10 @@ function CardAnnouncement({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            style={{ color: "#dc3545" }}
-          >
-            Batal
-          </Button>
-          <Button
-            onClick={handleDeleteAnnnouncement}
-            style={{ backgroundColor: "#dc3545", color: color.white }}
-            autoFocus
-          >
-            Hapus
-          </Button>
+          <ButtonRed handleClick={handleClose}>Batal</ButtonRed>
+          <ButtonDanger handleDelete={handleDeleteAnnnouncement}>
+            Ok
+          </ButtonDanger>
         </DialogActions>
       </Dialog>
     </Grid>

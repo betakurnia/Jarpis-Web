@@ -1,13 +1,18 @@
 import React from "react";
-import { Grid, Typography, Button, Container } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import Input from "../../atoms/Input";
+
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
+import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/styles";
-import color from "../../../utils/color";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+
+import Input from "../../atoms/Input";
+
+import color from "../../../utils/color";
 import { loginUser } from "../../../redux/actions/userAction";
 import isEmpty from "../../../utils/is-empty";
-import { withRouter } from "react-router-dom";
 
 function Login({ loginUser, error, history, user }) {
   const [users, setUser] = React.useState({
@@ -22,7 +27,6 @@ function Login({ loginUser, error, history, user }) {
 
   const useStyles = makeStyles({
     root: {
-      // border: `1px solid ${color.white}`,
       borderRadius: "0.5rem",
       padding: "2rem",
       backgroundColor: color.white,
@@ -52,7 +56,7 @@ function Login({ loginUser, error, history, user }) {
     if (user.isAuthenticated) {
       history.push("/dashboard");
     }
-  }, []);
+  }, [history, user.isAuthenticated]);
 
   return (
     <Container maxWidth="sm">

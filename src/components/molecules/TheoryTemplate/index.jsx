@@ -1,5 +1,6 @@
 import React from "react";
-import { Typography, Grid } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/styles";
 
 function TheoryTemplate({ title, children, icon }) {
@@ -9,14 +10,17 @@ function TheoryTemplate({ title, children, icon }) {
       borderBottom: `0.05px solid #bdbdbd`,
       textTransform: "capitalize",
     },
+    icon: {
+      paddingRight: "0.5rem",
+    },
   });
 
-  const classses = useStyles();
+  const classes = useStyles();
 
   return (
-    <div className={classses.root}>
+    <div className={classes.root}>
       <Grid container alignItems="flex-end">
-        <div style={{ paddingRight: "0.5rem" }}>{icon}</div>
+        <div className={classes.icon}>{icon}</div>
         <Typography variant="h6" component="h2">
           {" "}
           {title}

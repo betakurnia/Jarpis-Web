@@ -1,23 +1,28 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
+
+import Grid from "@material-ui/core/Grid";
+import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/styles";
-import Section from "../../atoms/Section";
-import ExamSection from "../../atoms/ExamSection";
-import TheorySection from "../../atoms/TheorySection";
-import DescriptionIcon from "@material-ui/icons/Description";
 import PeopleIcon from "@material-ui/icons/People";
-import color from "../../../utils/color";
-import proxy from "../../../utils/proxy";
-import { deleteExam } from "../../../redux/actions/examAction";
-import { Alert } from "@material-ui/lab";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { connect, useDispatch } from "react-redux";
-import axios from "axios";
 import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
-import { GET_ERRORS, SET_SUCESS } from "../../../redux/actions";
+import axios from "axios";
+import { connect } from "react-redux";
+
+import Section from "../../atoms/Section";
+import ExamSection from "../../molecules/ExamSection";
+import TheorySection from "../../molecules/TheorySection";
+
+import { deleteExam } from "../../../redux/actions/examAction";
+import { setError, setSucess } from "../../../redux/actions/helperAction";
+import proxy from "../../../utils/proxy";
 
 function Sections({ id, isStudent, isTeacher, majorName }) {
   const useStyles = makeStyles({
+    alert: {
+      marginTop: "0",
+      marginBottom: "1.5rem",
+    },
     root: {
       padding: "1rem 0 2rem",
     },
@@ -28,8 +33,6 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
   });
 
   const classes = useStyles();
-
-  const dispatch = useDispatch();
 
   const [theorys, setTheorys] = React.useState([]);
 
@@ -46,12 +49,10 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
       .post(`${proxy}/api/exams/delete/${id}/${type}`)
       .then((res) => {
         setExams([...res.data]);
-        dispatch({ type: GET_ERRORS, payload: {} });
-        dispatch({ type: SET_SUCESS, payload: true });
+        setSucess();
       })
       .catch((err) => {
-        dispatch({ type: SET_SUCESS, payload: false });
-        dispatch({ type: GET_ERRORS, payload: err.response.data });
+        setError(err);
       });
   };
 
@@ -59,7 +60,6 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
     axios
       .get(`${proxy}/api/exams/view-exam/${id}`)
       .then((res) => {
-        console.log(res.data);
         setExams([...res.data]);
       })
       .catch((err) => console.log(err));
@@ -75,10 +75,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
   return (
     <div className={classes.root}>
       {!isStudent && (
-        <Alert
-          severity="warning"
-          style={{ marginTop: "0", marginBottom: "1.5rem" }}
-        >
+        <Alert className={classes.alert} severity="warning">
           Presensi hanya tersedia untuk siswa
         </Alert>
       )}
@@ -87,7 +84,6 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
           icon={<PeopleIcon style={{ width: "100%", height: 160 }} />}
           title="Presensi Murid "
           description="Silahkan absen disini"
-          isLink={true}
           id={id}
           isStudent={isStudent}
         />
@@ -132,7 +128,6 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
                       `${proxy}/api/theorys/download?filename=${theory.fileName}`
                     )
                     .then(() => {
-                      alert("sucess");
                       // fileDownload(data, `${theory.fileName}`);
                     })
                     .catch((err) => console.log("error"));
@@ -157,7 +152,6 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
             }
             title={exam.type}
             description={exam.type.split("-").join(" ")}
-            isLink={true}
             id={id}
             isStudent={isStudent}
             majorName={majorName}

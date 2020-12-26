@@ -1,13 +1,15 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+
 import CardAnnouncement from "../../molecules/CardAnnouncement";
-import { viewAnnouncement } from "../../../redux/actions/announcementAction";
 import { connect } from "react-redux";
+
+import { viewAnnouncement } from "../../../redux/actions/announcementAction";
 
 function Announcement({ announcements, viewAnnouncement }) {
   React.useEffect(() => {
     viewAnnouncement();
-  }, []);
+  }, [viewAnnouncement]);
 
   return (
     <Grid container spacing={2}>
