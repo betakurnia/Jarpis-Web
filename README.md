@@ -10,9 +10,9 @@ Technology stack :
    <li>CKEditor</li>
    <li>JWT-Decode</li>
    <li>HTML-React-Parser</li>
-   <li>CLSX</li>
+   <li>Clsx</li>
   <li>Dateformat</li>
 </ul>
 
 for rest api download here: <br/>
-https://github.com/betakurnia/Jarpis-Serve
+https://github.com/betakurnia/Jarpis-Server
