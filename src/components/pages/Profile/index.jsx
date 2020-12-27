@@ -33,10 +33,10 @@ function Profile({ user, getUserById }) {
     <div className={classes.root}>
       {Object.keys(user.userData).length > 1 && (
         <Grid container justify="center" spacing={6}>
-          <Grid item xs={2}>
+          <Grid item xs={4} md={2}>
             <Avatar style={{ width: "100%", height: 160 }}></Avatar>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={6} md={8}>
             <Typography
               variant="h4"
               component="h2"

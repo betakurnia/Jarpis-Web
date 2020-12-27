@@ -36,49 +36,49 @@ import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
 import size from "../../../utils/size";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    marginBottom: `${size.big}rem`,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  menuItem: {
-    minWidth: 300,
-  },
-  title: {
-    flexGrow: 1,
-    cursor: "pointer",
-  },
-  announcement: {
-    padding: "0 2rem",
-    display: "inline-block",
-    [theme.breakpoints.only("xs")]: {
-      padding: "0 0 0 1rem",
-    },
-  },
-  disabled: {
-    cursor: "default",
-    "&:hover": {
-      backgroundColor: "inherit",
-    },
-    "&:visited": {
-      backgroundColor: "inherit",
-    },
-    "&:active": {
-      backgroundColor: "inherit",
-    },
-  },
-  subTab: {
-    paddingLeft: "2rem",
-  },
-  subSubTab: {
-    paddingLeft: "4rem",
-  },
-}));
-
 function Navbar({ user, logoutUser, history }) {
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+      marginBottom: `${size.big}rem`,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    menuItem: {
+      minWidth: 300,
+    },
+    title: {
+      flexGrow: 1,
+      cursor: "pointer",
+    },
+    announcement: {
+      padding: "0 1.5rem",
+      display: "inline-block",
+      [theme.breakpoints.down("xs")]: {
+        padding: "0 0.5rem",
+      },
+    },
+    disabled: {
+      cursor: "default",
+      "&:hover": {
+        backgroundColor: "inherit",
+      },
+      "&:visited": {
+        backgroundColor: "inherit",
+      },
+      "&:active": {
+        backgroundColor: "inherit",
+      },
+    },
+    subTab: {
+      paddingLeft: "2rem",
+    },
+    subSubTab: {
+      paddingLeft: "4rem",
+    },
+  }));
+
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);

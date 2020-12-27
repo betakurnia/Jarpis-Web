@@ -10,7 +10,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 
 import Section from "../../atoms/Section";
-import ExamSection from "../../molecules/ExamSection";
+import ExamSection from "../../atoms/ExamSection";
 import TheorySection from "../../molecules/TheorySection";
 
 import { deleteExam } from "../../../redux/actions/examAction";
@@ -88,7 +88,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
           isStudent={isStudent}
         />
       </Grid>
-      <Grid container spacing={2} className={classes.subRoot}>
+      <Grid container spacing={3} className={classes.subRoot}>
         {theorys.map((theory) => (
           <TheorySection
             icon={

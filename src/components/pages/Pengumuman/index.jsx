@@ -1,13 +1,13 @@
 import React from "react";
 
-import CreateTemplate from "../../atoms/CreateTemp";
+import Create from "../../atoms/Create";
 import CKEditor from "../../molecules/CKEditor";
 
 function Pengumuman() {
   return (
-    <CreateTemplate title="Pengumuman">
+    <Create title="Pengumuman">
       <CKEditor titles="Submit" />{" "}
-    </CreateTemplate>
+    </Create>
   );
 }
 

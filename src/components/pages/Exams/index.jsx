@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Input from "../../atoms/Input";
-import CreateTemplate from "../../atoms/CreateTemp";
+import Create from "../../atoms/Create";
 import TheoryTemplate from "../../molecules/TheoryTemplate";
 
 import proxy from "../../../utils/proxy";
@@ -88,7 +88,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
   };
 
   return (
-    <CreateTemplate title={`${ujian}`}>
+    <Create title={`${ujian}`}>
       <div
         style={{
           paddingBottom: "2rem",
@@ -195,7 +195,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
           </Button>
         </Grid>
       </Grid>
-    </CreateTemplate>
+    </Create>
   );
 }
 

@@ -24,6 +24,7 @@ import { connect } from "react-redux";
 import clsx from "clsx";
 
 import Badge from "../../atoms/Badge";
+import ButtonInfo from "../../atoms/ButtonInfo";
 
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
@@ -93,19 +94,18 @@ function BasicTable({ id, user, major }) {
     bgPrimary: {
       backgroundColor: color.primary,
     },
+    btnDanger: {
+      color: color.danger,
+    },
+    btnInfo: {
+      backgroundColor: color.black,
+      color: color.white,
+    },
   });
 
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const [presents, setPresents] = React.useState({
     status: [],
@@ -116,6 +116,14 @@ function BasicTable({ id, user, major }) {
     majorId: "",
     status: "Hadir",
   });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleChange = (event) => {
     present["status"] = event.target.value;
@@ -154,7 +162,7 @@ function BasicTable({ id, user, major }) {
         }
       })
       .catch((err) => console.log(err));
-  }, [id, present, user.user.id]);
+  }, []);
 
   return (
     <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
@@ -191,7 +199,7 @@ function BasicTable({ id, user, major }) {
                 </TableCell>
               </TableRow>
             ))}
-          {undoneArray.map((undone, index) => (
+          {undoneArray.map((undone) => (
             <TableRow key={undone}>
               <TableCell>
                 {" "}
@@ -258,9 +266,9 @@ function BasicTable({ id, user, major }) {
                   label="Sakit"
                 />
                 <FormControlLabel
-                  value="Tidak Hadir"
+                  value="Izin"
                   control={<Radio />}
-                  label="Tidak hadir"
+                  label="Izin"
                 />
               </RadioGroup>
             </FormControl>
@@ -270,19 +278,11 @@ function BasicTable({ id, user, major }) {
           <Button
             onClick={handleClose}
             color="primary"
-            style={{ color: "#dc3545" }}
+            className={classes.btnDanger}
           >
             Batal
           </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-            color="primary"
-            autoFocus
-            style={{ backgroundColor: "#008000", color: "#ffffff" }}
-          >
-            Ok
-          </Button>
+          <ButtonInfo handleDelete={handleSubmit}>Ok</ButtonInfo>
         </DialogActions>
       </Dialog>
     </TableContainer>

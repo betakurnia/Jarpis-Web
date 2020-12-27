@@ -13,7 +13,6 @@ function Major() {
     axios
       .get(`${proxy}/api/majors/view/${id}`)
       .then((res) => {
-        console.log(res.data);
         setMajor(res.data);
       })
       .catch((err) => console.log(err));

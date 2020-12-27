@@ -4,21 +4,22 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Alert from "@material-ui/lab/Alert";
-import { withRouter } from "react-router-dom";
 import makeStyles from "@material-ui/styles/makeStyles";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "axios";
 
 import Input from "../../atoms/Input";
+import ErrorSucess from "../../atoms/ErrorSucess";
 
 import {
   addAnnouncement,
   updateAnnouncement,
 } from "../../../redux/actions/announcementAction";
 import { clearErrorSucess } from "../../../redux/actions/helperAction";
-import isEmpty from "../../../utils/is-empty";
 import proxy from "../../../utils/proxy";
+import color from "../../../utils/color";
+import isEmpty from "../../../utils/is-empty";
 
 function CKEditors({
   addAnnouncement,
@@ -36,6 +37,12 @@ function CKEditors({
     },
     alert: {
       marginTop: "1.5rem",
+    },
+    formControl: {
+      marginTop: "1.5rem",
+    },
+    label: {
+      color: color.label,
     },
   });
 
@@ -74,7 +81,7 @@ function CKEditors({
         })
         .catch((err) => console.log(err));
     }
-  }, [announcement, clearErrorSucess, id]);
+  }, [clearErrorSucess, id]);
 
   return (
     <div>
@@ -86,8 +93,8 @@ function CKEditors({
           handleChange={handleAnnouncement}
           value={announcement.title}
         />
-        <div style={{ marginTop: "1.5rem" }}>
-          <label style={{ color: "rgba(0, 0, 0, 0.54)" }}>Deskripsi</label>
+        <div className={classes.formControl}>
+          <label className={classes.label}>Deskripsi</label>
           <div style={{ marginTop: "0.5rem" }}></div>
           <CKEditor
             editor={ClassicEditor}
@@ -110,16 +117,12 @@ function CKEditors({
             }}
           />
         </div>
-        {sucess && (
-          <Alert className={classes.alert}>
-            {titles} data pengumuman sukses
-          </Alert>
-        )}
-        {!isEmpty(error) && (
-          <Alert className={classes.alert} severity="error">
-            {error.title || error.description}
-          </Alert>
-        )}
+        <ErrorSucess
+          isSucess={Boolean(sucess)}
+          isError={!isEmpty(error)}
+          // sucessMessage={"data pengumuman sukses"}
+          errorMessage={[error.title, error.description]}
+        />
         <Grid container justify="center">
           <Grid item xs={12} md={4}>
             <Button

@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 
 import Input from "../../atoms/Input";
-import CreateTemplate from "../../atoms/CreateTemp";
+import Create from "../../atoms/Create";
 import TheoryTemplate from "../../molecules/TheoryTemplate";
 
 import isEmpty from "../../../utils/is-empty";
@@ -107,7 +107,7 @@ function Pengumuman({ sucess, error }) {
   }, [i, id]);
 
   return (
-    <CreateTemplate title={`Materi ke ${i}`}>
+    <Create                  title={`Materi ke ${i}`}>
       <div
         style={{
           paddingBottom: "2rem",
@@ -174,7 +174,7 @@ function Pengumuman({ sucess, error }) {
           </Grid>
         </Grid>
       </form>
-    </CreateTemplate>
+    </Create>
   );
 }
 

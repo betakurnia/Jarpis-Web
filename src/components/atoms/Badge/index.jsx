@@ -28,11 +28,9 @@ function Badge({ status }) {
   switch (status) {
     case "Hadir":
       return <span className={clsx(classes.bgInfo, classes.badge)}>Hadir</span>;
-    case "Tidak Hadir":
+    case "Izin":
       return (
-        <span className={clsx(classes.bgDanger, classes.badge)}>
-          Tidak Hadir
-        </span>
+        <span className={clsx(classes.bgDanger, classes.badge)}>Izin</span>
       );
     case "Sakit":
       return (

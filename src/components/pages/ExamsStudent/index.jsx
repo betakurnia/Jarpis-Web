@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-import CreateTemplate from "../../atoms/CreateTemp";
+import Create from "../../atoms/Create";
 import QuestionExam from "../../molecules/QuestionExam";
 
 import proxy from "../../../utils/proxy";
@@ -85,7 +85,7 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
   };
 
   return (
-    <CreateTemplate title={`${ujian}`}>
+    <Create title={`${ujian.split("-").join(" ")}`}>
       <div
         style={{
           paddingBottom: "2rem",
@@ -159,7 +159,7 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
           </Button>
         </DialogActions>
       </Dialog>
-    </CreateTemplate>
+    </Create>
   );
 }
 

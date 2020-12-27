@@ -43,7 +43,9 @@ function QuestionExam({
         <RadioGroup
           value={value}
           onChange={(e) => {
-            handleChange(e, i - 1);
+            if (!answer) {
+              handleChange(e, i - 1);
+            }
           }}
         >
           <FormControlLabel

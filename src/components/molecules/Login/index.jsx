@@ -10,8 +10,8 @@ import { withRouter } from "react-router-dom";
 
 import Input from "../../atoms/Input";
 
-import color from "../../../utils/color";
 import { loginUser } from "../../../redux/actions/userAction";
+import color from "../../../utils/color";
 import isEmpty from "../../../utils/is-empty";
 
 function Login({ loginUser, error, history, user }) {

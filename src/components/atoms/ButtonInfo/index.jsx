@@ -5,13 +5,13 @@ import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
-function ButtonDanger({ children, handleDelete }) {
+function ButtonInfo({ children, handleDelete }) {
   const useStyles = makeStyles({
     btnDanger: {
-      backgroundColor: color.danger,
+      backgroundColor: color.info,
       color: color.white,
       "&:hover": {
-        backgroundColor: color.danger,
+        backgroundColor: color.info,
       },
     },
   });
@@ -25,4 +25,4 @@ function ButtonDanger({ children, handleDelete }) {
   );
 }
 
-export default ButtonDanger;
+export default ButtonInfo;

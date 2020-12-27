@@ -12,6 +12,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import parse from "html-react-parser";
+import clsx from "clsx";
 
 import ButtonDanger from "../../atoms/ButtonDanger";
 import ButtonRed from "../../atoms/ButtonRed";
@@ -49,6 +50,18 @@ function CardAnnouncement({
     title: {
       color: color.white,
     },
+    icon: {
+      width: "100%",
+      padding: "1rem",
+      cursor: "pointer",
+      backgroundColor: color.white,
+    },
+    info: {
+      color: color.info,
+    },
+    danger: {
+      color: color.danger,
+    },
   });
 
   const classes = useStyles();
@@ -73,22 +86,10 @@ function CardAnnouncement({
       {user.isAuthenticated.role === "admin" && (
         <React.Fragment>
           <Link to={`/admin/pengumuman/${id}`}>
-            <EditIcon
-              style={{
-                color: "green",
-                padding: "1rem",
-                cursor: "pointer",
-                backgroundColor: color.white,
-              }}
-            />
+            <EditIcon clasName={clsx(classes.icon, classes.info)} />
           </Link>
           <DeleteIcon
-            style={{
-              color: "#dc3545",
-              padding: "1rem",
-              cursor: "pointer",
-              backgroundColor: color.white,
-            }}
+            clasName={clsx(classes.icon, classes.danger)}
             onClick={handleClickOpen}
           />
         </React.Fragment>
@@ -110,13 +111,9 @@ function CardAnnouncement({
           </Typography>
         </div>
       </div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-describedby="alert-dialog-description"
-      >
+      <Dialog open={open} onClose={handleClose} aria-describedby="description">
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="description">
             Apakah anda yakin ingin menghapus {title} ?
           </DialogContentText>
         </DialogContent>

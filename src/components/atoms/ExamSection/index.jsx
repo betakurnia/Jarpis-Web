@@ -1,36 +1,42 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
+
 import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/styles";
-import { Link } from "react-router-dom";
+import makeStyles from "@material-ui/styles/makeStyles";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import clsx from "clsx";
 
 import color from "../../../utils/color";
 
-function TheorySection({
+function ExakSection({
+  description,
   icon,
-  title,
-  isLink,
   id,
-  isStudent,
-  children,
   i,
-  handleDelete,
+  isStudent,
   isTeacher,
+  majorName,
+  title,
+  type,
+  history,
+  handleDelete,
 }) {
   const useStyles = makeStyles({
-    link: {
-      cursor: "pointer",
-    },
+    alert: { marginTop: "0", marginBottom: "1.5rem" },
     description: {
       color: color.grey,
+    },
+    link: {
+      cursor: "pointer",
     },
     icon: {
       width: "100%",
@@ -62,27 +68,38 @@ function TheorySection({
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e, status) => {
+    setOpen(false);
+    if (status === "yes") {
+      history.push(`/mata-pelajaran/${title}${majorName}/${id}`);
+    }
+  };
+
+  const handleClose2 = () => {
+    handleDelete(id, type);
     setOpen2(false);
   };
 
-  const handleClose2 = (e) => {
-    handleDelete(e, i, id);
+  const handleClose3 = () => {
     setOpen2(false);
   };
 
   return (
     <React.Fragment>
       <Grid item xs={12}>
-        {!isTeacher && <div style={{ marginTop: "1.5rem" }}></div>}
+        {!isStudent && i === 0 && (
+          <Alert severity="warning" className={classes.alert}>
+            Ujian hanya tersedia untuk siswa
+          </Alert>
+        )}
+
         {isTeacher && (
           <React.Fragment>
-            {" "}
-            <Link to={`/guru/materi/${i}/${id}`}>
-              <EditIcon className={clsx(classes.icon, classes.info)} />
+            <Link to={`/guru/ujian/${title}/${id}`}>
+              <EditIcon clasName={clsx(classes.icon, classes.info)} />
             </Link>
             <DeleteIcon
-              className={clsx(classes.icon, classes.danger)}
+              clasName={(classes.icon, classes.danger)}
               onClick={(e) => {
                 handleClickOpen(e, "delete");
               }}
@@ -91,27 +108,20 @@ function TheorySection({
         )}
       </Grid>
       <Grid container spacing={2}>
-        <Grid item xs={3} md={1}>
+        <Grid item xs={4} md={2}>
           <span className={classes.icon}> {icon}</span>
         </Grid>
-        <Grid item xs={9} md={10.5}>
-          {isLink ? (
-            <React.Fragment>
-              {isStudent ? (
-                <Typography variant="h6" component="p">
-                  {title}
-                </Typography>
-              ) : (
-                <React.Fragment>
-                  <Typography variant="h6" component="p">
-                    {title}
-                  </Typography>
-                </React.Fragment>
-              )}
-            </React.Fragment>
+
+        <Grid item xs={8} md={10}>
+          {isStudent ? (
+            <Link to={`/mata-pelajaran/${title}/${id}`}>
+              <Typography variant="h6" component="p">
+                {title.split("-")[0]}
+              </Typography>
+            </Link>
           ) : (
             <Typography variant="h6" component="p">
-              {title}
+              {title.split("-")[0]}
             </Typography>
           )}
 
@@ -120,12 +130,11 @@ function TheorySection({
             component="p"
             className={classes.description}
           >
-            {children}
+            {description}
           </Typography>
           <Dialog
             open={open}
             onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogContent>
@@ -135,11 +144,13 @@ function TheorySection({
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={handleClose}
+                onClick={(e) => {
+                  handleClose(e, "yes");
+                }}
                 color="primary"
                 className={classes.btnInfo}
               >
-                <Link to={`/guru/materi/1/${title}${i}/${id}`}>Ya</Link>
+                Ya
               </Button>
               <Button
                 onClick={handleClose}
@@ -154,7 +165,6 @@ function TheorySection({
           <Dialog
             open={open2}
             onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogContent>
@@ -164,9 +174,9 @@ function TheorySection({
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={handleClose}
+                onClick={handleClose3}
                 color="primary"
-                className={classes.btnDanger}
+                className={classes.danger}
               >
                 Batal
               </Button>
@@ -186,4 +196,4 @@ function TheorySection({
   );
 }
 
-export default TheorySection;
+export default withRouter(ExakSection);
