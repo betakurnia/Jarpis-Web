@@ -98,8 +98,9 @@ function BasicTable({ user, major }) {
         <TableHead style={{ backgroundColor: color.primary }}>
           <TableRow>
             <TableCell style={{ color: color.white }}>Siswa</TableCell>
-            <TableCell style={{ color: color.white }}>Nilai</TableCell>
+            <TableCell style={{ color: color.white }}>Tipe</TableCell>
             <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
+            <TableCell style={{ color: color.white }}>Nilai</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -110,6 +111,9 @@ function BasicTable({ user, major }) {
                   {" "}
                   <p>{recapitulatio.userId.name}</p>
                 </TableCell>
+
+                <TableCell>{recapitulatio.type.split("-")[0]}</TableCell>
+                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
                 <TableCell>
                   {recapitulatio.result > 70 ? (
                     <TableCell
@@ -120,7 +124,7 @@ function BasicTable({ user, major }) {
                         borderRadius: "0.5rem",
                       }}
                     >
-                      {recapitulatio.result}
+                      {recapitulatio.type}
                     </TableCell>
                   ) : (
                     <TableCell
@@ -135,7 +139,6 @@ function BasicTable({ user, major }) {
                     </TableCell>
                   )}
                 </TableCell>
-                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
               </TableRow>
             ))}
         </TableBody>

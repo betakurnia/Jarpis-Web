@@ -98,7 +98,7 @@ function BasicTable({ user, major }) {
         setRecapitulation([...res.data]);
       })
       .catch((err) => console.log(err));
-  }, [id, ujian, present, user.isAuthenticated.id, user.user.id]);
+  }, [id, ujian]);
 
   return (
     <TableContainer component={Paper} style={{ marginTop: "3rem" }}>

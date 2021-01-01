@@ -97,7 +97,7 @@ function BasicTable({ id, user, major }) {
         setRecapitulation([...res.data]);
       })
       .catch((err) => console.log(err));
-  }, [id, user.user.id, present]);
+  }, [id]);
 
   return (
     <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
@@ -112,10 +112,10 @@ function BasicTable({ id, user, major }) {
         <TableHead style={{ backgroundColor: color.primary }}>
           <TableRow>
             <TableCell style={{ color: color.white }}>Siswa</TableCell>
+            <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
             <TableCell style={{ color: color.white }}>
               Total Kehadiran
             </TableCell>
-            <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
             <TableCell style={{ color: color.white }}>
               Dapat Mengikuti Ujian
             </TableCell>
@@ -129,12 +129,12 @@ function BasicTable({ id, user, major }) {
                   {" "}
                   <p>{recapitulatio.userId.name}</p>
                 </TableCell>
+                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
                 <TableCell>
                   <p>
                     <p>{recapitulatio.status.length} / 14</p>
                   </p>
                 </TableCell>
-                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
                 <TableCell>
                   <p>
                     {recapitulatio.status.length > 7 ? (

@@ -11,7 +11,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import Create from "../../atoms/Create";
-import QuestionExam from "../../molecules/QuestionExam";
+import QuestionExam from "../../atoms/QuestionExam";
 
 import proxy from "../../../utils/proxy";
 import { createExamStudent } from "../../../redux/actions/examAction";
@@ -143,19 +143,19 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={handleSubmit}
-            color="primary"
-            style={{ backgroundColor: "#28a745", color: "#ffffff" }}
-          >
-            Ya
-          </Button>
-          <Button
             onClick={handleClose}
             color="primary"
             autoFocus
             style={{ backgroundColor: "#ffffff", color: "#dc3545" }}
           >
             Tidak
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            color="primary"
+            style={{ backgroundColor: "#28a745", color: "#ffffff" }}
+          >
+            Ya
           </Button>
         </DialogActions>
       </Dialog>

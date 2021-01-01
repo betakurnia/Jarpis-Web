@@ -1,13 +1,16 @@
 import React from "react";
+
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/styles";
+
+import color from "../../../utils/color";
 
 function TheoryTemplate({ title, children, icon }) {
   const useStyles = makeStyles({
     root: {
       padding: "2rem 0",
-      borderBottom: `0.05px solid #bdbdbd`,
+      borderBottom: `0.05px solid ${color.greyLight}`,
       textTransform: "capitalize",
     },
     icon: {

@@ -13,27 +13,25 @@ import { connect } from "react-redux";
 
 import Input from "../../atoms/Input";
 import Create from "../../atoms/Create";
-import TheoryTemplate from "../../molecules/TheoryTemplate";
 
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
+import color from "../../../utils/color";
 import { createExam } from "../../../redux/actions/examAction";
 import { clearErrorSucess } from "../../../redux/actions/helperAction";
 
 function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
-  const [loading, setLoading] = React.useState(true);
+  const { ujian, id } = useParams();
 
   const [exam, setExam] = React.useState([...new Array(5)]);
 
-  const { ujian, id } = useParams();
+  const [loading, setLoading] = React.useState(true);
 
   const handleMenus = (e, i) => {
     exam[i].answer = e.target.value;
 
     setExam([...exam]);
   };
-
-  const [tipes] = React.useState([]);
 
   const handleAdd = (e) => {
     const question = [
@@ -56,6 +54,16 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
     }
   };
 
+  const handleSubmit = () => {
+    createExam({
+      userId: "guru",
+      teacherId: user.user.id,
+      majorId: id,
+      question: exam,
+      type: ujian,
+    });
+  };
+
   React.useEffect(() => {
     clearErrorSucess();
     axios.get(`${proxy}/api/exams/view/${id}?type=${ujian}`).then((res) => {
@@ -75,38 +83,23 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
       }
       setLoading(false);
     });
-  }, [id, ujian, exam, clearErrorSucess]);
-
-  const handleSubmit = () => {
-    createExam({
-      userId: "guru",
-      teacherId: user.user.id,
-      majorId: id,
-      question: exam,
-      type: ujian,
-    });
-  };
+  }, [id]);
 
   return (
-    <Create title={`${ujian}`}>
+    <Create title={`${ujian.split("-").join(" ")}`}>
       <div
         style={{
           paddingBottom: "2rem",
-          borderBottom: `0.05px solid #bdbdbd`,
+          borderBottom: `0.05px solid ${color.greyLight}`,
         }}
       ></div>
-      {tipes.map(({ tipe }) => (
-        <React.Fragment>
-          <TheoryTemplate title={tipe}></TheoryTemplate>
-        </React.Fragment>
-      ))}
       {!loading &&
         exam.map((arr, i) => (
           <React.Fragment>
             <Input
               id={i}
               label={`Soal no ${i + 1}`}
-              placeholder="contoh: 1 + 1"
+              placeholder=""
               handleChange={handleChange}
               value={arr.examName}
             ></Input>

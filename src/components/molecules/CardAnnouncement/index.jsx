@@ -51,9 +51,7 @@ function CardAnnouncement({
       color: color.white,
     },
     icon: {
-      width: "100%",
       padding: "1rem",
-      cursor: "pointer",
       backgroundColor: color.white,
     },
     info: {
@@ -61,6 +59,9 @@ function CardAnnouncement({
     },
     danger: {
       color: color.danger,
+    },
+    link: {
+      cursor: "pointer",
     },
   });
 
@@ -86,10 +87,10 @@ function CardAnnouncement({
       {user.isAuthenticated.role === "admin" && (
         <React.Fragment>
           <Link to={`/admin/pengumuman/${id}`}>
-            <EditIcon clasName={clsx(classes.icon, classes.info)} />
-          </Link>
+            <EditIcon className={clsx(classes.icon, classes.info)} />
+          </Link>{" "}
           <DeleteIcon
-            clasName={clsx(classes.icon, classes.danger)}
+            className={clsx(classes.icon, classes.danger, classes.link)}
             onClick={handleClickOpen}
           />
         </React.Fragment>

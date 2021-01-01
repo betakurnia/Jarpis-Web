@@ -32,6 +32,9 @@ function ExakSection({
 }) {
   const useStyles = makeStyles({
     alert: { marginTop: "0", marginBottom: "1.5rem" },
+    link: {
+      cursor: "pointer",
+    },
     description: {
       color: color.grey,
     },
@@ -39,9 +42,7 @@ function ExakSection({
       cursor: "pointer",
     },
     icon: {
-      width: "100%",
       padding: "1rem",
-      cursor: "pointer",
       backgroundColor: color.white,
     },
     info: {
@@ -86,27 +87,27 @@ function ExakSection({
 
   return (
     <React.Fragment>
-      <Grid item xs={12}>
-        {!isStudent && i === 0 && (
-          <Alert severity="warning" className={classes.alert}>
-            Ujian hanya tersedia untuk siswa
-          </Alert>
-        )}
+      {!isTeacher && <div style={{ marginTop: "1.5rem" }}></div>}
+      {!isStudent && i === 0 && (
+        <Alert severity="warning" className={classes.alert}>
+          Ujian hanya tersedia untuk siswa
+        </Alert>
+      )}
 
-        {isTeacher && (
-          <React.Fragment>
-            <Link to={`/guru/ujian/${title}/${id}`}>
-              <EditIcon clasName={clsx(classes.icon, classes.info)} />
-            </Link>
-            <DeleteIcon
-              clasName={(classes.icon, classes.danger)}
-              onClick={(e) => {
-                handleClickOpen(e, "delete");
-              }}
-            />
-          </React.Fragment>
-        )}
-      </Grid>
+      {isTeacher && (
+        <React.Fragment>
+          <Link to={`/guru/ujian/${type}/${id}`}>
+            <EditIcon className={clsx(classes.icon, classes.info)} />
+          </Link>{" "}
+          <DeleteIcon
+            className={clsx(classes.icon, classes.danger, classes.link)}
+            onClick={(e) => {
+              handleClickOpen(e, "delete");
+            }}
+          />
+        </React.Fragment>
+      )}
+
       <Grid container spacing={2}>
         <Grid item xs={4} md={2}>
           <span className={classes.icon}> {icon}</span>

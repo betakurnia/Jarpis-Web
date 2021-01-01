@@ -5,9 +5,10 @@ import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
-function ButtonInfo({ children, handleDelete }) {
+function ButtonInfo({ children, handleDelete, ...rest }) {
+  console.log(rest);
   const useStyles = makeStyles({
-    btnDanger: {
+    btnInfo: {
       backgroundColor: color.info,
       color: color.white,
       "&:hover": {
@@ -19,7 +20,12 @@ function ButtonInfo({ children, handleDelete }) {
   const classes = useStyles();
 
   return (
-    <Button onClick={handleDelete} autoFocus className={classes.btnDanger}>
+    <Button
+      {...rest}
+      onClick={handleDelete}
+      autoFocus
+      className={classes.btnInfo}
+    >
       {children}
     </Button>
   );

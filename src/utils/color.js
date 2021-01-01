@@ -7,6 +7,7 @@ const color = {
   info: "#198754",
   warning: "#ffc107",
   grey: "#62646a",
+  greyLight: "#bdbdbd",
 };
 
 export default color;

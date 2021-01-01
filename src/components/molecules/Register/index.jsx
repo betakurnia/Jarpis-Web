@@ -72,7 +72,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     address: "",
     religion: "",
     majorId: [],
-    kelas: "",
+    kelas: "5fd5a57adec8b90f1f45a7de",
   });
 
   const [majors, setMajors] = React.useState([]);

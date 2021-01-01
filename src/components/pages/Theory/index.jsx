@@ -13,10 +13,11 @@ import { connect } from "react-redux";
 
 import Input from "../../atoms/Input";
 import Create from "../../atoms/Create";
-import TheoryTemplate from "../../molecules/TheoryTemplate";
+import TheoryTemplate from "../../atoms/TheoryTemplate";
 
 import isEmpty from "../../../utils/is-empty";
 import proxy from "../../../utils/proxy";
+import color from "../../../utils/color";
 import { SET_SUCESS, GET_ERRORS } from "../../../redux/actions";
 
 function Pengumuman({ sucess, error }) {
@@ -44,7 +45,7 @@ function Pengumuman({ sucess, error }) {
     setTheory({ ...theory });
   };
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(() => ({
     root: {
       marginTop: "1.5rem",
       "& > *": {
@@ -77,8 +78,10 @@ function Pengumuman({ sucess, error }) {
     axios
       .post(`${proxy}/api/theorys/create`, file)
       .then((res) => {
-        dispatch({ type: GET_ERRORS, payload: {} });
-        dispatch({ type: SET_SUCESS, payload: true });
+        console.log(res);
+        window.location.href = "/dashboard";
+        // dispatch({ type: GET_ERRORS, payload: {} });
+        // dispatch({ type: SET_SUCESS, payload: true });
       })
       .catch((err) => {
         dispatch({ type: SET_SUCESS, payload: false });
@@ -87,6 +90,7 @@ function Pengumuman({ sucess, error }) {
   };
 
   React.useEffect(() => {
+    window.scrollTo(0, 0);
     axios
       .get(`${proxy}/api/theorys/view/${i}/${id}`)
       .then((res) => {
@@ -107,11 +111,11 @@ function Pengumuman({ sucess, error }) {
   }, [i, id]);
 
   return (
-    <Create                  title={`Materi ke ${i}`}>
+    <Create title={`Materi ke ${i}`}>
       <div
         style={{
           paddingBottom: "2rem",
-          borderBottom: `0.05px solid #bdbdbd`,
+          borderBottom: `0.05px solid ${color.greyLight}`,
         }}
       ></div>
       <form onSubmit={handleSubmit} enctype="multipart/form-data">
@@ -123,7 +127,16 @@ function Pengumuman({ sucess, error }) {
             handleChange={handleChange}
           />
         </TheoryTemplate>
-        <TheoryTemplate title="Materi">
+        <TheoryTemplate
+          title="Materi"
+          icon={
+            <img
+              src={"/helper/exam.png"}
+              alt="exam"
+              style={{ width: "2rem", height: "2rem" }}
+            />
+          }
+        >
           <Button>
             <div className={classes.root}>
               <input

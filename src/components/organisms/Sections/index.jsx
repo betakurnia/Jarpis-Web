@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 
 import Section from "../../atoms/Section";
 import ExamSection from "../../atoms/ExamSection";
-import TheorySection from "../../molecules/TheorySection";
+import TheorySection from "../../atoms/TheorySection";
 
 import { deleteExam } from "../../../redux/actions/examAction";
 import { setError, setSucess } from "../../../redux/actions/helperAction";
@@ -88,7 +88,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
           isStudent={isStudent}
         />
       </Grid>
-      <Grid container spacing={3} className={classes.subRoot}>
+      <div className={classes.subRoot}>
         {theorys.map((theory) => (
           <TheorySection
             icon={
@@ -112,7 +112,8 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
               alignItems="flex-end"
               style={{ paddingTop: "0.25rem" }}
             >
-              <AssignmentIcon /> {theory.description}
+              <AssignmentIcon />{" "}
+              <span style={{ marginLeft: "0.5rem" }}>{theory.description}</span>
             </Grid>
             <Grid
               container
@@ -122,25 +123,26 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
               <SystemUpdateAltIcon />{" "}
               <span
                 style={{ padding: "0 0.5rem", cursor: "pointer" }}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   axios
                     .get(
                       `${proxy}/api/theorys/download?filename=${theory.fileName}`
                     )
-                    .then(() => {
+                    .then((res) => {
+                      console.log(res);
                       // fileDownload(data, `${theory.fileName}`);
                     })
                     .catch((err) => console.log("error"));
                 }}
               >
-                {" "}
                 Download {theory.fileName}
               </span>
             </Grid>
           </TheorySection>
         ))}
-      </Grid>
-      <Grid container spacing={2} className={classes.subRoot}>
+      </div>
+      <div className={classes.subRoot}>
         {exams.map((exam, i) => (
           <ExamSection
             icon={
@@ -161,7 +163,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
             i={i}
           />
         ))}
-      </Grid>
+      </div>
     </div>
   );
 }
