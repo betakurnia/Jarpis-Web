@@ -12,6 +12,9 @@ import { useParams } from "react-router-dom";
 
 import Create from "../../atoms/Create";
 import QuestionExam from "../../atoms/QuestionExam";
+import ErrorSucess from "../../atoms/ErrorSucess";
+import ButtonInfo from "../../atoms/ButtonInfo";
+import ButtonRed from "../../atoms/ButtonRed";
 
 import proxy from "../../../utils/proxy";
 import { createExamStudent } from "../../../redux/actions/examAction";
@@ -20,7 +23,9 @@ import { Alert } from "@material-ui/lab";
 import isEmpty from "../../../utils/is-empty";
 
 function ExamsStudent({ user, createExamStudent, error, sucess }) {
-  const [suces, setSucess] = React.useState(false);
+  const { ujian, id } = useParams();
+
+  const [isExam, setSucess] = React.useState(false);
 
   const [loading, setLoading] = React.useState(true);
 
@@ -30,14 +35,12 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
 
   const [exam, setExam] = React.useState([...new Array(5)]);
 
-  const { ujian, id } = useParams();
+  const [open, setOpen] = React.useState(false);
 
   const handleExamStudentAnswer = (e, i) => {
     examStudentAnswer[i] = e.target.value;
     setExamStudentAnswer([...examStudentAnswer]);
   };
-
-  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,13 +89,6 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
 
   return (
     <Create title={`${ujian.split("-").join(" ")}`}>
-      <div
-        style={{
-          paddingBottom: "2rem",
-          borderBottom: `0.05px solid #bdbdbd`,
-        }}
-      ></div>
-      <div style={{ paddingTop: "1rem" }}></div>
       {!loading &&
         exam.map((exam, i) => (
           <QuestionExam
@@ -107,11 +103,13 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
             answer={examStudentAnswer[i]}
           />
         ))}
-      {sucess && <Alert>Berhasil dikirim</Alert>}
-      {!isEmpty(error) && (
-        <Alert severity="error">{error.examStudentAnswer}</Alert>
-      )}
-      {suces ? (
+      <ErrorSucess
+        isError={!isEmpty(error)}
+        isSucess={Boolean(sucess)}
+        errorMessages={[error.examStudentAnswer]}
+        sucessMessage="Berhasil dikirim"
+      />
+      {isExam ? (
         <Alert>Anda telah mengikuti Ujian</Alert>
       ) : (
         <Grid container justify="center">
@@ -142,21 +140,8 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            autoFocus
-            style={{ backgroundColor: "#ffffff", color: "#dc3545" }}
-          >
-            Tidak
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            color="primary"
-            style={{ backgroundColor: "#28a745", color: "#ffffff" }}
-          >
-            Ya
-          </Button>
+          <ButtonRed handleClick={handleClose}>Tidak</ButtonRed>
+          <ButtonInfo handleClick={handleSubmit}>Ya</ButtonInfo>
         </DialogActions>
       </Dialog>
     </Create>

@@ -7,12 +7,14 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Alert from "@material-ui/lab/Alert";
 import AddIcon from "@material-ui/icons/Add";
+import { makeStyles } from "@material-ui/styles";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Input from "../../atoms/Input";
 import Create from "../../atoms/Create";
+import ErrorSucess from "../../atoms/ErrorSucess";
 
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
@@ -21,6 +23,18 @@ import { createExam } from "../../../redux/actions/examAction";
 import { clearErrorSucess } from "../../../redux/actions/helperAction";
 
 function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
+  const useStyles = makeStyles({
+    root: {
+      listStyle: "none",
+      "& li": {
+        display: "flex",
+        alignItems: "flex-end",
+      },
+    },
+  });
+
+  const classes = useStyles();
+
   const { ujian, id } = useParams();
 
   const [exam, setExam] = React.useState([...new Array(5)]);
@@ -87,12 +101,6 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
 
   return (
     <Create title={`${ujian.split("-").join(" ")}`}>
-      <div
-        style={{
-          paddingBottom: "2rem",
-          borderBottom: `0.05px solid ${color.greyLight}`,
-        }}
-      ></div>
       {!loading &&
         exam.map((arr, i) => (
           <React.Fragment>
@@ -103,7 +111,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
               handleChange={handleChange}
               value={arr.examName}
             ></Input>
-            <ul style={{ listStyle: "none" }}>
+            <ul className={classes.root}>
               <RadioGroup
                 aria-label="answer"
                 name={i}
@@ -112,7 +120,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
                   handleMenus(e, i);
                 }}
               >
-                <li style={{ display: "flex", alignItems: "flex-end" }}>
+                <li>
                   {" "}
                   <FormControlLabel value="a" control={<Radio />} />{" "}
                   <Input
@@ -124,7 +132,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
                     value={arr.possibilitesAnswer[0]}
                   ></Input>
                 </li>
-                <li style={{ display: "flex", alignItems: "flex-end" }}>
+                <li>
                   <FormControlLabel value="b" control={<Radio />} />{" "}
                   <Input
                     id={`${i}`}
@@ -135,7 +143,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
                     value={arr.possibilitesAnswer[1]}
                   ></Input>
                 </li>
-                <li style={{ display: "flex", alignItems: "flex-end" }}>
+                <li>
                   <FormControlLabel value="c" control={<Radio />} />{" "}
                   <Input
                     id={`${i}`}
@@ -146,7 +154,7 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
                     value={arr.possibilitesAnswer[2]}
                   ></Input>
                 </li>
-                <li style={{ display: "flex", alignItems: "flex-end" }}>
+                <li>
                   <FormControlLabel value="d" control={<Radio />} />{" "}
                   <Input
                     id={`${i}`}
@@ -169,12 +177,12 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
       >
         Tambah 5 Soal <AddIcon style={{ paddingLeft: "0.5rem" }} />
       </Button>{" "}
-      {sucess && <Alert style={{ marginTop: "2rem" }}>Berhasil dibuat </Alert>}
-      {!isEmpty(error) && (
-        <Alert severity="error" style={{ marginTop: "2rem" }}>
-          {error.examStudentAnswer}
-        </Alert>
-      )}
+      <ErrorSucess
+        isError={!isEmpty(error)}
+        isSucess={!isEmpty(sucess)}
+        errorMessages={[error.examStudentAnswer]}
+        sucessMessage="Berhasil Dibuat"
+      />
       <Grid container justify="center">
         <Grid item xs={12} md={6}>
           <Button

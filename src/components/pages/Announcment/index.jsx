@@ -9,7 +9,7 @@ import { viewAnnouncement } from "../../../redux/actions/announcementAction";
 function Announcement({ announcements, viewAnnouncement }) {
   React.useEffect(() => {
     viewAnnouncement();
-  }, [viewAnnouncement]);
+  }, []);
 
   return (
     <Grid container spacing={2}>

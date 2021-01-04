@@ -6,15 +6,17 @@ import { makeStyles } from "@material-ui/styles";
 import PeopleIcon from "@material-ui/icons/People";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
+import fileDownload from "js-file-download";
 import axios from "axios";
 import { connect } from "react-redux";
 
-import Section from "../../atoms/Section";
-import ExamSection from "../../atoms/ExamSection";
-import TheorySection from "../../atoms/TheorySection";
+import Section from "../../molecules/Section";
+import ExamSection from "../../molecules/ExamSection";
+import TheorySection from "../../molecules/TheorySection";
 
 import { deleteExam } from "../../../redux/actions/examAction";
 import { setError, setSucess } from "../../../redux/actions/helperAction";
+import color from "../../../utils/color";
 import proxy from "../../../utils/proxy";
 
 function Sections({ id, isStudent, isTeacher, majorName }) {
@@ -28,7 +30,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
     },
     subRoot: {
       padding: "2rem 0 2rem",
-      borderBottom: `0.05px solid #bdbdbd`,
+      borderBottom: `0.05px solid ${color.greyLight}`,
     },
   });
 
@@ -38,7 +40,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
 
   const [exams, setExams] = React.useState([]);
 
-  const handleDeleteTheory = (e, i, majorId) => {
+  const handleDeleteTheory = (i, majorId) => {
     axios.post(`${proxy}/api/theorys/delete/${i}/${majorId}`).then((res) => {
       setTheorys([...res.data]);
     });
@@ -99,11 +101,11 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
               />
             }
             title={`Materi ke ${theory.numberOfTheory}`}
-            isLink={true}
             id={id}
             isStudent={isStudent}
             majorName={majorName}
             i={theory.numberOfTheory}
+            type={theory.type}
             handleDelete={handleDeleteTheory}
             isTeacher={isTeacher}
           >
@@ -129,9 +131,8 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
                     .get(
                       `${proxy}/api/theorys/download?filename=${theory.fileName}`
                     )
-                    .then((res) => {
-                      console.log(res);
-                      // fileDownload(data, `${theory.fileName}`);
+                    .then((data) => {
+                      fileDownload(data, `${theory.fileName}`);
                     })
                     .catch((err) => console.log("error"));
                 }}

@@ -62,7 +62,7 @@ function Card({ id, title, from, to }) {
       padding: "0 2rem 2rem",
     },
     img: {
-      width: "100%",
+      maxWidth: "100%",
       height: "auto",
     },
     title: {

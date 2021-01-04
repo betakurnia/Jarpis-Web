@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/styles";
 import { connect } from "react-redux";
 
 import { getUserById } from "../../../redux/actions/userAction";
+import color from "../../../utils/color";
 
 function Profile({ user, getUserById }) {
   const useStyles = makeStyles({
@@ -20,6 +21,14 @@ function Profile({ user, getUserById }) {
     clas: {
       marginTop: "2rem",
       fontSize: "1.5rem ",
+    },
+    title: {
+      fontWeight: "bold",
+    },
+    description: {
+      marginTop: "0.75rem",
+      fontSize: "1.1rem",
+      color: color.lightGray,
     },
   });
 
@@ -37,62 +46,23 @@ function Profile({ user, getUserById }) {
             <Avatar style={{ width: "100%", height: 160 }}></Avatar>
           </Grid>
           <Grid item xs={6} md={8}>
-            <Typography
-              variant="h4"
-              component="h2"
-              style={{ fontWeight: "bold" }}
-            >
+            <Typography variant="h4" component="h2" className={classes.title}>
               {user.userData.name}
             </Typography>
-            <Typography
-              variant="body1"
-              component="p"
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "1.1rem",
-                color: "#757575",
-              }}
-            >
-              Kelas: {user.userData.kelas.kelas}{" "}
-            </Typography>
-            <Typography
-              variant="body1"
-              component="p"
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "1.1rem",
-                color: "#757575",
-              }}
-            >
-              Umur: {user.userData.age} Tahun
-            </Typography>
-            <Typography
-              variant="body1"
-              component="p"
-              classes={classes.clas}
-            ></Typography>
-            <Typography
-              variant="body1"
-              component="p"
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "1.1rem",
-                color: "#757575",
-              }}
-            >
-              Kota: {user.userData.address}
-            </Typography>
-            <Typography
-              variant="body1"
-              component="p"
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "1.1rem",
-                color: "#757575",
-              }}
-            >
-              Agama: {user.userData.religion}
-            </Typography>
+            <div className={classes.description}>
+              <Typography variant="body1" component="p">
+                Kelas: {user.userData.kelas.kelas}{" "}
+              </Typography>
+              <Typography variant="body1" component="p">
+                Umur: {user.userData.age} Tahun
+              </Typography>
+              <Typography variant="body1" component="p">
+                Kota: {user.userData.address}
+              </Typography>
+              <Typography variant="body1" component="p">
+                Agama: {user.userData.religion}
+              </Typography>
+            </div>
           </Grid>
         </Grid>
       )}

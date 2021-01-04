@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/styles";
+import makeStyles from "@material-ui/styles/makeStyles";
 import { connect } from "react-redux";
 import axios from "axios";
 

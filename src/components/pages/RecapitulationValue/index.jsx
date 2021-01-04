@@ -25,9 +25,29 @@ const useStyles = makeStyles({
     color: color.white,
     borderRadius: "0.5rem",
   },
+  bgPrimary: {
+    backgroundColor: color.primary,
+  },
+  tableRow: {
+    "& > *": {
+      color: color.white,
+    },
+  },
+  info: {
+    backgroundColor: color.info,
+    padding: "0.5rem 1rem",
+    color: color.white,
+    borderRadius: "0.5rem",
+  },
+  danger: {
+    backgroundColor: color.danger,
+    padding: "0.5rem 1rem",
+    color: color.white,
+    borderRadius: "0.5rem",
+  },
 });
 
-function BasicTable({ user, major }) {
+function RecapitulationValue({ user, major }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -79,7 +99,7 @@ function BasicTable({ user, major }) {
 
   const { ujian, id } = useParams();
 
-  const [recapitulation, setRecapitulation] = React.useState([]);
+  const [recapitulations, setRecapitulations] = React.useState([]);
 
   const [present, setPresent] = React.useState({
     userId: "",
@@ -95,7 +115,7 @@ function BasicTable({ user, major }) {
     axios
       .get(`${proxy}/api/exams/view/recapitulation/${id}?type=${ujian}`)
       .then((res) => {
-        setRecapitulation([...res.data]);
+        setRecapitulations([...res.data]);
       })
       .catch((err) => console.log(err));
   }, [id, ujian]);
@@ -107,47 +127,30 @@ function BasicTable({ user, major }) {
         aria-label="simple table"
         style={{ marginTop: "2rem" }}
       >
-        <TableHead style={{ backgroundColor: color.primary }}>
-          <TableRow>
-            <TableCell style={{ color: color.white }}>Siswa</TableCell>
-            <TableCell style={{ color: color.white }}>Nilai</TableCell>
-            <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
+        <TableHead className={classes.bgPrimary}>
+          <TableRow className={classes.tableRow}>
+            <TableCell>Siswa</TableCell>
+            <TableCell>Mata Pelajaran</TableCell>
+            <TableCell>Nilai</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {!isEmpty(recapitulation) &&
-            recapitulation.map((recapitulatio) => (
-              <TableRow key={recapitulatio}>
+          {!isEmpty(recapitulations) &&
+            recapitulations.map((recapitulation) => (
+              <TableRow key={recapitulation}>
+                <TableCell> {recapitulation.userId.name}</TableCell>
+                <TableCell>{recapitulation.majorId.majorName}</TableCell>
                 <TableCell>
-                  {" "}
-                  <p>{recapitulatio.userId.name}</p>
-                </TableCell>
-                <TableCell>
-                  {recapitulatio.result > 70 ? (
-                    <TableCell
-                      style={{
-                        backgroundColor: "green",
-                        padding: "0.5rem 1rem",
-                        color: "#ffffff",
-                        borderRadius: "0.5rem",
-                      }}
-                    >
-                      {recapitulatio.result}
+                  {recapitulation.result > 70 ? (
+                    <TableCell className={classes.info}>
+                      {recapitulation.result}
                     </TableCell>
                   ) : (
-                    <TableCell
-                      style={{
-                        backgroundColor: "#dc3545",
-                        padding: "0.5rem 1rem",
-                        color: "#ffffff",
-                        borderRadius: "0.5rem",
-                      }}
-                    >
-                      {recapitulatio.result}
+                    <TableCell className={classes.danger}>
+                      {recapitulation.result}
                     </TableCell>
                   )}
                 </TableCell>
-                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
               </TableRow>
             ))}
         </TableBody>
@@ -160,4 +163,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(BasicTable);
+export default connect(mapStateToProps)(RecapitulationValue);

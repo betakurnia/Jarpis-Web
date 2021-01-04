@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 import color from "../../../utils/color";
 
-function ExamSection({ description, icon, title, id, isStudent }) {
+function Section({ description, icon, title, id, isStudent }) {
   const useStyles = makeStyles({
     icon: {
       width: "100%",
@@ -54,4 +54,4 @@ function ExamSection({ description, icon, title, id, isStudent }) {
   );
 }
 
-export default ExamSection;
+export default Section;

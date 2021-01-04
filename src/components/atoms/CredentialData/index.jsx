@@ -3,10 +3,12 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
 
+import color from "../../../utils/color";
+
 function CredentialData({ role, email, password }) {
   const useStyles = makeStyles({
     role: {
-      color: "#404145",
+      color: color.lightBlack,
     },
     root: {
       margin: 0,

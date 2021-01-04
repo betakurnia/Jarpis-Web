@@ -5,7 +5,7 @@ import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
-function ButtonRed({ children, handleClick }) {
+function ButtonRed({ children, handleClick, ...rest }) {
   const useStyles = makeStyles({
     btnRed: {
       color: color.danger,

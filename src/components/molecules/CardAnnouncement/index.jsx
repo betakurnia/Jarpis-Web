@@ -120,7 +120,7 @@ function CardAnnouncement({
         </DialogContent>
         <DialogActions>
           <ButtonRed handleClick={handleClose}>Batal</ButtonRed>
-          <ButtonDanger handleDelete={handleDeleteAnnnouncement}>
+          <ButtonDanger handleClick={handleDeleteAnnnouncement}>
             Ok
           </ButtonDanger>
         </DialogActions>

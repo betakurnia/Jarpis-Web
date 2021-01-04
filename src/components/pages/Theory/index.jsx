@@ -2,8 +2,6 @@ import React from "react";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import FormLabel from "@material-ui/core/FormLabel";
-import Alert from "@material-ui/lab/Alert";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import makeStyles from "@material-ui/styles/makeStyles";
 import axios from "axios";
@@ -14,10 +12,10 @@ import { connect } from "react-redux";
 import Input from "../../atoms/Input";
 import Create from "../../atoms/Create";
 import TheoryTemplate from "../../atoms/TheoryTemplate";
+import ErrorSucess from "../../atoms/ErrorSucess";
 
 import isEmpty from "../../../utils/is-empty";
 import proxy from "../../../utils/proxy";
-import color from "../../../utils/color";
 import { SET_SUCESS, GET_ERRORS } from "../../../redux/actions";
 
 function Pengumuman({ sucess, error }) {
@@ -80,8 +78,6 @@ function Pengumuman({ sucess, error }) {
       .then((res) => {
         console.log(res);
         window.location.href = "/dashboard";
-        // dispatch({ type: GET_ERRORS, payload: {} });
-        // dispatch({ type: SET_SUCESS, payload: true });
       })
       .catch((err) => {
         dispatch({ type: SET_SUCESS, payload: false });
@@ -112,12 +108,6 @@ function Pengumuman({ sucess, error }) {
 
   return (
     <Create title={`Materi ke ${i}`}>
-      <div
-        style={{
-          paddingBottom: "2rem",
-          borderBottom: `0.05px solid ${color.greyLight}`,
-        }}
-      ></div>
       <form onSubmit={handleSubmit} enctype="multipart/form-data">
         <TheoryTemplate title="Tugas" icon={<AssignmentIcon />}>
           <Input
@@ -163,15 +153,12 @@ function Pengumuman({ sucess, error }) {
             <TheoryTemplate title={tipe}></TheoryTemplate>
           </React.Fragment>
         ))}
-        {!isEmpty(error) && (
-          <Alert className={classes.alert} severity="error">
-            {error.description || error.file}
-          </Alert>
-        )}
-        {sucess && (
-          <Alert className={classes.alert}> Materi berhasil dibuat</Alert>
-        )}
-        <FormLabel component="legend" style={{ marginTop: "2rem" }}></FormLabel>
+
+        <ErrorSucess
+          isError={!isEmpty(error)}
+          isSucess={Boolean(sucess)}
+          errorMessages={[error.description, error.file]}
+        />
 
         <Grid container justify="center">
           <Grid item xs={12} md={4}>

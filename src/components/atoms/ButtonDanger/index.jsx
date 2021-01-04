@@ -5,7 +5,7 @@ import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
-function ButtonDanger({ children, handleDelete }) {
+function ButtonDanger({ children, handleClick, ...rest }) {
   const useStyles = makeStyles({
     btnDanger: {
       backgroundColor: color.danger,
@@ -19,7 +19,7 @@ function ButtonDanger({ children, handleDelete }) {
   const classes = useStyles();
 
   return (
-    <Button onClick={handleDelete} autoFocus className={classes.btnDanger}>
+    <Button onClick={handleClick} autoFocus className={classes.btnDanger}>
       {children}
     </Button>
   );

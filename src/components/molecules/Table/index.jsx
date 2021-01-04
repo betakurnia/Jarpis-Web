@@ -282,7 +282,7 @@ function BasicTable({ id, user, major }) {
           >
             Batal
           </Button>
-          <ButtonInfo handleDelete={handleSubmit}>Ok</ButtonInfo>
+          <ButtonInfo handleClick={handleSubmit}>Ok</ButtonInfo>
         </DialogActions>
       </Dialog>
     </TableContainer>

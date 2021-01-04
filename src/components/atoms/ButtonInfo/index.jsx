@@ -5,8 +5,7 @@ import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
-function ButtonInfo({ children, handleDelete, ...rest }) {
-  console.log(rest);
+function ButtonInfo({ children, handleClick, ...rest }) {
   const useStyles = makeStyles({
     btnInfo: {
       backgroundColor: color.info,
@@ -22,7 +21,7 @@ function ButtonInfo({ children, handleDelete, ...rest }) {
   return (
     <Button
       {...rest}
-      onClick={handleDelete}
+      onClick={handleClick}
       autoFocus
       className={classes.btnInfo}
     >

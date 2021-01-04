@@ -25,9 +25,29 @@ const useStyles = makeStyles({
     color: color.white,
     borderRadius: "0.5rem",
   },
+  bgPrimary: {
+    backgroundColor: color.primary,
+  },
+  tRow: {
+    "& > *": {
+      color: color.white,
+    },
+  },
+  info: {
+    backgroundColor: color.info,
+    padding: "0.5rem 1rem",
+    color: color.white,
+    borderRadius: "0.5rem",
+  },
+  danger: {
+    backgroundColor: color.danger,
+    padding: "0.5rem 1rem",
+    color: color.white,
+    borderRadius: "0.5rem",
+  },
 });
 
-function BasicTable({ user, major }) {
+function RecapitulationStudent({ user, major }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -77,7 +97,7 @@ function BasicTable({ user, major }) {
 
   const classes = useStyles();
 
-  const [recapitulation, setRecapitulation] = React.useState([]);
+  const [recapitulations, setRecapitulation] = React.useState([]);
 
   React.useEffect(() => {
     axios
@@ -94,48 +114,31 @@ function BasicTable({ user, major }) {
         className={classes.table}
         aria-label="simple table"
         style={{ marginTop: "2rem" }}
+        className={classes.bgPrimary}
       >
-        <TableHead style={{ backgroundColor: color.primary }}>
-          <TableRow>
-            <TableCell style={{ color: color.white }}>Siswa</TableCell>
-            <TableCell style={{ color: color.white }}>Tipe</TableCell>
-            <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
-            <TableCell style={{ color: color.white }}>Nilai</TableCell>
+        <TableHead>
+          <TableRow className={classes.tableRow}>
+            <TableCell>Siswa</TableCell>
+            <TableCell>Nilai</TableCell>
+            <TableCell>Mata Pelajaran</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {!isEmpty(recapitulation) &&
-            recapitulation.map((recapitulatio) => (
-              <TableRow key={recapitulatio}>
-                <TableCell>
-                  {" "}
-                  <p>{recapitulatio.userId.name}</p>
-                </TableCell>
+          {!isEmpty(recapitulations) &&
+            recapitulations.map((recapitulation) => (
+              <TableRow key={recapitulation}>
+                <TableCell> {recapitulation.userId.name}</TableCell>
 
-                <TableCell>{recapitulatio.type.split("-")[0]}</TableCell>
-                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
+                <TableCell>{recapitulation.type.split("-")[0]}</TableCell>
+                <TableCell>{recapitulation.majorId.majorName}</TableCell>
                 <TableCell>
-                  {recapitulatio.result > 70 ? (
-                    <TableCell
-                      style={{
-                        backgroundColor: "green",
-                        padding: "0.5rem 1rem",
-                        color: "#ffffff",
-                        borderRadius: "0.5rem",
-                      }}
-                    >
-                      {recapitulatio.type}
+                  {recapitulation.result > 70 ? (
+                    <TableCell className={classes.info}>
+                      {recapitulation.type}
                     </TableCell>
                   ) : (
-                    <TableCell
-                      style={{
-                        backgroundColor: "#dc3545",
-                        padding: "0.5rem 1rem",
-                        color: "#ffffff",
-                        borderRadius: "0.5rem",
-                      }}
-                    >
-                      {recapitulatio.result}
+                    <TableCell className={classes.danger}>
+                      {recapitulation.result}
                     </TableCell>
                   )}
                 </TableCell>
@@ -151,4 +154,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(BasicTable);
+export default connect(mapStateToProps)(RecapitulationStudent);

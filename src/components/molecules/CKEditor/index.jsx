@@ -121,7 +121,7 @@ function CKEditors({
           isSucess={Boolean(sucess)}
           isError={!isEmpty(error)}
           // sucessMessage={"data pengumuman sukses"}
-          errorMessage={[error.title, error.description]}
+          errorMessages={[error.title, error.description]}
         />
         <Grid container justify="center">
           <Grid item xs={12} md={4}>

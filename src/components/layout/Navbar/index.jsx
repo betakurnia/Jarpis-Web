@@ -56,7 +56,8 @@ function Navbar({ user, logoutUser, history }) {
       padding: "0 1.5rem",
       display: "inline-block",
       [theme.breakpoints.down("xs")]: {
-        padding: "0 0.5rem",
+        paddingRight: "0.5rem",
+        paddingLeft: "0.5rem",
       },
     },
     disabled: {

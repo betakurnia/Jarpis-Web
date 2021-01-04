@@ -113,7 +113,7 @@ function Login({ loginUser, error, history, user }) {
       <Container maxWidth="xl">
         {" "}
         <ButtonInfo
-          handleDelete={handleClickOpen}
+          handleClick={handleClickOpen}
           style={{ padding: "0.25rem 0.875rem", marginBottom: "1.5rem" }}
           className={classes.credentialButton}
         >

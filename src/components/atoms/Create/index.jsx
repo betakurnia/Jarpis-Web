@@ -1,6 +1,6 @@
 import React from "react";
 
-import Grid from "@material-ui/core/Grid";
+import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
 import { connect } from "react-redux";
@@ -32,21 +32,19 @@ function Create({ title, children }) {
   const classes = useStyles();
 
   return (
-    <Grid container justify="center">
-      <Grid item xs={12} md={8}>
-        <div className={classes.root}>
-          <Typography
-            variant="h4"
-            component="h1"
-            align="center"
-            className={classes.title}
-          >
-            {title}
-          </Typography>
-          {children}
-        </div>
-      </Grid>
-    </Grid>
+    <Container maxWidth="md">
+      <div className={classes.root}>
+        <Typography
+          variant="h4"
+          component="h1"
+          align="center"
+          className={classes.title}
+        >
+          {title}
+        </Typography>
+        {children}
+      </div>
+    </Container>
   );
 }
 

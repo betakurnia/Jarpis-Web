@@ -19,6 +19,8 @@ import axios from "axios";
 import NativeSelect from "@material-ui/core/NativeSelect";
 
 import Input from "../../atoms/Input";
+import Create from "../../atoms/Create";
+import ErrorSucess from "../../atoms/ErrorSucess";
 
 import { registerUser } from "../../../redux/actions/userAction";
 import { clearErrorSucess } from "../../../redux/actions/helperAction";
@@ -106,12 +108,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
   };
 
   const useStyles = makeStyles({
-    root: {
-      borderRadius: "0.5rem",
-      padding: "2rem",
-      backgroundColor: color.white,
-      boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.175) !important",
-    },
     title: {
       color: "#404145",
       fontWeight: "500",
@@ -155,181 +151,158 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
   }, [clearErrorSucess]);
 
   return (
-    <Grid container justify="center">
-      <Grid item xs={12} md={8}>
-        <form onSubmit={onSubmit}>
-          <div className={classes.root}>
-            <Typography
-              variant="h4"
-              component="h1"
-              align="center"
-              className={classes.title}
-            >
-              Daftar ke Jarpis
-            </Typography>
-            <FormLabel component="legend" className={classes.formLabel}>
-              <Typography variant="h5" component="p">
-                Role
-              </Typography>
-            </FormLabel>
-            <RadioGroup
-              aria-label="gender"
-              name="Role"
-              value={users.role}
-              onChange={handleMenu}
-              row
-            >
-              <FormControlLabel
-                value="siswa"
-                control={<Radio />}
-                label="Siswa"
-              />
-              <FormControlLabel
-                value="teacher"
-                control={<Radio />}
-                label="Guru"
-              />
-              <FormControlLabel
-                value="admin"
-                control={<Radio />}
-                label="Admin"
-              />
-            </RadioGroup>
-            <Input
-              id="username"
-              label="Email / Username"
-              placeholder="contoh: beta@gmail.com"
-              handleChange={handleChange}
-            />
-            <Input
-              id="password"
-              label="Password"
-              placeholder="*********"
-              handleChange={handleChange}
-              isPassword={true}
-            />
-            <Input
-              id="name"
-              label="Nama Lengkap"
-              placeholder="contoh: Beta Kurnia"
-              handleChange={handleChange}
-            />
+    <form onSubmit={onSubmit}>
+      <Create title="Daftar ke Jarpis">
+        <FormLabel component="legend" className={classes.formLabel}>
+          <Typography variant="h5" component="p">
+            Role
+          </Typography>
+        </FormLabel>
+        <RadioGroup
+          aria-label="gender"
+          name="Role"
+          value={users.role}
+          onChange={handleMenu}
+          row
+        >
+          <FormControlLabel value="siswa" control={<Radio />} label="Siswa" />
+          <FormControlLabel value="teacher" control={<Radio />} label="Guru" />
+          <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+        </RadioGroup>
+        <Input
+          id="username"
+          label="Email / Username"
+          placeholder="contoh: beta@gmail.com"
+          handleChange={handleChange}
+        />
+        <Input
+          id="password"
+          label="Password"
+          placeholder="*********"
+          handleChange={handleChange}
+          isPassword={true}
+        />
+        <Input
+          id="name"
+          label="Nama Lengkap"
+          placeholder="contoh: Beta Kurnia"
+          handleChange={handleChange}
+        />
 
-            {users.role === "teacher" && (
-              <React.Fragment>
-                <FormControl
-                  component="fieldset"
-                  className={classes.formControl}
-                >
-                  <FormLabel component="legend">Mata Pelajaran</FormLabel>
-                  <FormGroup row>
-                    {majors.map((major) => (
-                      <React.Fragment>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              // checked={gilad}
-                              value={major._id}
-                              onChange={(e) => {
-                                handleChange(e, "majorId");
-                              }}
-                              name={major.majorName}
-                            />
-                          }
-                          label={major.majorName}
+        {users.role === "teacher" && (
+          <React.Fragment>
+            <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend">Mata Pelajaran</FormLabel>
+              <FormGroup row>
+                {majors.map((major) => (
+                  <React.Fragment>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          // checked={gilad}
+                          value={major._id}
+                          onChange={(e) => {
+                            handleChange(e, "majorId");
+                          }}
+                          name={major.majorName}
                         />
-                      </React.Fragment>
-                    ))}
-                  </FormGroup>
-                </FormControl>
-                <label className={classes.label}>Kelas</label>
-                <NativeSelect
-                  id="demo-customized-select-native"
-                  style={{ marginTop: "0.5rem" }}
-                  value={users.kelas}
-                  onChange={(e) => {
-                    handleChange(e, "kelas");
-                  }}
-                  input={<BootstrapInput />}
-                  fullWidth
-                >
-                  {kelass.map((kelas) => (
-                    <option value={kelas._id}>{kelas.kelas}</option>
-                  ))}
-                </NativeSelect>
-              </React.Fragment>
-            )}
+                      }
+                      label={major.majorName}
+                    />
+                  </React.Fragment>
+                ))}
+              </FormGroup>
+            </FormControl>
+            <label className={classes.label}>Kelas</label>
+            <NativeSelect
+              id="demo-customized-select-native"
+              style={{ marginTop: "0.5rem" }}
+              value={users.kelas}
+              onChange={(e) => {
+                handleChange(e, "kelas");
+              }}
+              input={<BootstrapInput />}
+              fullWidth
+            >
+              {kelass.map((kelas) => (
+                <option value={kelas._id}>{kelas.kelas}</option>
+              ))}
+            </NativeSelect>
+          </React.Fragment>
+        )}
 
-            {users.role === "siswa" && (
-              <React.Fragment>
-                <Input
-                  id="nis"
-                  label="NIS"
-                  placeholder="contoh: 1234567890"
-                  handleChange={handleChange}
-                />
-                <label className={classes.label} htmlFor="class">
-                  Kelas
-                </label>
-                <NativeSelect
-                  id="class"
-                  style={{ marginTop: "0.5rem" }}
-                  value={users.kelas}
-                  onChange={(e) => {
-                    handleChange(e, "kelas");
-                  }}
-                  input={<BootstrapInput />}
-                  fullWidth
-                >
-                  {kelass.map((kelas) => (
-                    <option value={kelas._id}>{kelas.kelas}</option>
-                  ))}
-                </NativeSelect>
-                <Input
-                  id="age"
-                  label="Umur"
-                  placeholder="contoh: 14 tahun"
-                  handleChange={handleChange}
-                />
-                <Input
-                  id="address"
-                  label="Alamat"
-                  placeholder="contoh: Blater"
-                  handleChange={handleChange}
-                />
-                <Input
-                  id="religion"
-                  label="Agama"
-                  placeholder="contoh: ISLAM"
-                  handleChange={handleChange}
-                />
-              </React.Fragment>
-            )}
-            {!isEmpty(error) && (
-              <Alert className={classes.alert} severity="error">
-                {error.username || error.password || error.role || error.name}
-              </Alert>
-            )}
-            {sucess && (
-              <Alert className={classes.alert}> Akun berhasil dibuat</Alert>
-            )}
-            <Grid container justify="center">
-              <Grid item xs={12} md={4}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  className={classes.btn}
-                >
-                  Daftar
-                </Button>
-              </Grid>
-            </Grid>
-          </div>
-        </form>
-      </Grid>
-    </Grid>
+        {users.role === "siswa" && (
+          <React.Fragment>
+            <Input
+              id="nis"
+              label="NIS"
+              placeholder="contoh: 1234567890"
+              handleChange={handleChange}
+            />
+            <label className={classes.label} htmlFor="class">
+              Kelas
+            </label>
+            <NativeSelect
+              id="class"
+              style={{ marginTop: "0.5rem" }}
+              value={users.kelas}
+              onChange={(e) => {
+                handleChange(e, "kelas");
+              }}
+              input={<BootstrapInput />}
+              fullWidth
+            >
+              {kelass.map((kelas) => (
+                <option value={kelas._id}>{kelas.kelas}</option>
+              ))}
+            </NativeSelect>
+            <Input
+              id="age"
+              label="Umur"
+              placeholder="contoh: 14 tahun"
+              handleChange={handleChange}
+            />
+            <Input
+              id="address"
+              label="Alamat"
+              placeholder="contoh: Blater"
+              handleChange={handleChange}
+            />
+            <Input
+              id="religion"
+              label="Agama"
+              placeholder="contoh: ISLAM"
+              handleChange={handleChange}
+            />
+          </React.Fragment>
+        )}
+        <ErrorSucess
+          isError={!isEmpty(error)}
+          isSucess={Boolean(sucess)}
+          sucessMessage="Akun berhasil dibuat"
+          errorMessages={[
+            error.username,
+            error.password,
+            error.role,
+            error.name,
+          ]}
+        />
+        <Grid container justify="center">
+          <Grid item xs={12} md={4}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              className={classes.btn}
+            >
+              Daftar
+            </Button>
+          </Grid>
+        </Grid>
+        {/* </div> */}
+      </Create>
+    </form>
   );
 }
 

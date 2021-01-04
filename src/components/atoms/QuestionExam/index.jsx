@@ -29,7 +29,7 @@ function QuestionExam({
   return (
     <div>
       <Grid container className={classes.root}>
-        <Grid item xs={0.5}>
+        <Grid item xs={1}>
           <Typography variant="body1" component="p" align="center">
             {i} .{" "}
           </Typography>
@@ -39,7 +39,7 @@ function QuestionExam({
             {title}
           </Typography>
         </Grid>
-        <FormLabel component="legend" className={classes.formLabel}></FormLabel>
+        {/* <FormLabel component="legend" className={classes.formLabel}></FormLabel> */}
         <RadioGroup
           value={value}
           onChange={(e) => {

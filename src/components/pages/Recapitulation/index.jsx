@@ -21,14 +21,37 @@ const useStyles = makeStyles({
     minWidth: 650,
   },
   blue: {
-    backgroundColor: "#3f51b5",
+    backgroundColor: color.primary,
     padding: "0.5rem 1rem",
     color: color.white,
     borderRadius: "0.5rem",
   },
+  allowed: {
+    backgroundColor: color.info,
+    padding: "0.5rem 1rem",
+    color: color.white,
+    borderRadius: "0.5rem",
+  },
+  notAllow: {
+    backgroundColor: color.danger,
+    padding: "0.5rem 1rem",
+    color: color.white,
+    borderRadius: "0.5rem",
+  },
+  bgPrimary: {
+    backgroundColor: color.primary,
+  },
+  tableRow: {
+    "& > *": {
+      color: color.white,
+    },
+  },
+  container: {
+    marginTop: "3rem",
+  },
 });
 
-function BasicTable({ id, user, major }) {
+function Recapitulation({ id, user, major }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -78,7 +101,7 @@ function BasicTable({ id, user, major }) {
 
   const classes = useStyles();
 
-  const [recapitulation, setRecapitulation] = React.useState([]);
+  const [recapitulations, setRecapitulation] = React.useState([]);
 
   const [present, setPresent] = React.useState({
     userId: "",
@@ -100,7 +123,7 @@ function BasicTable({ id, user, major }) {
   }, [id]);
 
   return (
-    <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
+    <TableContainer component={Paper} className={classes.container}>
       <Alert severity="warning">
         Dapat mengikuti ujian ketika kehadiran lebih dari 8
       </Alert>
@@ -109,58 +132,27 @@ function BasicTable({ id, user, major }) {
         aria-label="simple table"
         style={{ marginTop: "2rem" }}
       >
-        <TableHead style={{ backgroundColor: color.primary }}>
-          <TableRow>
-            <TableCell style={{ color: color.white }}>Siswa</TableCell>
-            <TableCell style={{ color: color.white }}>Mata Pelajaran</TableCell>
-            <TableCell style={{ color: color.white }}>
-              Total Kehadiran
-            </TableCell>
-            <TableCell style={{ color: color.white }}>
-              Dapat Mengikuti Ujian
-            </TableCell>
+        <TableHead className={classes.bgPrimary}>
+          <TableRow className={classes.tableRow}>
+            <TableCell>Siswa</TableCell>
+            <TableCell>Mata Pelajaran</TableCell>
+            <TableCell>Total Kehadiran</TableCell>
+            <TableCell>Dapat Mengikuti Ujian</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {!isEmpty(recapitulation) &&
-            recapitulation.map((recapitulatio) => (
-              <TableRow key={recapitulatio}>
+          {!isEmpty(recapitulations) &&
+            recapitulations.map((recapitulation) => (
+              <TableRow key={recapitulation}>
+                <TableCell> {recapitulation.userId.name}</TableCell>
+                <TableCell>{recapitulation.majorId.majorName}</TableCell>
+                <TableCell>{recapitulation.status.length} / 14</TableCell>
                 <TableCell>
-                  {" "}
-                  <p>{recapitulatio.userId.name}</p>
-                </TableCell>
-                <TableCell>{recapitulatio.majorId.majorName}</TableCell>
-                <TableCell>
-                  <p>
-                    <p>{recapitulatio.status.length} / 14</p>
-                  </p>
-                </TableCell>
-                <TableCell>
-                  <p>
-                    {recapitulatio.status.length > 7 ? (
-                      <span
-                        style={{
-                          backgroundColor: "#dc3545",
-                          padding: "0.5rem 1rem",
-                          color: "green",
-                          borderRadius: "0.5rem",
-                        }}
-                      >
-                        Diizinkan
-                      </span>
-                    ) : (
-                      <span
-                        style={{
-                          backgroundColor: "#dc3545",
-                          padding: "0.5rem 1rem",
-                          color: "#ffffff",
-                          borderRadius: "0.5rem",
-                        }}
-                      >
-                        Tidak
-                      </span>
-                    )}
-                  </p>
+                  {recapitulation.status.length > 7 ? (
+                    <span className={classes.allowed}>Diizinkan</span>
+                  ) : (
+                    <span className={classes.notAllow}>Tidak</span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -174,4 +166,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(BasicTable);
+export default connect(mapStateToProps)(Recapitulation);

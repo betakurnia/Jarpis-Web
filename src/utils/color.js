@@ -8,6 +8,8 @@ const color = {
   warning: "#ffc107",
   grey: "#62646a",
   greyLight: "#bdbdbd",
+  lightBlack: "#404145",
+  lightGray: "#757575",
 };
 
 export default color;
