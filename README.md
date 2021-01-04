@@ -1,8 +1,8 @@
-Jarpis Apps is e-learning application where user can learning online. <br/>
+Jarpis Apps is open source e-learning application where user can learning online. <br/>
 Theres consist of many feature such as login, register, announcement, recapitulation, presence, theory, exams and many more.<br/>
 
+Tech:
 <ul>
-Technology stack :
   <li>ReactJS</li>
   <li>Redux</li>
    <li>Redux-thunk</li>
