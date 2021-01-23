@@ -1,71 +1,152 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 
+import BreadCrumb from "../../atoms/BreadCrumb";
+import Sections from "../../organisms/Sections";
+
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import makeStyles from "@material-ui/styles/makeStyles";
-import { connect } from "react-redux";
 import axios from "axios";
-
-import Sections from "../../organisms/Sections";
+import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import color from "../../../utils/color";
+import isEmpty from "../../../utils/is-empty";
 import proxy from "../../../utils/proxy";
 
 function Major({ user }) {
-  const { id } = useParams();
+  var dateFormat = require("dateformat");
+  dateFormat.i18n = {
+    dayNames: [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jum'at",
+      "Sabtu",
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jum'at",
+      "Sabtu",
+    ],
+    monthNames: [
+      "Januari",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "Desember",
+    ],
+    timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"],
+  };
 
-  const [major, setMajor] = React.useState({});
-
-  React.useEffect(() => {
-    axios
-      .get(`${proxy}/api/majors/view/${id}`)
-      .then((res) => {
-        setMajor(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, [id]);
+  const headerDOM = useRef(null);
 
   const useStyles = makeStyles({
     root: {
       backgroundColor: color.white,
       padding: "2rem",
-      boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.175) !important",
-      borderBottomLeftRadius: "0.5rem",
-      borderTopLeftradius: "0.5rem",
+      boxShadow: "0 1rem 3rem rgba(0, 0, 0, 0.175) ",
     },
     header: {
-      backgroundColor: color.primary,
       color: color.white,
       padding: "1rem 2rem",
-      borderTopLeftRadius: "0.5rem",
-      borderTopRightRadius: "0.5rem",
     },
     title: {
       fontWeight: 500,
+    },
+    img: {
+      height: 54,
+      width: 54,
+    },
+    box: {
+      paddingLeft: "1.5rem",
     },
   });
 
   const classes = useStyles();
 
+  const { id } = useParams();
+
+  const [major, setMajor] = useState({});
+
+  const { majorName, imageName, hoursOfSubject, hoursOfSubjectFinish } = major;
+
+  const { role } = user.isAuthenticated;
+
+  useEffect(() => {
+    axios
+      .get(`${proxy}/api/majors/view/${id}`)
+      .then((res) => {
+        const { data } = res;
+
+        headerDOM.current.style.backgroundColor = data.color;
+
+        setMajor({ ...data });
+      })
+      .catch((err) => console.log(err));
+  }, [id]);
+
+  const header = !isEmpty(major) && (
+    <Fragment>
+      <Grid container alignItems="center">
+        <img
+          className={classes.img}
+          alt="education"
+          src={`/majors/${imageName}`}
+        />
+        <div className={classes.box}>
+          <Typography variant="h4" component="h1" className={classes.title}>
+            {majorName}
+          </Typography>
+          <Typography variant="body" component="p" className={classes.title}>
+            {dateFormat(hoursOfSubject, "dddd hh:MM TT")} -{" "}
+            {dateFormat(hoursOfSubjectFinish, "hh:MM TT")}
+          </Typography>
+        </div>
+      </Grid>
+    </Fragment>
+  );
+
   return (
-    <React.Fragment>
-      <div className={classes.header}>
-        <Typography variant="h4" component="h1" className={classes.title}>
-          {major.majorName}
-        </Typography>
+    <div>
+      {" "}
+      <BreadCrumb />
+      <div className={classes.header} ref={headerDOM}>
+        {header}
       </div>
       <div className={classes.root}>
-        <Container maxWidth="lg">
-          <Sections
-            id={id}
-            isStudent={user.isAuthenticated.role === "siswa"}
-            isTeacher={user.isAuthenticated.role === "teacher"}
-            majorName={major.majorName}
-          />
-        </Container>
+        <Sections
+          id={id}
+          isStudent={role === "siswa"}
+          isTeacher={role === "teacher"}
+          majorName={majorName}
+        />
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 const mapStateToProps = (state) => ({

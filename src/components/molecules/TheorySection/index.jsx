@@ -1,30 +1,31 @@
-import React from "react";
-
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import { makeStyles } from "@material-ui/styles";
-import { Link } from "react-router-dom";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import clsx from "clsx";
+import React, { useState } from "react";
 
 import ButtonDanger from "../../atoms/ButtonDanger";
 import ButtonRed from "../../atoms/ButtonRed";
+import Dialogs from "../../atoms/Dialogs";
 
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import makeStyles from "@material-ui/styles/makeStyles";
+import { Link } from "react-router-dom";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
+import axios from "axios";
+import fileDownload from "js-file-download";
+import clsx from "clsx";
+
+import proxy from "../../../utils/proxy";
 import color from "../../../utils/color";
 
 function TheorySection({
   icon,
   title,
   id,
-  isStudent,
-  children,
-  i,
-  type,
+  description,
+  fileName,
+  numberOfTheory,
   handleDelete,
   isTeacher,
 }) {
@@ -48,18 +49,22 @@ function TheorySection({
     },
     btnInfo: { backgroundColor: color.danger, color: color.white },
     btnDanger: { backgroundColor: color.white, color: color.danger },
+    download: {
+      padding: "0 0.5rem",
+      cursor: "pointer",
+    },
   });
 
   const classes = useStyles();
 
-  const [openTeacher, setOpenTeacher] = React.useState(false);
+  const [openTeacher, setOpenTeacher] = useState(false);
 
   const handleClickOpen = () => {
     setOpenTeacher(true);
   };
 
   const handleDeleteExam = () => {
-    handleDelete(i, id);
+    handleDelete(numberOfTheory, id);
     setOpenTeacher(false);
   };
 
@@ -67,66 +72,64 @@ function TheorySection({
     setOpenTeacher(false);
   };
 
-  return (
-    <React.Fragment>
-      {isTeacher && (
-        <React.Fragment>
-          <Link to={`/guru/materi/${i}/${id}`}>
-            <EditIcon className={clsx(classes.icon, classes.info)} />
-          </Link>{" "}
-          <DeleteIcon
-            className={clsx(classes.icon, classes.danger, classes.link)}
-            onClick={(e) => {
-              handleClickOpen();
-            }}
-          />
-        </React.Fragment>
-      )}
-      <Grid container spacing={3}>
-        <Grid item xs={1}>
-          <span className={classes.icon}> {icon}</span>
-        </Grid>
-        <Grid item xs={10}>
-          <React.Fragment>
-            {isStudent ? (
-              <Typography variant="h6" component="p">
-                {title}
-              </Typography>
-            ) : (
-              <React.Fragment>
-                <Typography variant="h6" component="p">
-                  {title}
-                </Typography>
-              </React.Fragment>
-            )}
-          </React.Fragment>
+  const editDeleteIconTeacher = isTeacher && (
+    <div>
+      <Link to={`/guru/materi/${numberOfTheory}/${id}`}>
+        <EditIcon className={clsx(classes.icon, classes.info)} />
+      </Link>{" "}
+      <DeleteIcon
+        className={clsx(classes.icon, classes.danger, classes.link)}
+        onClick={handleClickOpen}
+      />
+    </div>
+  );
 
-          <Typography
-            variant="body1"
-            component="p"
-            className={classes.description}
-          >
-            {children}
+  const handleDownload = (e) => {
+    e.preventDefault();
+    axios
+      .get(`${proxy}/api/theorys/download?filename=${fileName}`)
+      .then((data) => {
+        fileDownload(data, `${fileName}`);
+      })
+      .catch((err) => console.log("error"));
+  };
+
+  return (
+    <div>
+      {editDeleteIconTeacher}
+      <Grid container spacing={3}>
+        <span className={classes.icon}> {icon}</span>
+        <div>
+          <Typography variant="h6" component="p">
+            {title}
           </Typography>
-        </Grid>
+          <Grid
+            container
+            alignItems="flex-end"
+            style={{ paddingTop: "0.25rem" }}
+          >
+            <AssignmentIcon />{" "}
+            <span className={classes.description}>{description}</span>
+          </Grid>
+          <Grid
+            container
+            alignItems="flex-end"
+            style={{ paddingTop: "0.75rem" }}
+          >
+            <SystemUpdateAltIcon />{" "}
+            <span onClick={handleDownload}>Download {fileName}</span>
+          </Grid>
+        </div>
       </Grid>
-      <Dialog
+      <Dialogs
         open={openTeacher}
-        onClose={handleCloseTeacher}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        handleClose={handleCloseTeacher}
+        title={`Apakah anda yakin ingin mengapus ${title}`}
       >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Apakah anda yakin ingin mengapus {title}?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <ButtonRed handleClick={handleCloseTeacher}>Batal</ButtonRed>
-          <ButtonDanger handleClick={handleDeleteExam}>Ok</ButtonDanger>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
+        <ButtonRed handleClick={handleCloseTeacher}>Batal</ButtonRed>
+        <ButtonDanger handleClick={handleDeleteExam}>Ok</ButtonDanger>
+      </Dialogs>
+    </div>
   );
 }
 

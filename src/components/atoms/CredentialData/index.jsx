@@ -1,7 +1,7 @@
 import React from "react";
 
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/styles";
+import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
@@ -13,14 +13,13 @@ function CredentialData({ role, email, password }) {
     root: {
       margin: 0,
       listStyle: "none",
-      // listStylePosition: "in",
     },
   });
 
   const classes = useStyles();
 
   return (
-    <React.Fragment>
+    <div>
       <Typography variant="h6" component="p" className={classes.role}>
         {role}
       </Typography>
@@ -28,7 +27,7 @@ function CredentialData({ role, email, password }) {
         <li>Email : {email}</li>
         <li>Password : {password}</li>
       </ul>
-    </React.Fragment>
+    </div>
   );
 }
 

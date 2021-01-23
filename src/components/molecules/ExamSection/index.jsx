@@ -1,28 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
+
+import ButtonInfo from "../../atoms/ButtonInfo";
+import ButtonRed from "../../atoms/ButtonRed";
+import EditIcon from "../../atoms/EditIcon";
+import DeleteIcon from "../../atoms/DeleteIcon";
+import Dialogs from "../../atoms/Dialogs";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import Alert from "@material-ui/lab/Alert";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { withRouter } from "react-router-dom";
 
-import ButtonInfo from "../../atoms/ButtonInfo";
-import ButtonRed from "../../atoms/ButtonRed";
-import ButtonDanger from "../../atoms/ButtonDanger";
-import EditIcon from "../../atoms/EditIcon";
-import DeleteIcon from "../../atoms/DeleteIcon";
-
 import color from "../../../utils/color";
+import { formatTitle } from "../../../utils/format";
 
-function ExakSection({
+function ExamSection({
+  id,
+  numberOfTheory,
   description,
   icon,
-  id,
-  i,
   isStudent,
   isTeacher,
   title,
@@ -31,7 +28,7 @@ function ExakSection({
   handleDelete,
 }) {
   const useStyles = makeStyles({
-    alert: { marginTop: "0", marginBottom: "1.5rem" },
+    alert: { marginBottom: "1.5rem" },
     description: {
       color: color.grey,
     },
@@ -48,9 +45,9 @@ function ExakSection({
 
   const classes = useStyles();
 
-  const [openExam, setOpenExam] = React.useState(false);
+  const [openExam, setOpenExam] = useState(false);
 
-  const [openTeacher, setOpenTeacher] = React.useState(false);
+  const [openTeacher, setOpenTeacher] = useState(false);
 
   const handleClickTeacher = () => {
     setOpenTeacher(true);
@@ -60,11 +57,8 @@ function ExakSection({
     setOpenExam(true);
   };
 
-  const handleCloseExam = (e, status) => {
+  const handleCloseExam = () => {
     setOpenExam(false);
-    if (status === "yes") {
-      history.push(`/mata-pelajaran/${title}/${id}`);
-    }
   };
 
   const handleDeleteExam = () => {
@@ -76,44 +70,47 @@ function ExakSection({
     setOpenTeacher(false);
   };
 
-  return (
-    <React.Fragment>
-      {!isStudent && i === 0 && (
-        <Alert severity="warning" className={classes.alert}>
-          Ujian hanya tersedia untuk siswa
-        </Alert>
-      )}
+  const warningNotStudent = !isStudent && numberOfTheory === 0 && (
+    <Alert severity="warning" className={classes.alert}>
+      Ujian hanya tersedia untuk siswa
+    </Alert>
+  );
 
-      {isTeacher ? (
-        <React.Fragment>
-          <EditIcon href={`/guru/ujian/${type}/${id}`} />
-          <DeleteIcon handleClick={handleClickTeacher} />
-        </React.Fragment>
-      ) : (
-        <div style={{ marginTop: "1.5rem" }}></div>
-      )}
+  const ableExamStudent = isStudent ? (
+    <Typography
+      variant="h6"
+      component="p"
+      className={classes.link}
+      onClick={handleClickOpenExam}
+    >
+      {formatTitle(title)}
+    </Typography>
+  ) : (
+    <Typography variant="h6" component="p">
+      {formatTitle(title)}
+    </Typography>
+  );
+
+  const editDeleteIconTeacher = isTeacher ? (
+    <div>
+      <EditIcon href={`/guru/ujian/${type}/${id}`} />
+      <DeleteIcon handleClick={handleClickTeacher} />
+    </div>
+  ) : (
+    <div style={{ marginTop: "1.5rem" }}></div>
+  );
+
+  return (
+    <div>
+      {warningNotStudent}
+      {ableExamStudent}
+
+      {editDeleteIconTeacher}
 
       <Grid container spacing={2}>
-        <Grid item xs={4} md={2}>
-          <span className={classes.icon}> {icon}</span>
-        </Grid>
+        <span className={classes.icon}> {icon}</span>
 
-        <Grid item xs={8} md={10}>
-          {isStudent ? (
-            <Typography
-              variant="h6"
-              component="p"
-              className={classes.link}
-              onClick={handleClickOpenExam}
-            >
-              {title.split("-")[0]}
-            </Typography>
-          ) : (
-            <Typography variant="h6" component="p">
-              {title.split("-")[0]}
-            </Typography>
-          )}
-
+        <div>
           <Typography
             variant="body1"
             component="p"
@@ -121,53 +118,35 @@ function ExakSection({
           >
             {description}
           </Typography>
-
-          <Dialog
-            open={openExam}
-            onClose={handleCloseExam}
-            aria-describedby="alert-dialog-description"
+        </div>
+        <Dialogs
+          open={openExam}
+          handleClose={handleCloseExam}
+          title="Apakah anda yakin ingin mengikuti ujian ?"
+        >
+          {" "}
+          <ButtonRed handleClick={handleCloseExam}>Tidak</ButtonRed>
+          <ButtonInfo
+            handleClick={(e) => {
+              history.push(`/mata-pelajaran/${title}/${id}`);
+              handleCloseExam(e);
+            }}
           >
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Apakah anda yakin ingin mengikuti ujian?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <ButtonRed handleClick={handleCloseExam}>Tidak</ButtonRed>
-              <ButtonInfo
-                handleClick={(e) => {
-                  handleCloseExam(e, "yes");
-                }}
-              >
-                Ya
-              </ButtonInfo>
-            </DialogActions>
-          </Dialog>
+            Ya
+          </ButtonInfo>
+        </Dialogs>
 
-          <Dialog
-            open={openTeacher}
-            onClose={handleCloseTeacher}
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Apakah anda yakin ingin mengapus {title}?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <ButtonRed handleClick={handleCloseTeacher}>Batal</ButtonRed>
-              <ButtonDanger
-                handleClick={handleDeleteExam}
-                className={classes.btnInfo}
-              >
-                Ok
-              </ButtonDanger>
-            </DialogActions>
-          </Dialog>
-        </Grid>
+        <Dialogs
+          open={openTeacher}
+          handleClose={handleCloseTeacher}
+          title={`Apakah anda yakin ingin mengapus ${title}`}
+        >
+          <ButtonRed handleClick={handleCloseTeacher}>Batal</ButtonRed>
+          <ButtonInfo handleClick={handleDeleteExam}>Ok</ButtonInfo>
+        </Dialogs>
       </Grid>
-    </React.Fragment>
+    </div>
   );
 }
 
-export default withRouter(ExakSection);
+export default withRouter(ExamSection);

@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
 import makeStyles from "@material-ui/styles/makeStyles";
 
 function QuestionExam({
-  i,
+  numberOfQuestion,
   title,
   aAnswer,
   bAnswer,
@@ -20,54 +19,67 @@ function QuestionExam({
   answer,
 }) {
   const useStyles = makeStyles({
-    root: { padding: "1rem" },
+    root: {
+      padding: "1rem 0",
+      "& > *": {
+        display: "inline-block",
+      },
+    },
+    title: {
+      paddingLeft: "0.5rem",
+    },
     formLabel: { marginTop: "2rem" },
   });
 
   const classes = useStyles();
 
+  const [formAnswers] = useState([
+    {
+      label: aAnswer,
+      value: "a",
+    },
+    {
+      label: bAnswer,
+      value: "b",
+    },
+    {
+      label: cAnswer,
+      value: "c",
+    },
+    {
+      label: dAnswer,
+      value: "d",
+    },
+  ]);
+
+  const formFieldAnswers = formAnswers.map(({ label, value }) => (
+    <FormControlLabel
+      value={value}
+      control={<Radio checked={answer === value} />}
+      label={label}
+    />
+  ));
+
   return (
     <div>
-      <Grid container className={classes.root}>
-        <Grid item xs={1}>
-          <Typography variant="body1" component="p" align="center">
-            {i} .{" "}
-          </Typography>
-        </Grid>
-        <Grid item xs={11}>
-          <Typography variant="body1" component="p">
-            {title}
-          </Typography>
-        </Grid>
-        {/* <FormLabel component="legend" className={classes.formLabel}></FormLabel> */}
+      <div className={classes.root}>
+        <Typography variant="body1" component="p">
+          {numberOfQuestion} .{" "}
+        </Typography>
+        <Typography variant="body1" component="p" className={classes.title}>
+          {title}
+        </Typography>
+      </div>
+      <Grid container>
         <RadioGroup
           value={value}
           onChange={(e) => {
             if (!answer) {
-              handleChange(e, i - 1);
+              handleChange(e, numberOfQuestion - 1);
             }
           }}
         >
-          <FormControlLabel
-            value="a"
-            control={<Radio checked={answer === "a"} />}
-            label={aAnswer}
-          />
-          <FormControlLabel
-            value="b"
-            control={<Radio checked={answer === "b"} />}
-            label={bAnswer}
-          />
-          <FormControlLabel
-            value="c"
-            control={<Radio checked={answer === "c"} />}
-            label={cAnswer}
-          />
-          <FormControlLabel
-            value="d"
-            control={<Radio checked={answer === "d"} />}
-            label={dAnswer}
-          />
+          {formFieldAnswers}
         </RadioGroup>
       </Grid>
     </div>

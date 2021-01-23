@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 
 import color from "../../../utils/color";
 
-function TheoryTemplate({ title, children, icon }) {
+function Sub({ title, children }) {
   const useStyles = makeStyles({
     root: {
       padding: "2rem 0",
@@ -23,7 +23,6 @@ function TheoryTemplate({ title, children, icon }) {
   return (
     <div className={classes.root}>
       <Grid container alignItems="flex-end">
-        <div className={classes.icon}>{icon}</div>
         <Typography variant="h6" component="h2">
           {" "}
           {title}
@@ -34,4 +33,4 @@ function TheoryTemplate({ title, children, icon }) {
   );
 }
 
-export default TheoryTemplate;
+export default Sub;

@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/styles";
 import { connect } from "react-redux";
 
 import { getUserById } from "../../../redux/actions/userAction";
+import isEmpty from "../../../utils/is-empty";
 import color from "../../../utils/color";
 
 function Profile({ user, getUserById }) {
@@ -40,7 +41,7 @@ function Profile({ user, getUserById }) {
 
   return (
     <div className={classes.root}>
-      {Object.keys(user.userData).length > 1 && (
+      {!isEmpty(user.userData) && (
         <Grid container justify="center" spacing={6}>
           <Grid item xs={4} md={2}>
             <Avatar style={{ width: "100%", height: 160 }}></Avatar>

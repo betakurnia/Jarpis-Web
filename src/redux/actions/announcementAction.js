@@ -2,6 +2,7 @@ import axios from "axios";
 import { GET_ERRORS, GET_ANNOUNCMENT } from ".";
 import proxy from "../../utils/proxy";
 
+// view announcements
 export const viewAnnouncement = () => (dispatch) => {
   axios
     .get(`${proxy}/api/announcement/view`)
@@ -14,11 +15,11 @@ export const viewAnnouncement = () => (dispatch) => {
     .catch((err) => console.log(err));
 };
 
-// create announcement
+// create announcements
 export const addAnnouncement = (announcementData, history) => (dispatch) => {
   axios
     .post(`${proxy}/api/announcement/create`, announcementData)
-    .then((res) => {
+    .then(() => {
       history.push("/pengumuman");
       // window.location.href = "/pengumuman";
     })
@@ -30,7 +31,7 @@ export const addAnnouncement = (announcementData, history) => (dispatch) => {
     );
 };
 
-// update announcement
+// update announcements
 export const updateAnnouncement = (id, announcementData, history) => (
   dispatch
 ) => {
@@ -47,7 +48,7 @@ export const updateAnnouncement = (id, announcementData, history) => (
     );
 };
 
-// delete announcement
+// delete announcements
 export const deleteAnnouncement = (id) => (dispatch) => {
   axios
     .post(`${proxy}/api/announcement/delete/${id}`)

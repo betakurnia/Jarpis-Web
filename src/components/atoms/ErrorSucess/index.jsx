@@ -7,17 +7,8 @@ import color from "../../../utils/color";
 
 function ErrorSucess({ isSucess, isError, sucessMessage, errorMessages }) {
   const useStyles = makeStyles({
-    btn: {
-      marginTop: "2rem",
-    },
     alert: {
       marginTop: "1.5rem",
-    },
-    formControl: {
-      marginTop: "1.5rem",
-    },
-    label: {
-      color: color.label,
     },
   });
 

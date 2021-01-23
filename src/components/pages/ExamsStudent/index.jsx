@@ -1,41 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import { connect } from "react-redux";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-
-import Create from "../../atoms/Create";
+import Paper from "../../atoms/Paper";
 import QuestionExam from "../../atoms/QuestionExam";
 import ErrorSucess from "../../atoms/ErrorSucess";
 import ButtonInfo from "../../atoms/ButtonInfo";
 import ButtonRed from "../../atoms/ButtonRed";
+import Dialogs from "../../atoms/Dialogs";
+
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import makeStyles from "@material-ui/styles/makeStyles";
+import Alert from "@material-ui/lab/Alert";
+import axios from "axios";
+import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import proxy from "../../../utils/proxy";
+import isEmpty from "../../../utils/is-empty";
+import { formatUrl } from "../../../utils/format";
 import { createExamStudent } from "../../../redux/actions/examAction";
 import { clearErrorSucess } from "../../../redux/actions/helperAction";
-import { Alert } from "@material-ui/lab";
-import isEmpty from "../../../utils/is-empty";
 
 function ExamsStudent({ user, createExamStudent, error, sucess }) {
+  const useStyles = makeStyles({
+    btn: {
+      marginTop: "1.5rem",
+    },
+  });
+
+  const classes = useStyles();
+
   const { ujian, id } = useParams();
 
-  const [isExam, setSucess] = React.useState(false);
+  const [examStudentAnswer, setExamStudentAnswer] = useState([...new Array(5)]);
 
-  const [loading, setLoading] = React.useState(true);
+  const [exam, setExam] = useState([...new Array(5)]);
 
-  const [examStudentAnswer, setExamStudentAnswer] = React.useState([
-    ...new Array(5),
-  ]);
+  const [isExam, setSucess] = useState(false);
 
-  const [exam, setExam] = React.useState([...new Array(5)]);
+  const [loading, setLoading] = useState(true);
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleExamStudentAnswer = (e, i) => {
     examStudentAnswer[i] = e.target.value;
@@ -50,31 +55,6 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
     setOpen(false);
   };
 
-  React.useEffect(() => {
-    clearErrorSucess();
-    axios
-      .get(
-        `${proxy}/api/exams/view/${id}/${user.isAuthenticated.id}?type=${ujian}`
-      )
-      .then((res) => {
-        if (res.data) {
-          setSucess(true);
-          setExamStudentAnswer([...res.data.examStudentAnswer]);
-          setExam([...res.data.question]);
-          setLoading(false);
-        } else {
-          axios
-            .get(`${proxy}/api/exams/view/${id}?type=${ujian}`)
-            .then((res) => {
-              setExamStudentAnswer([...res.data.examStudentAnswer]);
-              setExam([...res.data.question]);
-              setLoading(false);
-            });
-        }
-      })
-      .catch((err) => console.log(err));
-  }, [id, ujian, user.isAuthenticated.id]);
-
   const handleSubmit = () => {
     setOpen(false);
 
@@ -87,64 +67,92 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
     });
   };
 
+  const questionExams =
+    !loading &&
+    exam.map(({ examName, possibilitesAnswer }, i) => (
+      <QuestionExam
+        numberOfQuestion={i + 1}
+        title={examName}
+        aAnswer={possibilitesAnswer[0]}
+        bAnswer={possibilitesAnswer[1]}
+        cAnswer={possibilitesAnswer[2]}
+        dAnswer={possibilitesAnswer[3]}
+        handleChange={handleExamStudentAnswer}
+        value={examStudentAnswer[i]}
+        answer={examStudentAnswer[i]}
+      />
+    ));
+
+  const isParticipatedExam = isExam ? (
+    <Alert>Anda telah mengikuti Ujian</Alert>
+  ) : (
+    <Grid container justify="center">
+      <Grid item xs={12} md={6}>
+        {" "}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickOpen}
+          fullWidth
+          className={classes.btn}
+        >
+          Submit
+        </Button>
+      </Grid>
+    </Grid>
+  );
+
+  useEffect(() => {
+    clearErrorSucess();
+    axios
+      .get(
+        `${proxy}/api/exams/view/${id}/${user.isAuthenticated.id}?type=${ujian}`
+      )
+      .then((res) => {
+        const { data } = res;
+
+        if (Boolean(data)) {
+          setSucess(true);
+          setExamStudentAnswer([...data.examStudentAnswer]);
+          setExam([...data.question]);
+          setLoading(false);
+        }
+
+        if (!Boolean(data)) {
+          axios
+            .get(`${proxy}/api/exams/view/${id}?type=${ujian}`)
+            .then((res) => {
+              const { data } = res;
+
+              setExamStudentAnswer([...data.examStudentAnswer]);
+              setExam([...data.question]);
+              setLoading(false);
+            });
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [id, ujian, user.isAuthenticated.id]);
+
   return (
-    <Create title={`${ujian.split("-").join(" ")}`}>
-      {!loading &&
-        exam.map((exam, i) => (
-          <QuestionExam
-            i={i + 1}
-            title={exam.examName}
-            aAnswer={exam.possibilitesAnswer[0]}
-            bAnswer={exam.possibilitesAnswer[1]}
-            cAnswer={exam.possibilitesAnswer[2]}
-            dAnswer={exam.possibilitesAnswer[3]}
-            handleChange={handleExamStudentAnswer}
-            value={examStudentAnswer[i]}
-            answer={examStudentAnswer[i]}
-          />
-        ))}
+    <Paper title={formatUrl(ujian)}>
+      {questionExams}
       <ErrorSucess
-        isError={!isEmpty(error)}
         isSucess={Boolean(sucess)}
+        isError={!isEmpty(error)}
         errorMessages={[error.examStudentAnswer]}
         sucessMessage="Berhasil dikirim"
       />
-      {isExam ? (
-        <Alert>Anda telah mengikuti Ujian</Alert>
-      ) : (
-        <Grid container justify="center">
-          <Grid item xs={12} md={6}>
-            {" "}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleClickOpen}
-              style={{ marginTop: "1.5rem" }}
-              fullWidth
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Grid>
-      )}
-
-      <Dialog
+      {isParticipatedExam}
+      <Dialogs
         open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        handleClose={handleClose}
+        title="Apakah anda yakin ingin submit?"
       >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Apakah anda yakin ingin submit?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <ButtonRed handleClick={handleClose}>Tidak</ButtonRed>
-          <ButtonInfo handleClick={handleSubmit}>Ya</ButtonInfo>
-        </DialogActions>
-      </Dialog>
-    </Create>
+        {" "}
+        <ButtonRed handleClick={handleClose}>Tidak</ButtonRed>
+        <ButtonInfo handleClick={handleSubmit}>Ya</ButtonInfo>
+      </Dialogs>
+    </Paper>
   );
 }
 

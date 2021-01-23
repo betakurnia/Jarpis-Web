@@ -1,46 +1,73 @@
-import React from "react";
-import { Grid } from "@material-ui/core";
-import axios from "axios";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
 
 import Card from "../../atoms/Card";
+import Headers from "../../atoms/Headers";
+
+import Grid from "@material-ui/core/Grid";
+
+import axios from "axios";
+import { connect } from "react-redux";
 
 import proxy from "../../../utils/proxy";
 
 function Dashboard({ user }) {
-  const [majors, setMajors] = React.useState([]);
+  const [majors, setMajors] = useState([]);
 
-  React.useEffect(() => {
-    if (user.isAuthenticated.role === "teacher") {
-      axios
-        .post(`${proxy}/api/majors/viewByArray`, user.isAuthenticated.majorId)
-        .then((res) => {
-          setMajors(res.data);
-        });
-    } else {
+  useEffect(() => {
+    const { role, majorId } = user.isAuthenticated;
+
+    if (role === "teacher") {
+      axios.post(`${proxy}/api/majors/viewByArray`, majorId).then((res) => {
+        const { data } = res;
+
+        setMajors([...data]);
+      });
+    }
+
+    if (role === "siswa") {
       axios
         .get(`${proxy}/api/majors/view?kelasId=${user.user.kelasId}`)
         .then((res) => {
-          setMajors(res.data);
+          const { data } = res;
+
+          setMajors([...data]);
         });
     }
-  }, [
-    user.isAuthenticated.majorId,
-    user.user.kelasId,
-    user.isAuthenticated.role,
-  ]);
+
+    if (role === "admin") {
+      axios.get(`${proxy}/api/majors/view`).then((res) => {
+        const { data } = res;
+
+        setMajors([...data]);
+      });
+    }
+  }, [user.isAuthenticated.majorId]);
+
+  const majorCards = majors.map(
+    ({
+      _id,
+      majorName,
+      hoursOfSubject,
+      hoursOfSubjectFinish,
+      imageName,
+      color,
+    }) => (
+      <Card
+        id={_id}
+        title={majorName}
+        from={hoursOfSubject}
+        to={hoursOfSubjectFinish}
+        imageName={imageName}
+        color={color}
+      />
+    )
+  );
 
   return (
     <div>
-      <Grid container spacing={2}>
-        {majors.map((major) => (
-          <Card
-            id={major._id}
-            title={major.majorName}
-            from={major.hoursOfSubject}
-            to={major.hoursOfSubjectFinish}
-          />
-        ))}
+      <Headers title="Mata Pelajaran" />
+      <Grid container spacing={3}>
+        {majorCards}
       </Grid>
     </div>
   );

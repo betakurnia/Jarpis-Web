@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
 import Grid from "@material-ui/core/Grid";
+
+import Input from "../../atoms/Input";
+import Paper from "../../atoms/Paper";
+import ErrorSucess from "../../atoms/ErrorSucess";
+
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Radio from "@material-ui/core/Radio";
@@ -11,21 +16,17 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Checkbox from "@material-ui/core/Checkbox";
 import InputBase from "@material-ui/core/InputBase";
-import Alert from "@material-ui/lab/alert";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import withStyles from "@material-ui/core/styles/withStyles";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import NativeSelect from "@material-ui/core/NativeSelect";
 
-import Input from "../../atoms/Input";
-import Create from "../../atoms/Create";
-import ErrorSucess from "../../atoms/ErrorSucess";
-
-import { registerUser } from "../../../redux/actions/userAction";
-import { clearErrorSucess } from "../../../redux/actions/helperAction";
 import color from "../../../utils/color";
 import isEmpty from "../../../utils/is-empty";
+import { registerUser } from "../../../redux/actions/userAction";
+import { clearErrorSucess } from "../../../redux/actions/helperAction";
 
 import proxy from "../../../utils/proxy";
 
@@ -64,7 +65,52 @@ const BootstrapInput = withStyles((theme) => ({
 }))(InputBase);
 
 function Register({ registerUser, error, sucess, clearErrorSucess }) {
-  const [users, setUser] = React.useState({
+  const [roles] = useState([
+    { value: "siswa", label: "Siswa" },
+    { value: "teacher", label: "Guru" },
+    { value: "admin", label: "Admin" },
+  ]);
+
+  const [defaultDataForms] = useState([
+    {
+      id: "username",
+      label: "Email",
+      placeholder: "contoh: beta@gmail.com",
+    },
+    {
+      id: "password",
+      label: "Password",
+      placeholder: "*********",
+      type: "password",
+    },
+    {
+      id: "name",
+      label: "Nama Lengkap",
+      placeholder: "contoh: Beta Kurnia",
+    },
+  ]);
+
+  const [studentDataForms] = useState([
+    {
+      id: "nis",
+      label: "NIS",
+      placeholder: "contoh: 1234567890",
+    },
+    {
+      id: "age",
+      label: "Umur",
+      placeholder: "contoh: 14 tahun",
+    },
+    {
+      id: "name",
+      label: "Nama Lengkap",
+      placeholder: "contoh: Beta Kurnia",
+    },
+    { id: "address", label: "Alamat", placeholder: "contoh: Blater" },
+    { id: "religion", label: "Agama", placeholder: "contoh: ISLAM" },
+  ]);
+
+  const [users, setUser] = useState({
     role: "",
     username: "",
     password: "",
@@ -77,9 +123,9 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     kelas: "5fd5a57adec8b90f1f45a7de",
   });
 
-  const [majors, setMajors] = React.useState([]);
+  const [majors, setMajors] = useState([]);
 
-  const [kelass, setClasss] = React.useState([]);
+  const [kelass, setClasss] = useState([]);
 
   const handleChange = (e, name) => {
     if (name === "majorId") {
@@ -109,7 +155,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
 
   const useStyles = makeStyles({
     title: {
-      color: "#404145",
+      color: color.lightBlack,
       fontWeight: "500",
     },
     btn: {
@@ -140,7 +186,35 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
     registerUser(users);
   };
 
-  React.useEffect(() => {
+  const defaultForms = defaultDataForms.map(
+    ({ id, label, placeholder, isPassword }) => (
+      <Input
+        id={id}
+        label={label}
+        placeholder={placeholder}
+        handleChange={handleChange}
+        isPassword={isPassword}
+      />
+    )
+  );
+
+  const studentForms =
+    users.role === "siswa" &&
+    studentDataForms.map(({ id, label, placeholder, isPassword }) => (
+      <Input
+        id={id}
+        label={label}
+        placeholder={placeholder}
+        handleChange={handleChange}
+        isPassword={isPassword}
+      />
+    ));
+
+  const roleForms = roles.map(({ value, label }) => (
+    <FormControlLabel value={value} control={<Radio />} label={label} />
+  ));
+
+  useEffect(() => {
     clearErrorSucess();
     axios.get(`${proxy}/api/majors/view`).then((res) => {
       setMajors(res.data);
@@ -151,8 +225,8 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
   }, [clearErrorSucess]);
 
   return (
-    <form onSubmit={onSubmit}>
-      <Create title="Daftar ke Jarpis">
+    <Paper title="Daftar ke Jarpis">
+      <form onSubmit={onSubmit}>
         <FormLabel component="legend" className={classes.formLabel}>
           <Typography variant="h5" component="p">
             Role
@@ -165,51 +239,51 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
           onChange={handleMenu}
           row
         >
-          <FormControlLabel value="siswa" control={<Radio />} label="Siswa" />
-          <FormControlLabel value="teacher" control={<Radio />} label="Guru" />
-          <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+          {roleForms}
         </RadioGroup>
-        <Input
-          id="username"
-          label="Email / Username"
-          placeholder="contoh: beta@gmail.com"
-          handleChange={handleChange}
-        />
-        <Input
-          id="password"
-          label="Password"
-          placeholder="*********"
-          handleChange={handleChange}
-          isPassword={true}
-        />
-        <Input
-          id="name"
-          label="Nama Lengkap"
-          placeholder="contoh: Beta Kurnia"
-          handleChange={handleChange}
-        />
+        {defaultForms}
+
+        {studentForms}
+        {studentForms && (
+          <Fragment>
+            <label className={classes.label}>Kelas</label>
+            <NativeSelect
+              id="demo-customized-select-native"
+              style={{ marginTop: "0.5rem" }}
+              value={users.kelas}
+              onChange={(e) => {
+                handleChange(e, "kelas");
+              }}
+              input={<BootstrapInput />}
+              fullWidth
+            >
+              {kelass.map(({ _id, kelas }) => (
+                <option value={_id}>{kelas}</option>
+              ))}
+            </NativeSelect>
+          </Fragment>
+        )}
 
         {users.role === "teacher" && (
-          <React.Fragment>
+          <Fragment>
             <FormControl component="fieldset" className={classes.formControl}>
               <FormLabel component="legend">Mata Pelajaran</FormLabel>
               <FormGroup row>
-                {majors.map((major) => (
-                  <React.Fragment>
+                {majors.map(({ _id, majorName }) => (
+                  <Fragment>
                     <FormControlLabel
                       control={
                         <Checkbox
-                          // checked={gilad}
-                          value={major._id}
+                          value={_id}
                           onChange={(e) => {
                             handleChange(e, "majorId");
                           }}
-                          name={major.majorName}
+                          name={majorName}
                         />
                       }
-                      label={major.majorName}
+                      label={majorName}
                     />
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </FormGroup>
             </FormControl>
@@ -224,58 +298,13 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
               input={<BootstrapInput />}
               fullWidth
             >
-              {kelass.map((kelas) => (
-                <option value={kelas._id}>{kelas.kelas}</option>
+              {kelass.map(({ _id, kelas }) => (
+                <option value={_id}>{kelas}</option>
               ))}
             </NativeSelect>
-          </React.Fragment>
+          </Fragment>
         )}
 
-        {users.role === "siswa" && (
-          <React.Fragment>
-            <Input
-              id="nis"
-              label="NIS"
-              placeholder="contoh: 1234567890"
-              handleChange={handleChange}
-            />
-            <label className={classes.label} htmlFor="class">
-              Kelas
-            </label>
-            <NativeSelect
-              id="class"
-              style={{ marginTop: "0.5rem" }}
-              value={users.kelas}
-              onChange={(e) => {
-                handleChange(e, "kelas");
-              }}
-              input={<BootstrapInput />}
-              fullWidth
-            >
-              {kelass.map((kelas) => (
-                <option value={kelas._id}>{kelas.kelas}</option>
-              ))}
-            </NativeSelect>
-            <Input
-              id="age"
-              label="Umur"
-              placeholder="contoh: 14 tahun"
-              handleChange={handleChange}
-            />
-            <Input
-              id="address"
-              label="Alamat"
-              placeholder="contoh: Blater"
-              handleChange={handleChange}
-            />
-            <Input
-              id="religion"
-              label="Agama"
-              placeholder="contoh: ISLAM"
-              handleChange={handleChange}
-            />
-          </React.Fragment>
-        )}
         <ErrorSucess
           isError={!isEmpty(error)}
           isSucess={Boolean(sucess)}
@@ -300,9 +329,8 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
             </Button>
           </Grid>
         </Grid>
-        {/* </div> */}
-      </Create>
-    </form>
+      </form>
+    </Paper>
   );
 }
 

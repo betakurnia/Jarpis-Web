@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect, Fragment } from "react";
+import css from "./style.css";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -28,13 +29,15 @@ import TableChartIcon from "@material-ui/icons/TableChart";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import axios from "axios";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
+import clsx from "clsx";
 
-import { logoutUser } from "../../../redux/actions/userAction";
+import color from "../../../utils/color";
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
 import size from "../../../utils/size";
+import { logoutUser } from "../../../redux/actions/userAction";
 
 function Navbar({ user, logoutUser, history }) {
   const useStyles = makeStyles((theme) => ({
@@ -78,23 +81,44 @@ function Navbar({ user, logoutUser, history }) {
     subSubTab: {
       paddingLeft: "4rem",
     },
+    appBar: {
+      backgroundColor: color.primary,
+    },
+    majorIcon: {
+      width: 24,
+      height: 24,
+    },
+    darkActive: {
+      backgroundColor: color.primary,
+      color: color.white,
+      "&:hover": {
+        backgroundColor: color.primary,
+        color: color.white,
+      },
+    },
   }));
 
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
 
-  const [majors, setMajors] = React.useState([]);
+  const [currentMajor, setCurrentMajor] = useState({
+    majorName: "",
+  });
 
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [majors, setMajors] = useState([]);
 
-  const [isShowTheory] = React.useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [admins] = React.useState([
+  const [isShowTheory] = useState(true);
+
+  const { location } = useHistory();
+
+  const [admins] = useState([
     {
-      name: "Register",
+      name: "Daftar",
       link: "/admin/register",
       icon: <LockOpenIcon />,
     },
@@ -114,7 +138,7 @@ function Navbar({ user, logoutUser, history }) {
     setAnchorEl(event.currentTarget);
   };
 
-  const [recapitulation, setRecapitulation] = React.useState([]);
+  const [recapitulation, setRecapitulation] = useState([]);
 
   const handleClose = (e, status) => {
     if (status === "profile") {
@@ -141,7 +165,24 @@ function Navbar({ user, logoutUser, history }) {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (location.pathname.length > 2) {
+      axios
+        .get(`${proxy}/api/majors/view/${location.pathname.split("/")[2]}`)
+        .then((res) => {
+          if (res.data) {
+            const { data } = res;
+
+            setCurrentMajor(data);
+          } else {
+            setCurrentMajor({ majorName: "" });
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (user.isAuthenticated.role === "teacher") {
       axios
         .post(`${proxy}/api/majors/viewByArray`, user.isAuthenticated.majorId)
@@ -149,20 +190,31 @@ function Navbar({ user, logoutUser, history }) {
           setMajors(res.data);
           setRecapitulation([...res.data]);
         });
+    }
+    if (user.isAuthenticated.role === "siswa") {
       axios
-        .post(`${proxy}/api/theorys/view`, user.isAuthenticated.majorId)
-        .then((res) => {})
-        .catch((err) => console.log(err));
-    } else {
+        .get(`${proxy}/api/majors/view?kelasId=${user.user.kelasId}`)
+        .then((res) => {
+          const { data } = res;
+
+          setMajors([...data]);
+        });
+    }
+
+    if (user.isAuthenticated.role === "admin") {
       axios.get(`${proxy}/api/majors/view`).then((res) => {
-        setMajors(res.data);
+        const { data } = res;
+
+        setMajors([...data]);
       });
     }
   }, [user.isAuthenticated.role, user.isAuthenticated.majorId]);
 
+  console.log(currentMajor);
+
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           {user.isAuthenticated && (
             <IconButton
@@ -216,7 +268,7 @@ function Navbar({ user, logoutUser, history }) {
                 onClose={handleClose}
               >
                 {user.isAuthenticated.role === "siswa" && (
-                  <React.Fragment>
+                  <Fragment>
                     <MenuItem
                       onClick={(e) => {
                         handleClose(e, "profile");
@@ -231,10 +283,10 @@ function Navbar({ user, logoutUser, history }) {
                     >
                       Nilai{" "}
                     </MenuItem>
-                  </React.Fragment>
+                  </Fragment>
                 )}
                 <MenuItem onClick={handleLogOut}>
-                  Log Out <ExitToAppIcon style={{ paddingLeft: "0.5rem" }} />
+                  Keluar <ExitToAppIcon style={{ paddingLeft: "0.5rem" }} />
                 </MenuItem>
               </Menu>
             </div>
@@ -244,8 +296,20 @@ function Navbar({ user, logoutUser, history }) {
           <div onClick={handleToggleDrawer} onKeyDown={handleToggleDrawer}>
             <List>
               <Link to="/dashboard">
-                <ListItem button key="dashboard" className={classes.menuItem}>
-                  <ListItemIcon>{<DashboardIcon />}</ListItemIcon>
+                <ListItem
+                  button
+                  key="dashboard"
+                  className={clsx(classes.menuItem, {
+                    [classes.darkActive]: location.pathname === "/dashboard",
+                  })}
+                >
+                  <ListItemIcon
+                    className={clsx({
+                      [classes.darkActive]: location.pathname === "/dashboard",
+                    })}
+                  >
+                    {<DashboardIcon />}
+                  </ListItemIcon>
                   <ListItemText primary="Dashboard" />
                 </ListItem>
               </Link>
@@ -280,23 +344,52 @@ function Navbar({ user, logoutUser, history }) {
                   </ListItemText>
                 </ListItem>
               )}
-
               {majors.map((major) => (
                 <Link to={`/mata-pelajaran/${major._id}`}>
-                  <ListItem
-                    button
-                    key={major.majorName}
-                    className={(classes.menuItem, classes.subTab)}
-                  >
-                    <ListItemIcon>
-                      <CastForEducationIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={major.majorName} />
-                  </ListItem>
+                  {!Boolean(currentMajor.majorName == major.majorName) ? (
+                    <ListItem
+                      button
+                      key={major.majorName}
+                      className={clsx(classes.menuItem, classes.subTab)}
+                    >
+                      <ListItemIcon>
+                        <img
+                          className={classes.img}
+                          alt={major.imageName}
+                          src={`/majors/${major.imageName}`}
+                          className={classes.majorIcon}
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={major.majorName} />
+                    </ListItem>
+                  ) : (
+                    <ListItem
+                      button
+                      key={major.majorName}
+                      className={clsx(classes.menuItem, classes.subTab)}
+                      style={{
+                        backgroundColor: major.color,
+                        color: color.white,
+                      }}
+                    >
+                      <ListItemIcon>
+                        <img
+                          className={classes.img}
+                          alt={major.imageName}
+                          src={`/majors/${major.imageName}`}
+                          className={classes.majorIcon}
+                          style={{
+                            color: color.white,
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={major.majorName} />
+                    </ListItem>
+                  )}
                 </Link>
               ))}
               {user.isAuthenticated.role === "admin" && (
-                <React.Fragment>
+                <Fragment>
                   <ListItem
                     button
                     key="Admin"
@@ -313,18 +406,29 @@ function Navbar({ user, logoutUser, history }) {
                       <ListItem
                         button
                         key={admin.name}
-                        className={(classes.menuItem, classes.subTab)}
+                        className={clsx(classes.menuItem, classes.subTab, {
+                          [classes.darkActive]:
+                            location.pathname === admin.link,
+                        })}
                       >
-                        <ListItemIcon> {admin.icon}</ListItemIcon>
+                        <ListItemIcon
+                          className={clsx({
+                            [classes.darkActive]:
+                              location.pathname === admin.link,
+                          })}
+                        >
+                          {" "}
+                          {admin.icon}
+                        </ListItemIcon>
                         <ListItemText primary={admin.name} />
                       </ListItem>
                     </Link>
                   ))}
-                </React.Fragment>
+                </Fragment>
               )}
 
               {user.isAuthenticated.role === "teacher" && (
-                <React.Fragment>
+                <Fragment>
                   <ListItem
                     button
                     key="Teacher"
@@ -338,7 +442,7 @@ function Navbar({ user, logoutUser, history }) {
                   </ListItem>
 
                   {majors.map((major) => (
-                    <React.Fragment>
+                    <Fragment>
                       <ListItem
                         name="subTab"
                         onClick={handleShowTheory}
@@ -390,7 +494,7 @@ function Navbar({ user, logoutUser, history }) {
                             </ListItem>
                           </Link>
                         ))}
-                    </React.Fragment>
+                    </Fragment>
                   ))}
                   <ListItem button key="Rekapitulasi Nilai">
                     <ListItemIcon>
@@ -399,7 +503,7 @@ function Navbar({ user, logoutUser, history }) {
                     </ListItemIcon>
                     <ListItemText primary="Rekapitulasi Nilai" />
                   </ListItem>
-                </React.Fragment>
+                </Fragment>
               )}
 
               {recapitulation.map((recap) => (

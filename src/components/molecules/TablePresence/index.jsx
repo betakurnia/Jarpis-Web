@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import { BadgeStatus as Badge } from "../../atoms/Badge";
+import ButtonInfo from "../../atoms/ButtonInfo";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -19,18 +22,16 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Typography from "@material-ui/core/Typography";
+
 import axios from "axios";
 import { connect } from "react-redux";
 import clsx from "clsx";
-
-import Badge from "../../atoms/Badge";
-import ButtonInfo from "../../atoms/ButtonInfo";
 
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
 import color from "../../../utils/color";
 
-function BasicTable({ id, user, major }) {
+function TablePresence({ id, user, major }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -46,7 +47,7 @@ function BasicTable({ id, user, major }) {
       "Selasa",
       "Rabu",
       "Kamis",
-      "Jum;at",
+      "Jum'at",
       "Sabtu",
     ],
     monthNames: [
@@ -105,13 +106,13 @@ function BasicTable({ id, user, major }) {
 
   const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const [presents, setPresents] = React.useState({
+  const [presents, setPresents] = useState({
     status: [],
   });
 
-  const [present, setPresent] = React.useState({
+  const [present, setPresent] = useState({
     userId: "",
     majorId: "",
     status: "Hadir",
@@ -142,11 +143,11 @@ function BasicTable({ id, user, major }) {
       .catch((err) => console.log(err.response.data));
   };
 
-  const [undoneArray, setUndoneArray] = React.useState([]);
+  const [undoneArray, setUndoneArray] = useState([]);
 
   let i = 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     present["userId"] = user.user.id;
     present["majorId"] = id;
     setPresent({ ...present });
@@ -191,7 +192,7 @@ function BasicTable({ id, user, major }) {
                     {dateFormat(major.hoursOfSubjectFinish, "hh:MM TT")}
                   </p>
                 </TableCell>
-                <TableCell style={{ color: "#9e9e9e" }}>
+                <TableCell style={{ color: color.light }}>
                   Absen sudah ditutup
                 </TableCell>
                 <TableCell>
@@ -293,4 +294,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(BasicTable);
+export default connect(mapStateToProps)(TablePresence);

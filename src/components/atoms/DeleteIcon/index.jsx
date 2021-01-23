@@ -1,12 +1,12 @@
 import React from "react";
 
-import DeleteIcon from "@material-ui/icons/Delete";
+import Delete from "@material-ui/icons/Delete";
 import makeStyles from "@material-ui/styles/makeStyles";
 import clsx from "clsx";
 
 import color from "../../../utils/color";
 
-function EditIcon({ handleClick }) {
+function DeleteIcon({ handleClick }) {
   const useStyles = makeStyles({
     icon: {
       padding: "1rem",
@@ -21,11 +21,11 @@ function EditIcon({ handleClick }) {
   const classes = useStyles();
 
   return (
-    <DeleteIcon
+    <Delete
       className={clsx(classes.icon, classes.danger)}
       onClick={handleClick}
     />
   );
 }
 
-export default EditIcon;
+export default DeleteIcon;

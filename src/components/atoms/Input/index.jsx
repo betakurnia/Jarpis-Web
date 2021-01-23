@@ -1,7 +1,7 @@
 import React from "react";
 
-import { TextField } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import TextField from "@material-ui/core/TextField";
+import makeStyles from "@material-ui/styles/makeStyles";
 
 import color from "../../../utils/color";
 
@@ -9,8 +9,9 @@ function Input({
   id,
   label,
   placeholder,
+  name,
   handleChange,
-  isPassword,
+  type = "text",
   value,
   idx,
 }) {
@@ -37,13 +38,14 @@ function Input({
       <TextField
         id={id + idx}
         placeholder={placeholder}
+        name={name}
         fullWidth
         InputLabelProps={{
           shrink: true,
         }}
         className={classes.form}
         variant="outlined"
-        type={isPassword && "password"}
+        type={type}
         value={value}
         onChange={(e) => {
           handleChange(e, id, idx);

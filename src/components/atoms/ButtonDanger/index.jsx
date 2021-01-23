@@ -19,7 +19,12 @@ function ButtonDanger({ children, handleClick, ...rest }) {
   const classes = useStyles();
 
   return (
-    <Button onClick={handleClick} autoFocus className={classes.btnDanger}>
+    <Button
+      onClick={handleClick}
+      autoFocus
+      className={classes.btnDanger}
+      {...rest}
+    >
       {children}
     </Button>
   );

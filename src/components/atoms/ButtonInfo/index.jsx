@@ -20,10 +20,10 @@ function ButtonInfo({ children, handleClick, ...rest }) {
 
   return (
     <Button
-      {...rest}
       onClick={handleClick}
       autoFocus
       className={classes.btnInfo}
+      {...rest}
     >
       {children}
     </Button>

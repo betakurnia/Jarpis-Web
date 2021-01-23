@@ -1,56 +1,63 @@
-import React from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
-import Grid from "@material-ui/core/Grid";
-import Alert from "@material-ui/lab/Alert";
-import { makeStyles } from "@material-ui/styles";
-import PeopleIcon from "@material-ui/icons/People";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
-import fileDownload from "js-file-download";
-import axios from "axios";
-import { connect } from "react-redux";
-
+import Header from "../../atoms/Header";
+import ExamIcon from "../../atoms/ExamIcon";
+import TheoryIcon from "../../atoms/TheoryIcon";
 import Section from "../../molecules/Section";
 import ExamSection from "../../molecules/ExamSection";
 import TheorySection from "../../molecules/TheorySection";
 
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import makeStyles from "@material-ui/styles/makeStyles";
+import PeopleIcon from "@material-ui/icons/People";
+
+import axios from "axios";
+import { connect } from "react-redux";
+
+import color from "../../../utils/color";
+import isEmpty from "../../../utils/is-empty";
+import proxy from "../../../utils/proxy";
+import { formatUrl } from "../../../utils/format";
 import { deleteExam } from "../../../redux/actions/examAction";
 import { setError, setSucess } from "../../../redux/actions/helperAction";
-import color from "../../../utils/color";
-import proxy from "../../../utils/proxy";
 
 function Sections({ id, isStudent, isTeacher, majorName }) {
   const useStyles = makeStyles({
-    alert: {
-      marginTop: "0",
-      marginBottom: "1.5rem",
-    },
     root: {
       padding: "1rem 0 2rem",
     },
     subRoot: {
-      padding: "2rem 0 2rem",
-      borderBottom: `0.05px solid ${color.greyLight}`,
+      padding: "1.5rem 0 1.5rem",
+      borderTop: `0.05px solid ${color.greyLight}`,
+    },
+
+    description: {
+      marginLeft: "0.5rem",
     },
   });
 
   const classes = useStyles();
 
-  const [theorys, setTheorys] = React.useState([]);
+  const [theorys, setTheorys] = useState([]);
 
-  const [exams, setExams] = React.useState([]);
+  const [exams, setExams] = useState([]);
 
   const handleDeleteTheory = (i, majorId) => {
     axios.post(`${proxy}/api/theorys/delete/${i}/${majorId}`).then((res) => {
-      setTheorys([...res.data]);
+      const { data } = res;
+
+      setTheorys([...data]);
     });
   };
 
-  const deleteExam = (id, type) => {
+  const handleDeleteExam = (id, type) => {
     axios
       .post(`${proxy}/api/exams/delete/${id}/${type}`)
       .then((res) => {
-        setExams([...res.data]);
+        const { data } = res;
+
+        setExams([...data]);
         setSucess();
       })
       .catch((err) => {
@@ -58,113 +65,97 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
       });
   };
 
-  React.useEffect(() => {
+  const presentSection = (
+    <Section
+      icon={<PeopleIcon style={{ width: 120, height: 120 }} />}
+      title="Presensi Murid "
+      description="Silahkan absen disini"
+      id={id}
+      isStudent={isStudent}
+    />
+  );
+
+  const theorySections = theorys.map(
+    ({ numberOfTheory, type, description, fileName }) => (
+      <TheorySection
+        icon={<TheoryIcon />}
+        title={`Materi ke ${numberOfTheory}`}
+        id={id}
+        isStudent={isStudent}
+        majorName={majorName}
+        numberOfTheory={numberOfTheory}
+        type={type}
+        handleDelete={handleDeleteTheory}
+        isTeacher={isTeacher}
+        description={description}
+        fileName={fileName}
+      />
+    )
+  );
+
+  const examSections = exams.map(({ type }, i) => (
+    <ExamSection
+      icon={<ExamIcon style={{ width: 120, height: 120 }} />}
+      title={type}
+      description={formatUrl(type)}
+      id={id}
+      isStudent={isStudent}
+      majorName={majorName}
+      handleDelete={handleDeleteExam}
+      type={type}
+      isTeacher={isTeacher}
+      numberOfTheory={i}
+    />
+  ));
+
+  useEffect(() => {
     axios
       .get(`${proxy}/api/exams/view-exam/${id}`)
       .then((res) => {
-        setExams([...res.data]);
+        const { data } = res;
+
+        setExams([...data]);
       })
       .catch((err) => console.log(err));
 
     axios
       .get(`${proxy}/api/theorys/view/${id}`)
       .then((res) => {
-        setTheorys([...res.data]);
+        const { data } = res;
+
+        setTheorys([...data]);
       })
       .catch((err) => console.log(err));
   }, [id]);
 
   return (
     <div className={classes.root}>
-      {!isStudent && (
-        <Alert className={classes.alert} severity="warning">
-          Presensi hanya tersedia untuk siswa
-        </Alert>
+      <div>
+        <Grid container justify="space-between">
+          <Typography> Wali kelas</Typography>
+          <Typography>Anggota</Typography>
+        </Grid>
+      </div>
+
+      {!isEmpty(presentSection) && (
+        <Fragment>
+          <Header title="Kehadiran" />
+          <div className={classes.subRoot}>{presentSection}</div>
+        </Fragment>
       )}
-      <Grid container spacing={2} className={classes.subRoot}>
-        <Section
-          icon={<PeopleIcon style={{ width: "100%", height: 160 }} />}
-          title="Presensi Murid "
-          description="Silahkan absen disini"
-          id={id}
-          isStudent={isStudent}
-        />
-      </Grid>
-      <div className={classes.subRoot}>
-        {theorys.map((theory) => (
-          <TheorySection
-            icon={
-              <img
-                src={"/helper/theorys.jpg"}
-                alt="exam"
-                style={{ width: "100%", height: 100 }}
-              />
-            }
-            title={`Materi ke ${theory.numberOfTheory}`}
-            id={id}
-            isStudent={isStudent}
-            majorName={majorName}
-            i={theory.numberOfTheory}
-            type={theory.type}
-            handleDelete={handleDeleteTheory}
-            isTeacher={isTeacher}
-          >
-            <Grid
-              container
-              alignItems="flex-end"
-              style={{ paddingTop: "0.25rem" }}
-            >
-              <AssignmentIcon />{" "}
-              <span style={{ marginLeft: "0.5rem" }}>{theory.description}</span>
-            </Grid>
-            <Grid
-              container
-              alignItems="flex-end"
-              style={{ paddingTop: "0.75rem" }}
-            >
-              <SystemUpdateAltIcon />{" "}
-              <span
-                style={{ padding: "0 0.5rem", cursor: "pointer" }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  axios
-                    .get(
-                      `${proxy}/api/theorys/download?filename=${theory.fileName}`
-                    )
-                    .then((data) => {
-                      fileDownload(data, `${theory.fileName}`);
-                    })
-                    .catch((err) => console.log("error"));
-                }}
-              >
-                Download {theory.fileName}
-              </span>
-            </Grid>
-          </TheorySection>
-        ))}
-      </div>
-      <div className={classes.subRoot}>
-        {exams.map((exam, i) => (
-          <ExamSection
-            icon={
-              <img
-                src={"/helper/exam.png"}
-                alt="exam"
-                style={{ width: "100%", height: 200 }}
-              />
-            }
-            title={exam.type}
-            description={exam.type.split("-").join(" ")}
-            id={id}
-            isStudent={isStudent}
-            majorName={majorName}
-            handleDelete={deleteExam}
-            type={exam.type}
-            isTeacher={isTeacher}
-            i={i}
-          />
-        ))}
-      </div>
+
+      {!isEmpty(theorySections) && (
+        <Fragment>
+          <Header title="Materi" />
+          <div className={classes.subRoot}>{theorySections}</div>
+        </Fragment>
+      )}
+      {!isEmpty(examSections) && (
+        <Fragment>
+          <Header title="Ujian" />
+          <div className={classes.subRoot}>{examSections}</div>
+        </Fragment>
+      )}
     </div>
   );
 }

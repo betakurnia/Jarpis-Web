@@ -15,7 +15,12 @@ function ButtonRed({ children, handleClick, ...rest }) {
   const classes = useStyles();
 
   return (
-    <Button onClick={handleClick} autoFocus className={classes.btnRed}>
+    <Button
+      onClick={handleClick}
+      autoFocus
+      className={classes.btnRed}
+      {...rest}
+    >
       {children}
     </Button>
   );

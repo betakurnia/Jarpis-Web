@@ -1,51 +1,15 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
+import React, { useState, useEffect } from "react";
+
+import SimpleTable from "../../atoms/SimpleTable";
+import { BadgeResult as Badge } from "../../atoms/Badge";
+
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import proxy from "../../../utils/proxy";
-import isEmpty from "../../../utils/is-empty";
-import color from "../../../utils/color";
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  blue: {
-    backgroundColor: color.primary,
-    padding: "0.5rem 1rem",
-    color: color.white,
-    borderRadius: "0.5rem",
-  },
-  bgPrimary: {
-    backgroundColor: color.primary,
-  },
-  tableRow: {
-    "& > *": {
-      color: color.white,
-    },
-  },
-  info: {
-    backgroundColor: color.info,
-    padding: "0.5rem 1rem",
-    color: color.white,
-    borderRadius: "0.5rem",
-  },
-  danger: {
-    backgroundColor: color.danger,
-    padding: "0.5rem 1rem",
-    color: color.white,
-    borderRadius: "0.5rem",
-  },
-});
 
 function RecapitulationValue({ user, major }) {
   var dateFormat = require("dateformat");
@@ -63,7 +27,7 @@ function RecapitulationValue({ user, major }) {
       "Selasa",
       "Rabu",
       "Kamis",
-      "Jum;at",
+      "Jum'at",
       "Sabtu",
     ],
     monthNames: [
@@ -95,67 +59,36 @@ function RecapitulationValue({ user, major }) {
     timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"],
   };
 
-  const classes = useStyles();
-
   const { ujian, id } = useParams();
 
-  const [recapitulations, setRecapitulations] = React.useState([]);
+  const [dataColumnHeaders] = useState(["Siswa", "Mata Pelajaran", "Nilai"]);
 
-  const [present, setPresent] = React.useState({
-    userId: "",
-    majorId: "",
-    status: "hadir",
-  });
+  const [recapitulations, setRecapitulations] = useState([]);
 
-  React.useEffect(() => {
-    present["userId"] = user.user.id;
-    present["majorId"] = id;
-    setPresent({ ...present });
-
+  const tableBodys = recapitulations.map(({ userId, majorId, result }) => (
+    <TableRow key={userId}>
+      <TableCell> {userId.name}</TableCell>
+      <TableCell>{majorId.majorName}</TableCell>
+      <TableCell>
+        <Badge result={result} />
+      </TableCell>
+    </TableRow>
+  ));
+  useEffect(() => {
     axios
       .get(`${proxy}/api/exams/view/recapitulation/${id}?type=${ujian}`)
       .then((res) => {
-        setRecapitulations([...res.data]);
+        const { data } = res;
+
+        setRecapitulations([...data]);
       })
       .catch((err) => console.log(err));
   }, [id, ujian]);
 
   return (
-    <TableContainer component={Paper} style={{ marginTop: "3rem" }}>
-      <Table
-        className={classes.table}
-        aria-label="simple table"
-        style={{ marginTop: "2rem" }}
-      >
-        <TableHead className={classes.bgPrimary}>
-          <TableRow className={classes.tableRow}>
-            <TableCell>Siswa</TableCell>
-            <TableCell>Mata Pelajaran</TableCell>
-            <TableCell>Nilai</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!isEmpty(recapitulations) &&
-            recapitulations.map((recapitulation) => (
-              <TableRow key={recapitulation}>
-                <TableCell> {recapitulation.userId.name}</TableCell>
-                <TableCell>{recapitulation.majorId.majorName}</TableCell>
-                <TableCell>
-                  {recapitulation.result > 70 ? (
-                    <TableCell className={classes.info}>
-                      {recapitulation.result}
-                    </TableCell>
-                  ) : (
-                    <TableCell className={classes.danger}>
-                      {recapitulation.result}
-                    </TableCell>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <SimpleTable dataColumnHeaders={dataColumnHeaders}>
+      {tableBodys}
+    </SimpleTable>
   );
 }
 

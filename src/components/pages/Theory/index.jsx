@@ -1,4 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import Input from "../../atoms/Input";
+import Paper from "../../atoms/Paper";
+import ExamIcon from "../../atoms/ExamIcon";
+import Sub from "../../atoms/Sub";
+import ErrorSucess from "../../atoms/ErrorSucess";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -9,33 +15,26 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 
-import Input from "../../atoms/Input";
-import Create from "../../atoms/Create";
-import TheoryTemplate from "../../atoms/TheoryTemplate";
-import ErrorSucess from "../../atoms/ErrorSucess";
-
 import isEmpty from "../../../utils/is-empty";
 import proxy from "../../../utils/proxy";
 import { SET_SUCESS, GET_ERRORS } from "../../../redux/actions";
 
 function Pengumuman({ sucess, error }) {
-  const { i, id } = useParams();
+  const { numberOfTheory, id } = useParams();
 
-  const [tipes] = React.useState([]);
+  const [tipes] = useState([]);
 
-  const [theory, setTheory] = React.useState({
-    numberOfTheory: i,
+  const [theory, setTheory] = useState({
+    numberOfTheory: numberOfTheory,
     description: "",
     file: "",
     fileName: "upload materi",
   });
 
   const handleFile = (e) => {
-    console.log(e.target.files[0]);
     theory["file"] = e.target.files[0];
     theory["fileName"] = e.target.files[0].name;
     setTheory({ ...theory });
-    console.log(theory);
   };
 
   const handleChange = (e) => {
@@ -56,6 +55,10 @@ function Pengumuman({ sucess, error }) {
     alert: {
       marginTop: "1.5rem",
     },
+    img: {
+      width: "100%",
+      height: 200,
+    },
   }));
 
   const classes = useStyles();
@@ -75,8 +78,7 @@ function Pengumuman({ sucess, error }) {
 
     axios
       .post(`${proxy}/api/theorys/create`, file)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         window.location.href = "/dashboard";
       })
       .catch((err) => {
@@ -85,16 +87,18 @@ function Pengumuman({ sucess, error }) {
       });
   };
 
-  React.useEffect(() => {
+  const tipeCards = tipes.map(({ tipe }) => <TheoryTemplate title={tipe} />);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
     axios
-      .get(`${proxy}/api/theorys/view/${i}/${id}`)
+      .get(`${proxy}/api/theorys/view/${numberOfTheory}/${id}`)
       .then((res) => {
         if (res.data) {
           setTheory({ ...res.data });
         } else {
           setTheory({
-            numberOfTheory: i,
+            numberOfTheory: numberOfTheory,
             description: "",
             file: "",
             fileName: "upload materi",
@@ -104,29 +108,20 @@ function Pengumuman({ sucess, error }) {
       .catch((err) => {
         console.log(err);
       });
-  }, [i, id]);
+  }, [numberOfTheory, id]);
 
   return (
-    <Create title={`Materi ke ${i}`}>
+    <Paper title={`Materi ke ${numberOfTheory}`}>
       <form onSubmit={handleSubmit} enctype="multipart/form-data">
-        <TheoryTemplate title="Tugas" icon={<AssignmentIcon />}>
+        <Sub title="Tugas" icon={<AssignmentIcon />}>
           <Input
             id="description"
             label="Deskripsi"
             value={theory.description}
             handleChange={handleChange}
           />
-        </TheoryTemplate>
-        <TheoryTemplate
-          title="Materi"
-          icon={
-            <img
-              src={"/helper/exam.png"}
-              alt="exam"
-              style={{ width: "2rem", height: "2rem" }}
-            />
-          }
-        >
+        </Sub>
+        <Sub title="Materi" icon={<ExamIcon />}>
           <Button>
             <div className={classes.root}>
               <input
@@ -147,34 +142,28 @@ function Pengumuman({ sucess, error }) {
               </label>
             </div>
           </Button>
-        </TheoryTemplate>
-        {tipes.map(({ tipe }) => (
-          <React.Fragment>
-            <TheoryTemplate title={tipe}></TheoryTemplate>
-          </React.Fragment>
-        ))}
-
+        </Sub>
+        {tipeCards}
         <ErrorSucess
           isError={!isEmpty(error)}
           isSucess={Boolean(sucess)}
           errorMessages={[error.description, error.file]}
         />
-
         <Grid container justify="center">
           <Grid item xs={12} md={4}>
             <Button
               color="primary"
               variant="contained"
-              style={{ marginTop: "0.5rem" }}
               fullWidth
               type="submit"
+              style={{ marginTop: "0.5rem" }}
             >
               Submit
             </Button>
           </Grid>
         </Grid>
       </form>
-    </Create>
+    </Paper>
   );
 }
 

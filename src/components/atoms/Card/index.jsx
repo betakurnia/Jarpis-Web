@@ -7,7 +7,14 @@ import { Link } from "react-router-dom";
 
 import color from "../../../utils/color";
 
-function Card({ id, title, from, to }) {
+function Card({
+  id,
+  title,
+  from,
+  to,
+  imageName = "science.png",
+  color = "red",
+}) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -23,7 +30,7 @@ function Card({ id, title, from, to }) {
       "Selasa",
       "Rabu",
       "Kamis",
-      "Jum;at",
+      "Jum'at",
       "Sabtu",
     ],
     monthNames: [
@@ -57,19 +64,23 @@ function Card({ id, title, from, to }) {
 
   const useStyles = makeStyles({
     root: {
-      backgroundColor: color.white,
       boxShadow: "0 .5rem 1rem rgba(0,0,0,.15)",
-      padding: "0 2rem 2rem",
     },
     img: {
-      maxWidth: "100%",
-      height: "auto",
-    },
-    title: {
-      marginTop: "2rem",
+      maxWidth: "90%",
+      height: "200px",
     },
     description: {
       marginTop: "0.5rem",
+    },
+    imgBox: {
+      textAlign: "center",
+      padding: "2rem",
+    },
+    descriptionBox: {
+      backgroundColor: color,
+      color: "white",
+      padding: "2rem",
     },
   });
 
@@ -79,21 +90,25 @@ function Card({ id, title, from, to }) {
     <Grid item xs={6} sm={4} md={3}>
       <Link to={`/mata-pelajaran/${id}`}>
         <div className={classes.root}>
-          <img
-            className={classes.img}
-            alt="education"
-            src={"/helper/education.jpg"}
-          />
-          <Typography variant="h6" component="h2" className={classes.title}>
-            {title}
-          </Typography>
-          <Typography
-            variant="body1"
-            component="p"
-            className={classes.description}
-          >
-            {dateFormat(from, "dddd hh:MM TT")} - {dateFormat(to, "hh:MM TT")}
-          </Typography>
+          <div className={classes.imgBox}>
+            <img
+              className={classes.img}
+              alt="education"
+              src={`/majors/${imageName}`}
+            />
+          </div>
+          <div className={classes.descriptionBox}>
+            <Typography variant="h6" component="h2" className={classes.title}>
+              {title}
+            </Typography>
+            <Typography
+              variant="body1"
+              component="p"
+              className={classes.description}
+            >
+              {dateFormat(from, "dddd hh:MM TT")} - {dateFormat(to, "hh:MM TT")}
+            </Typography>
+          </div>
         </div>
       </Link>
     </Grid>

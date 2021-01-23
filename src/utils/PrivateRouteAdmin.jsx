@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import isEmpty from "./is-empty";
 
-const PrivateRoute = ({ component: Component, user, ...rest }) => {
+const PrivateRouteAdmin = ({ component: Component, user, ...rest }) => {
   return (
     <Route
       {...rest}
@@ -23,4 +23,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(PrivateRoute);
+export default connect(mapStateToProps)(PrivateRouteAdmin);

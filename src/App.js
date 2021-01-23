@@ -6,12 +6,12 @@ import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import PrivateRoute from "./utils/PrivateRoute";
+import PrivateRouteTeacher from "./utils/PrivateRouteTeacher";
 import PrivateRouteAdmin from "./utils/PrivateRouteAdmin";
 import setAuthToken from "./utils/setAuthToken";
 import store from "./store";
 import { setCurrentUser, logoutUser } from "./redux/actions/userAction";
 
-// components
 import Login from "./components/molecules/Login";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -19,18 +19,15 @@ import Dashboard from "./components/pages/Dashboard";
 import Profile from "./components/pages/Profile";
 import Announcment from "./components/pages/Announcment";
 import Major from "./components/pages/Major";
-import Pengumuman from "./components/pages/Pengumuman";
 import RecapitulationValue from "./components/pages/RecapitulationValue";
 import RecapitulationStudent from "./components/pages/RecapitulationStudent";
 import Recapitulation from "./components/pages/Recapitulation";
-import Present from "./components/pages/Present";
+import Presence from "./components/pages/Presence";
 import Theory from "./components/pages/Theory";
-// import CKEditor from "./components/atoms/CKEditor";
-import Register from "./components/molecules/Register";
+import Register from "./components/pages/Register";
 import Exams from "./components/pages/Exams";
 import ExamsStudent from "./components/pages/ExamsStudent";
 import AnnouncementUpdate from "./components/pages/AnnouncementUpdate";
-// import CreateTemplate from "../../molecules/CreateTemplate";
 
 // Check for token
 if (localStorage.jwtToken) {
@@ -64,18 +61,18 @@ const App = () => {
           <Route path="/" exact>
             <Login />
           </Route>
-          <Container>
+          <Container maxWidth="lg">
             <PrivateRoute component={Dashboard} path="/dashboard" />
             <PrivateRoute component={Profile} path="/profile" />
             <PrivateRoute component={RecapitulationStudent} path="/nilai" />
-            <Route path="/pengumuman">
+            <Route path="/pengumuman" exact>
               <Announcment />
             </Route>
             <PrivateRoute component={Major} path="/mata-pelajaran/:id" exact />
 
             <Switch>
               <PrivateRoute
-                component={Present}
+                component={Presence}
                 path="/mata-pelajaran/presensi/:id"
                 exact
               />
@@ -85,9 +82,13 @@ const App = () => {
                 exact
               />
             </Switch>
-            <PrivateRoute component={Present} path="/presensi/:id" exact />
-            <PrivateRoute component={Theory} path="/guru/materi/:i/:id" exact />
-            <PrivateRoute
+            <PrivateRoute component={Presence} path="/presensi/:id" exact />
+            <PrivateRouteTeacher
+              component={Theory}
+              path="/guru/materi/:numberOfTheory/:id"
+              exact
+            />
+            <PrivateRouteTeacher
               component={Exams}
               path="/guru/ujian/:ujian/:id"
               exact
@@ -102,13 +103,13 @@ const App = () => {
               path="/admin/rekapitulasi"
               exact
             />
-            <PrivateRoute
+            <PrivateRouteTeacher
               component={RecapitulationValue}
               path="/guru/rekapitulasi/:ujian/:id"
               exact
             />
             <PrivateRouteAdmin
-              component={Pengumuman}
+              component={AnnouncementUpdate}
               path="/admin/pengumuman"
               exact
             />

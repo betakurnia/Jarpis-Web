@@ -1,28 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import Input from "../../atoms/Input";
+import Paper from "../../atoms/Paper";
+import ErrorSucess from "../../atoms/ErrorSucess";
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Alert from "@material-ui/lab/Alert";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 
-import Input from "../../atoms/Input";
-import Create from "../../atoms/Create";
-import ErrorSucess from "../../atoms/ErrorSucess";
-
 import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
-import color from "../../../utils/color";
+import { formatUrl } from "../../../utils/format";
 import { createExam } from "../../../redux/actions/examAction";
 import { clearErrorSucess } from "../../../redux/actions/helperAction";
 
-function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
+function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
   const useStyles = makeStyles({
     root: {
       listStyle: "none",
@@ -31,15 +30,44 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
         alignItems: "flex-end",
       },
     },
+    btn: {
+      marginTop: "2rem",
+    },
+    icon: {
+      paddingLeft: "0.5rem",
+    },
   });
 
   const classes = useStyles();
 
   const { ujian, id } = useParams();
 
-  const [exam, setExam] = React.useState([...new Array(5)]);
+  const [dataAnswers] = useState([
+    {
+      value: "a",
+      label: "Jawaban a",
+      idx: 0,
+    },
+    {
+      value: "b",
+      label: "Jawaban b",
+      idx: 1,
+    },
+    {
+      value: "c",
+      label: "Jawaban c",
+      idx: 2,
+    },
+    {
+      value: "d",
+      label: "Jawaban d",
+      idx: 3,
+    },
+  ]);
 
-  const [loading, setLoading] = React.useState(true);
+  const [exam, setExam] = useState([...new Array(5)]);
+
+  const [loading, setLoading] = useState(true);
 
   const handleMenus = (e, i) => {
     exam[i].answer = e.target.value;
@@ -47,23 +75,27 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
     setExam([...exam]);
   };
 
-  const handleAdd = (e) => {
+  const handleAddQuestion = () => {
     const question = [
-      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
-      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
-      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
-      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
-      { examName: "", possibilitesAnswer: ["", "", "", ""], answer: "" },
+      { possibilitesAnswer: [] },
+      { possibilitesAnswer: [] },
+      { possibilitesAnswer: [] },
+      { possibilitesAnswer: [] },
+      { possibilitesAnswer: [] },
     ];
     setExam([...exam, ...question]);
   };
 
-  const handleChange = (e, id, idx = false) => {
-    if (idx === false) {
-      exam[id].examName = e.target.value;
+  const handleChange = (e, id, idx) => {
+    const { name, value } = e.target;
+
+    if (Boolean(idx)) {
+      exam[name].possibilitesAnswer[idx] = value;
       setExam([...exam]);
-    } else {
-      exam[id].possibilitesAnswer[idx] = e.target.value;
+    }
+
+    if (!Boolean(idx)) {
+      exam[name].examName = value;
       setExam([...exam]);
     }
   };
@@ -78,20 +110,59 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
     });
   };
 
-  React.useEffect(() => {
+  const questionExams =
+    !loading &&
+    exam.map(({ examName, answer, possibilitesAnswer }, i) => (
+      <div>
+        <Input
+          id={i}
+          label={`Soal no ${i + 1}`}
+          handleChange={handleChange}
+          value={examName}
+        />
+        <ul className={classes.root}>
+          <RadioGroup
+            aria-label="answer"
+            name={i}
+            value={answer}
+            onChange={(e) => {
+              handleMenus(e, i);
+            }}
+          >
+            {dataAnswers.map(({ value, label, idx }) => (
+              <li>
+                {" "}
+                <FormControlLabel value={value} control={<Radio />} />{" "}
+                <Input
+                  id={i}
+                  label={label}
+                  name={i}
+                  idx={idx}
+                  handleChange={handleChange}
+                  value={possibilitesAnswer[0]}
+                />
+              </li>
+            ))}
+          </RadioGroup>
+        </ul>
+      </div>
+    ));
+
+  useEffect(() => {
     clearErrorSucess();
     axios.get(`${proxy}/api/exams/view/${id}?type=${ujian}`).then((res) => {
-      if (res.data) {
-        console.log(res.data);
-        setExam([...res.data.question]);
-      } else {
-        exam.forEach((a, i) => {
-          let obj = {
-            examName: "",
-            possibilitesAnswer: ["", "", "", ""],
-            answer: "",
+      const { data } = res;
+
+      if (Boolean(data)) {
+        setExam([...data.question]);
+      }
+
+      if (!Boolean(data)) {
+        exam.forEach((empty, i) => {
+          const question = {
+            possibilitesAnswer: [],
           };
-          exam[i] = obj;
+          exam[i] = question;
         });
         setExam([...exam]);
       }
@@ -100,86 +171,19 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
   }, [id]);
 
   return (
-    <Create title={`${ujian.split("-").join(" ")}`}>
-      {!loading &&
-        exam.map((arr, i) => (
-          <React.Fragment>
-            <Input
-              id={i}
-              label={`Soal no ${i + 1}`}
-              placeholder=""
-              handleChange={handleChange}
-              value={arr.examName}
-            ></Input>
-            <ul className={classes.root}>
-              <RadioGroup
-                aria-label="answer"
-                name={i}
-                value={arr.answer}
-                onChange={(e) => {
-                  handleMenus(e, i);
-                }}
-              >
-                <li>
-                  {" "}
-                  <FormControlLabel value="a" control={<Radio />} />{" "}
-                  <Input
-                    id={`${i}`}
-                    label="Jawaban a"
-                    // placeholder="contoh: 1 + 1"
-                    idx={0}
-                    handleChange={handleChange}
-                    value={arr.possibilitesAnswer[0]}
-                  ></Input>
-                </li>
-                <li>
-                  <FormControlLabel value="b" control={<Radio />} />{" "}
-                  <Input
-                    id={`${i}`}
-                    label="Jawaban b"
-                    // placeholder="contoh: 1 + 1"
-                    idx={1}
-                    handleChange={handleChange}
-                    value={arr.possibilitesAnswer[1]}
-                  ></Input>
-                </li>
-                <li>
-                  <FormControlLabel value="c" control={<Radio />} />{" "}
-                  <Input
-                    id={`${i}`}
-                    label="Jawaban c"
-                    // placeholder="contoh: 1 + 1"
-                    idx={2}
-                    handleChange={handleChange}
-                    value={arr.possibilitesAnswer[2]}
-                  ></Input>
-                </li>
-                <li>
-                  <FormControlLabel value="d" control={<Radio />} />{" "}
-                  <Input
-                    id={`${i}`}
-                    label="Jawaban d"
-                    // placeholder="contoh: 1 + 1"
-                    idx={3}
-                    handleChange={handleChange}
-                    value={arr.possibilitesAnswer[3]}
-                  ></Input>
-                </li>
-              </RadioGroup>
-            </ul>
-          </React.Fragment>
-        ))}
+    <Paper title={formatUrl(ujian)}>
+      {questionExams}
       <Button
         variant="contained"
         color="secondary"
-        style={{ marginTop: "2rem" }}
-        onClick={handleAdd}
+        className={classes.btn}
+        onClick={handleAddQuestion}
       >
-        Tambah 5 Soal <AddIcon style={{ paddingLeft: "0.5rem" }} />
+        Tambah 5 Soal <AddIcon className={classes.icon} />
       </Button>{" "}
       <ErrorSucess
         isError={!isEmpty(error)}
-        isSucess={!isEmpty(sucess)}
+        isSucess={Boolean(sucess)}
         errorMessages={[error.examStudentAnswer]}
         sucessMessage="Berhasil Dibuat"
       />
@@ -189,14 +193,14 @@ function Exams({ error, sucess, createExam, user, clearErrorSucess }) {
             variant="contained"
             color="primary"
             onClick={handleSubmit}
-            style={{ marginTop: "1.5rem" }}
+            className={classes.btn}
             fullWidth
           >
             Submit
           </Button>
         </Grid>
       </Grid>
-    </Create>
+    </Paper>
   );
 }
 

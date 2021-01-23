@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import { BadgeExam } from "../../atoms/Badge";
+import SimpleTable from "../../atoms/SimpleTable";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,6 +11,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Alert from "@material-ui/lab/Alert";
+import Pagination from "@material-ui/lab/Pagination";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import axios from "axios";
 import { connect } from "react-redux";
@@ -49,6 +53,10 @@ const useStyles = makeStyles({
   container: {
     marginTop: "3rem",
   },
+  pagination: {
+    marginTop: "2rem",
+    color: color.primary,
+  },
 });
 
 function Recapitulation({ id, user, major }) {
@@ -67,7 +75,7 @@ function Recapitulation({ id, user, major }) {
       "Selasa",
       "Rabu",
       "Kamis",
-      "Jum;at",
+      "Jum'at",
       "Sabtu",
     ],
     monthNames: [
@@ -101,15 +109,33 @@ function Recapitulation({ id, user, major }) {
 
   const classes = useStyles();
 
-  const [recapitulations, setRecapitulation] = React.useState([]);
+  const [recapitulations, setRecapitulation] = useState([]);
 
-  const [present, setPresent] = React.useState({
+  const [dataColumnHeaders] = useState([
+    "Siswa",
+    "Mata Pelajaran",
+    "Total Kehadiran",
+    "Dapat Mengikuti Ujian",
+  ]);
+
+  const tableBodys = recapitulations.map(({ _id, userId, majorId, status }) => (
+    <TableRow key={_id}>
+      <TableCell> {userId.name}</TableCell>
+      <TableCell>{majorId.majorName}</TableCell>
+      <TableCell>{status.length} / 14</TableCell>
+      <TableCell>
+        <BadgeExam presence={status.length} />
+      </TableCell>
+    </TableRow>
+  ));
+
+  const [present, setPresent] = useState({
     userId: "",
     majorId: "",
     status: "hadir",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     present["userId"] = user.user.id;
     present["majorId"] = id;
     setPresent({ ...present });
@@ -117,48 +143,29 @@ function Recapitulation({ id, user, major }) {
     axios
       .get(`${proxy}/api/users/view`)
       .then((res) => {
-        setRecapitulation([...res.data]);
+        const { data } = res;
+
+        setRecapitulation([...data]);
       })
       .catch((err) => console.log(err));
   }, [id]);
 
   return (
-    <TableContainer component={Paper} className={classes.container}>
+    <div>
       <Alert severity="warning">
         Dapat mengikuti ujian ketika kehadiran lebih dari 8
       </Alert>
-      <Table
-        className={classes.table}
-        aria-label="simple table"
-        style={{ marginTop: "2rem" }}
-      >
-        <TableHead className={classes.bgPrimary}>
-          <TableRow className={classes.tableRow}>
-            <TableCell>Siswa</TableCell>
-            <TableCell>Mata Pelajaran</TableCell>
-            <TableCell>Total Kehadiran</TableCell>
-            <TableCell>Dapat Mengikuti Ujian</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!isEmpty(recapitulations) &&
-            recapitulations.map((recapitulation) => (
-              <TableRow key={recapitulation}>
-                <TableCell> {recapitulation.userId.name}</TableCell>
-                <TableCell>{recapitulation.majorId.majorName}</TableCell>
-                <TableCell>{recapitulation.status.length} / 14</TableCell>
-                <TableCell>
-                  {recapitulation.status.length > 7 ? (
-                    <span className={classes.allowed}>Diizinkan</span>
-                  ) : (
-                    <span className={classes.notAllow}>Tidak</span>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <SimpleTable dataColumnHeaders={dataColumnHeaders}>
+        {tableBodys}
+      </SimpleTable>
+      <Pagination
+        className={classes.pagination}
+        count={10}
+        variant="outlined"
+        color="primary"
+        shape="rounded"
+      />
+    </div>
   );
 }
 
