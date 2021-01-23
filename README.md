@@ -16,3 +16,5 @@ Tech:
 
 for rest api download here: <br/>
 https://github.com/betakurnia/Jarpis-Server
+
+<strong>Code is still shit! Refactor v5 is under development</strong>
