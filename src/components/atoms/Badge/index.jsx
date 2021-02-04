@@ -53,11 +53,10 @@ export function BadgeResult({ result }) {
     return (
       <span className={clsx(classes.bgInfo, classes.badge)}>{result}</span>
     );
-  } else {
-    return (
-      <span className={clsx(classes.bgDanger, classes.badge)}>{result}</span>
-    );
   }
+  return (
+    <span className={clsx(classes.bgDanger, classes.badge)}>{result}</span>
+  );
 }
 
 export function BadgeExam({ presence }) {
@@ -65,7 +64,6 @@ export function BadgeExam({ presence }) {
 
   if (presence > 7) {
     return <span className={clsx(classes.bgInfo, classes.badge)}>Ya</span>;
-  } else {
-    return <span className={clsx(classes.bgDanger, classes.badge)}>Tidak</span>;
   }
+  return <span className={clsx(classes.bgDanger, classes.badge)}>Tidak</span>;
 }

@@ -19,7 +19,7 @@ function Paper({ title, children }) {
     },
     title: {
       color: color.lightBlack,
-      fontWeight: "500",
+      fontWeight: 700,
     },
     btn: {
       marginTop: "2rem",

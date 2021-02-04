@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -35,7 +35,7 @@ function Profile({ user, getUserById }) {
 
   const classes = useStyles();
 
-  React.useEffect(() => {
+  useEffect(() => {
     getUserById(user.isAuthenticated.id);
   }, [getUserById, user.isAuthenticated.id]);
 

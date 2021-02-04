@@ -11,17 +11,14 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/styles";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 
-import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
 import { formatUrl } from "../../../utils/format";
-import { createExam } from "../../../redux/actions/examAction";
-import { clearErrorSucess } from "../../../redux/actions/helperAction";
+import { viewExamByIdAndType, createExam } from "../../../api";
 
-function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
+function Exams({ user }) {
   const useStyles = makeStyles({
     root: {
       listStyle: "none",
@@ -41,6 +38,8 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
   const classes = useStyles();
 
   const { ujian, id } = useParams();
+
+  const [exams, setExams] = useState([]);
 
   const [dataAnswers] = useState([
     {
@@ -68,6 +67,10 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
   const [exam, setExam] = useState([...new Array(5)]);
 
   const [loading, setLoading] = useState(true);
+
+  const [errors, setErrors] = useState({});
+
+  const [isSucess, setIsSucess] = useState(false);
 
   const handleMenus = (e, i) => {
     exam[i].answer = e.target.value;
@@ -100,8 +103,8 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
     }
   };
 
-  const handleSubmit = () => {
-    createExam({
+  const handleSubmit = async () => {
+    await createExam({
       userId: "guru",
       teacherId: user.user.id,
       majorId: id,
@@ -112,7 +115,7 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
 
   const questionExams =
     !loading &&
-    exam.map(({ examName, answer, possibilitesAnswer }, i) => (
+    exams.map(({ examName, answer, possibilitesAnswer }, i) => (
       <div>
         <Input
           id={i}
@@ -149,15 +152,14 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
     ));
 
   useEffect(() => {
-    clearErrorSucess();
-    axios.get(`${proxy}/api/exams/view/${id}?type=${ujian}`).then((res) => {
-      const { data } = res;
+    async function fetchApi() {
+      const exams = await viewExamByIdAndType(id, ujian);
 
-      if (Boolean(data)) {
-        setExam([...data.question]);
+      if (Boolean(exams)) {
+        setExam([...exams.question]);
       }
 
-      if (!Boolean(data)) {
+      if (!Boolean(exams)) {
         exam.forEach((empty, i) => {
           const question = {
             possibilitesAnswer: [],
@@ -167,7 +169,9 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
         setExam([...exam]);
       }
       setLoading(false);
-    });
+    }
+
+    fetchApi();
   }, [id]);
 
   return (
@@ -182,16 +186,16 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
         Tambah 5 Soal <AddIcon className={classes.icon} />
       </Button>{" "}
       <ErrorSucess
-        isError={!isEmpty(error)}
-        isSucess={Boolean(sucess)}
-        errorMessages={[error.examStudentAnswer]}
+        isError={!isEmpty(errors)}
+        isSucess={isSucess}
+        errorMessages={[errors.examStudentAnswer]}
         sucessMessage="Berhasil Dibuat"
       />
       <Grid container justify="center">
         <Grid item xs={12} md={6}>
           <Button
             variant="contained"
-            color="primary"
+            className="btn-light-black"
             onClick={handleSubmit}
             className={classes.btn}
             fullWidth
@@ -206,10 +210,6 @@ function Exams({ user, error, sucess, createExam, clearErrorSucess }) {
 
 const mapStateToProps = (state) => ({
   user: state.user,
-  error: state.error,
-  sucess: state.sucess,
 });
 
-export default connect(mapStateToProps, { createExam, clearErrorSucess })(
-  Exams
-);
+export default connect(mapStateToProps)(Exams);

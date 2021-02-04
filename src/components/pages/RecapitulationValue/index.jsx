@@ -5,13 +5,11 @@ import { BadgeResult as Badge } from "../../atoms/Badge";
 
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import axios from "axios";
-import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import proxy from "../../../utils/proxy";
+import { viewRecapitulationsByIdAndType } from "../../../api";
 
-function RecapitulationValue({ user, major }) {
+function RecapitulationValue() {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -75,14 +73,13 @@ function RecapitulationValue({ user, major }) {
     </TableRow>
   ));
   useEffect(() => {
-    axios
-      .get(`${proxy}/api/exams/view/recapitulation/${id}?type=${ujian}`)
-      .then((res) => {
-        const { data } = res;
+    async function fetchApi() {
+      const recapitulations = await viewRecapitulationsByIdAndType();
 
-        setRecapitulations([...data]);
-      })
-      .catch((err) => console.log(err));
+      setRecapitulations(...recapitulations);
+    }
+
+    fetchApi();
   }, [id, ujian]);
 
   return (
@@ -92,8 +89,4 @@ function RecapitulationValue({ user, major }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  user: state.user,
-});
-
-export default connect(mapStateToProps)(RecapitulationValue);
+export default RecapitulationValue;

@@ -5,15 +5,13 @@ import Sections from "../../organisms/Sections";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
 import makeStyles from "@material-ui/styles/makeStyles";
-import axios from "axios";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import color from "../../../utils/color";
 import isEmpty from "../../../utils/is-empty";
-import proxy from "../../../utils/proxy";
+import { viewMajors } from "../../../api";
 
 function Major({ user }) {
   var dateFormat = require("dateformat");
@@ -98,16 +96,15 @@ function Major({ user }) {
   const { role } = user.isAuthenticated;
 
   useEffect(() => {
-    axios
-      .get(`${proxy}/api/majors/view/${id}`)
-      .then((res) => {
-        const { data } = res;
+    async function fetchApi() {
+      const majors = await viewMajors(id);
 
-        headerDOM.current.style.backgroundColor = data.color;
+      headerDOM.current.style.backgroundColor = majors.color;
 
-        setMajor({ ...data });
-      })
-      .catch((err) => console.log(err));
+      setMajor({ ...majors });
+    }
+
+    fetchApi();
   }, [id]);
 
   const header = !isEmpty(major) && (

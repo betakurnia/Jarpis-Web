@@ -53,6 +53,10 @@ function TheorySection({
       padding: "0 0.5rem",
       cursor: "pointer",
     },
+    item: {
+      paddingLeft: "0.5rem",
+      cursor: "pointer",
+    },
   });
 
   const classes = useStyles();
@@ -109,7 +113,9 @@ function TheorySection({
             style={{ paddingTop: "0.25rem" }}
           >
             <AssignmentIcon />{" "}
-            <span className={classes.description}>{description}</span>
+            <span className={clsx(classes.item, classes.description)}>
+              {description}
+            </span>
           </Grid>
           <Grid
             container
@@ -117,7 +123,9 @@ function TheorySection({
             style={{ paddingTop: "0.75rem" }}
           >
             <SystemUpdateAltIcon />{" "}
-            <span onClick={handleDownload}>Download {fileName}</span>
+            <span className={classes.item} onClick={handleDownload}>
+              Download {fileName}
+            </span>
           </Grid>
         </div>
       </Grid>

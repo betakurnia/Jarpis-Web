@@ -193,6 +193,7 @@ function Presence({ user }) {
   ));
 
   useEffect(() => {
+    // Need refactor
     present["userId"] = user.user.id;
     present["majorId"] = id;
     setPresent({ ...present });

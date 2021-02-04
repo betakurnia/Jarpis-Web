@@ -5,8 +5,6 @@ import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { Link } from "react-router-dom";
 
-import color from "../../../utils/color";
-
 function Card({
   id,
   title,

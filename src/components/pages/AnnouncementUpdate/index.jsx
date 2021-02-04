@@ -8,27 +8,17 @@ import CKEditor from "../../atoms/CKEditor";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/styles/makeStyles";
-import axios from "axios";
 import { withRouter, useParams } from "react-router-dom";
-import { connect } from "react-redux";
 
-import proxy from "../../../utils/proxy";
 import color from "../../../utils/color";
 import isEmpty from "../../../utils/is-empty";
 import {
   addAnnouncement,
   updateAnnouncement,
-} from "../../../redux/actions/announcementAction";
-import { clearErrorSucess } from "../../../redux/actions/helperAction";
+  viewAnnouncementById,
+} from "../../../api/";
 
-function AnnouncementUpdate({
-  sucess,
-  error,
-  addAnnouncement,
-  updateAnnouncement,
-  clearErrorSucess,
-  history,
-}) {
+function AnnouncementUpdate({ history }) {
   const useStyles = makeStyles({
     btn: {
       marginTop: "2rem",
@@ -54,6 +44,10 @@ function AnnouncementUpdate({
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
   });
 
+  const [errors, setErrors] = useState([]);
+
+  const { title } = announcement;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -61,36 +55,35 @@ function AnnouncementUpdate({
     setAnnouncement({ ...announcement });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (Boolean(!id)) {
-      addAnnouncement(announcement, history);
+      const { errors } = await addAnnouncement(history, announcement);
+      setErrors({ ...errors });
     }
 
     if (Boolean(id)) {
-      updateAnnouncement(id, announcement, history);
+      const { errors } = await updateAnnouncement(history, id, announcement);
+      setErrors({ ...errors });
     }
   };
 
   useEffect(() => {
-    clearErrorSucess();
-    if (id) {
-      axios
-        .get(`${proxy}/api/announcement/view/${id}`)
-        .then((res) => {
-          const { title, description } = res.data;
+    async function fetchApi() {
+      const announcement = await viewAnnouncementById(id);
+      const { title, description } = announcement;
 
-          announcement["title"] = title;
-          announcement["description"] = description;
+      announcement["title"] = title;
+      announcement["description"] = description;
 
-          setAnnouncement({ ...announcement });
-        })
-        .catch((err) => console.log(err));
+      setAnnouncement({ ...announcement });
     }
-  }, [clearErrorSucess, id]);
 
-  const { title } = announcement;
+    if (id) {
+      fetchApi();
+    }
+  }, [id]);
 
   return (
     <Paper title="Pengumuman">
@@ -104,16 +97,14 @@ function AnnouncementUpdate({
         />
         <CKEditor value={announcement} setValue={setAnnouncement} />
         <ErrorSucess
-          isSucess={sucess}
-          isError={!isEmpty(error)}
-          errorMessages={[error.title, error.description]}
+          isError={!isEmpty(errors)}
+          errorMessages={[errors.title, errors.description]}
         />
         <Grid container justify="center">
           <Grid item xs={12} md={4}>
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               fullWidth
               className={classes.btn}
             >
@@ -126,15 +117,4 @@ function AnnouncementUpdate({
   );
 }
 
-const mapStateToProps = (state) => ({
-  sucess: state.sucess,
-  error: state.error,
-});
-
-export default withRouter(
-  connect(mapStateToProps, {
-    addAnnouncement,
-    updateAnnouncement,
-    clearErrorSucess,
-  })(AnnouncementUpdate)
-);
+export default withRouter(AnnouncementUpdate);

@@ -321,7 +321,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              className="btn-light-black"
               fullWidth
               className={classes.btn}
             >

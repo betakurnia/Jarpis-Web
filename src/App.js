@@ -12,10 +12,10 @@ import setAuthToken from "./utils/setAuthToken";
 import store from "./store";
 import { setCurrentUser, logoutUser } from "./redux/actions/userAction";
 
-import Login from "./components/molecules/Login";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Dashboard from "./components/pages/Dashboard";
+import Login from "./components/pages/Login";
 import Profile from "./components/pages/Profile";
 import Announcment from "./components/pages/Announcment";
 import Major from "./components/pages/Major";

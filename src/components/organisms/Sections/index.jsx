@@ -7,20 +7,16 @@ import Section from "../../molecules/Section";
 import ExamSection from "../../molecules/ExamSection";
 import TheorySection from "../../molecules/TheorySection";
 
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/styles/makeStyles";
 import PeopleIcon from "@material-ui/icons/People";
 
 import axios from "axios";
-import { connect } from "react-redux";
 
 import color from "../../../utils/color";
 import isEmpty from "../../../utils/is-empty";
 import proxy from "../../../utils/proxy";
 import { formatUrl } from "../../../utils/format";
-import { deleteExam } from "../../../redux/actions/examAction";
-import { setError, setSucess } from "../../../redux/actions/helperAction";
+import { viewExams, viewTheorys, deleteExam } from "../../../api";
 
 function Sections({ id, isStudent, isTeacher, majorName }) {
   const useStyles = makeStyles({
@@ -51,18 +47,9 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
     });
   };
 
-  const handleDeleteExam = (id, type) => {
-    axios
-      .post(`${proxy}/api/exams/delete/${id}/${type}`)
-      .then((res) => {
-        const { data } = res;
-
-        setExams([...data]);
-        setSucess();
-      })
-      .catch((err) => {
-        setError(err);
-      });
+  const handleDeleteExam = async (id, type) => {
+    const examData = await deleteExam(id, type);
+    setExams([...examData]);
   };
 
   const presentSection = (
@@ -109,34 +96,20 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
   ));
 
   useEffect(() => {
-    axios
-      .get(`${proxy}/api/exams/view-exam/${id}`)
-      .then((res) => {
-        const { data } = res;
+    async function fetchApi() {
+      const examData = await viewExams(id);
 
-        setExams([...data]);
-      })
-      .catch((err) => console.log(err));
+      setExams([...examData]);
 
-    axios
-      .get(`${proxy}/api/theorys/view/${id}`)
-      .then((res) => {
-        const { data } = res;
+      const theorysData = await viewTheorys(id);
 
-        setTheorys([...data]);
-      })
-      .catch((err) => console.log(err));
+      setTheorys([...theorysData]);
+    }
+    fetchApi();
   }, [id]);
 
   return (
     <div className={classes.root}>
-      <div>
-        <Grid container justify="space-between">
-          <Typography> Wali kelas</Typography>
-          <Typography>Anggota</Typography>
-        </Grid>
-      </div>
-
       {!isEmpty(presentSection) && (
         <Fragment>
           <Header title="Kehadiran" />
@@ -160,4 +133,4 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
   );
 }
 
-export default connect(null, { deleteExam })(Sections);
+export default Sections;

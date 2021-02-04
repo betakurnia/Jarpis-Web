@@ -22,7 +22,7 @@ import { SET_SUCESS, GET_ERRORS } from "../../../redux/actions";
 function Pengumuman({ sucess, error }) {
   const { numberOfTheory, id } = useParams();
 
-  const [tipes] = useState([]);
+  // const [tipes] = useState([]);
 
   const [theory, setTheory] = useState({
     numberOfTheory: numberOfTheory,
@@ -87,9 +87,10 @@ function Pengumuman({ sucess, error }) {
       });
   };
 
-  const tipeCards = tipes.map(({ tipe }) => <TheoryTemplate title={tipe} />);
+  // const tipeCards = tipes.map(({ tipe }) => <TheoryTemplate title={tipe} />);
 
   useEffect(() => {
+    // Need refactor
     window.scrollTo(0, 0);
     axios
       .get(`${proxy}/api/theorys/view/${numberOfTheory}/${id}`)
@@ -143,7 +144,7 @@ function Pengumuman({ sucess, error }) {
             </div>
           </Button>
         </Sub>
-        {tipeCards}
+        {/* {tipeCards} */}
         <ErrorSucess
           isError={!isEmpty(error)}
           isSucess={Boolean(sucess)}
@@ -152,7 +153,7 @@ function Pengumuman({ sucess, error }) {
         <Grid container justify="center">
           <Grid item xs={12} md={4}>
             <Button
-              color="primary"
+              className="btn-light-black"
               variant="contained"
               fullWidth
               type="submit"

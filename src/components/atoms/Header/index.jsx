@@ -12,7 +12,8 @@ function Header({ title }) {
       marginBottom: "0.5rem",
     },
     title: {
-      color: color.black,
+      color: color.lightBlack,
+      fontWeight: 600,
       marginLeft: "0.75rem",
     },
   });

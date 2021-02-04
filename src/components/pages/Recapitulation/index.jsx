@@ -3,22 +3,15 @@ import React, { useState, useEffect } from "react";
 import { BadgeExam } from "../../atoms/Badge";
 import SimpleTable from "../../atoms/SimpleTable";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import Alert from "@material-ui/lab/Alert";
 import Pagination from "@material-ui/lab/Pagination";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import axios from "axios";
 import { connect } from "react-redux";
 
-import proxy from "../../../utils/proxy";
-import isEmpty from "../../../utils/is-empty";
 import color from "../../../utils/color";
+import { viewUsers } from "../../../api/";
 
 const useStyles = makeStyles({
   table: {
@@ -59,7 +52,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Recapitulation({ id, user, major }) {
+function Recapitulation({ id, user }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
     dayNames: [
@@ -140,14 +133,12 @@ function Recapitulation({ id, user, major }) {
     present["majorId"] = id;
     setPresent({ ...present });
 
-    axios
-      .get(`${proxy}/api/users/view`)
-      .then((res) => {
-        const { data } = res;
+    async function fetchApi() {
+      const users = viewUsers();
+      setRecapitulation([...users]);
+    }
 
-        setRecapitulation([...data]);
-      })
-      .catch((err) => console.log(err));
+    fetchApi();
   }, [id]);
 
   return (
@@ -162,7 +153,7 @@ function Recapitulation({ id, user, major }) {
         className={classes.pagination}
         count={10}
         variant="outlined"
-        color="primary"
+        className="btn-light-black"
         shape="rounded"
       />
     </div>

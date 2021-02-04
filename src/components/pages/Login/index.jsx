@@ -163,7 +163,6 @@ function Login({ loginUser, error, history, user }) {
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
                 fullWidth
                 className={classes.btn}
               >

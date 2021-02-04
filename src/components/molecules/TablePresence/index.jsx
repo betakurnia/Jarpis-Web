@@ -278,7 +278,7 @@ function TablePresence({ id, user, major }) {
         <DialogActions>
           <Button
             onClick={handleClose}
-            color="primary"
+            className="btn-light-black"
             className={classes.btnDanger}
           >
             Batal

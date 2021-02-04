@@ -11,17 +11,18 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/styles/makeStyles";
 import Alert from "@material-ui/lab/Alert";
-import axios from "axios";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 
-import proxy from "../../../utils/proxy";
 import isEmpty from "../../../utils/is-empty";
 import { formatUrl } from "../../../utils/format";
-import { createExamStudent } from "../../../redux/actions/examAction";
-import { clearErrorSucess } from "../../../redux/actions/helperAction";
+import {
+  viewExamByIdAndType,
+  viewExamByIdUserIdAndType,
+  createExamStudent,
+} from "../../../api/";
 
-function ExamsStudent({ user, createExamStudent, error, sucess }) {
+function ExamsStudent({ user }) {
   const useStyles = makeStyles({
     btn: {
       marginTop: "1.5rem",
@@ -42,6 +43,10 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
 
   const [open, setOpen] = useState(false);
 
+  const [errors, setErrors] = useState({});
+
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const handleExamStudentAnswer = (e, i) => {
     examStudentAnswer[i] = e.target.value;
     setExamStudentAnswer([...examStudentAnswer]);
@@ -55,10 +60,10 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
     setOpen(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setOpen(false);
 
-    createExamStudent({
+    await createExamStudent({
       userId: user.user.id,
       majorId: id,
       question: exam,
@@ -91,7 +96,7 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
         {" "}
         <Button
           variant="contained"
-          color="primary"
+          className="btn-light-black"
           onClick={handleClickOpen}
           fullWidth
           className={classes.btn}
@@ -103,43 +108,37 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
   );
 
   useEffect(() => {
-    clearErrorSucess();
-    axios
-      .get(
-        `${proxy}/api/exams/view/${id}/${user.isAuthenticated.id}?type=${ujian}`
-      )
-      .then((res) => {
-        const { data } = res;
+    async function fetchApi() {
+      const ujian = await viewExamByIdUserIdAndType(
+        id,
+        user.isAuthenticated.id,
+        ujian
+      );
+      if (Boolean(ujian)) {
+        setIsSuccess(true);
+        setExamStudentAnswer([...ujian.examStudentAnswer]);
+        setExam([...ujian.question]);
+        setLoading(false);
+      }
 
-        if (Boolean(data)) {
-          setSucess(true);
-          setExamStudentAnswer([...data.examStudentAnswer]);
-          setExam([...data.question]);
-          setLoading(false);
-        }
+      if (!Boolean(ujian)) {
+        const exam = viewExamByIdAndType(id, ujian);
 
-        if (!Boolean(data)) {
-          axios
-            .get(`${proxy}/api/exams/view/${id}?type=${ujian}`)
-            .then((res) => {
-              const { data } = res;
-
-              setExamStudentAnswer([...data.examStudentAnswer]);
-              setExam([...data.question]);
-              setLoading(false);
-            });
-        }
-      })
-      .catch((err) => console.log(err));
+        setExamStudentAnswer([...exam.examStudentAnswer]);
+        setExam([...exam.question]);
+        setLoading(false);
+      }
+    }
+    fetchApi();
   }, [id, ujian, user.isAuthenticated.id]);
 
   return (
     <Paper title={formatUrl(ujian)}>
       {questionExams}
       <ErrorSucess
-        isSucess={Boolean(sucess)}
-        isError={!isEmpty(error)}
-        errorMessages={[error.examStudentAnswer]}
+        isSucess={isSuccess}
+        isError={!isEmpty(errors)}
+        errorMessages={[errors.examStudentAnswer]}
         sucessMessage="Berhasil dikirim"
       />
       {isParticipatedExam}
@@ -158,8 +157,6 @@ function ExamsStudent({ user, createExamStudent, error, sucess }) {
 
 const mapStateToProps = (state) => ({
   user: state.user,
-  error: state.error,
-  sucess: state.sucess,
 });
 
-export default connect(mapStateToProps, { createExamStudent })(ExamsStudent);
+export default connect(mapStateToProps)(ExamsStudent);

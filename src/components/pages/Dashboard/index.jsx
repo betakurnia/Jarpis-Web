@@ -5,10 +5,13 @@ import Headers from "../../atoms/Headers";
 
 import Grid from "@material-ui/core/Grid";
 
-import axios from "axios";
 import { connect } from "react-redux";
 
-import proxy from "../../../utils/proxy";
+import {
+  viewMajorsStudent,
+  viewMajorsTeacher,
+  viewMajorsAdmin,
+} from "../../../api";
 
 function Dashboard({ user }) {
   const [majors, setMajors] = useState([]);
@@ -16,30 +19,36 @@ function Dashboard({ user }) {
   useEffect(() => {
     const { role, majorId } = user.isAuthenticated;
 
-    if (role === "teacher") {
-      axios.post(`${proxy}/api/majors/viewByArray`, majorId).then((res) => {
-        const { data } = res;
+    const { kelasId } = user.user;
 
-        setMajors([...data]);
-      });
+    async function fetchMajorStudent() {
+      const majors = await viewMajorsStudent(kelasId);
+
+      setMajors([...majors]);
+    }
+
+    async function fetchMajorsTeacher() {
+      const majors = await viewMajorsTeacher(majorId);
+
+      setMajors([...majors]);
+    }
+
+    async function fetchMajorAdmin() {
+      const majors = await viewMajorsAdmin();
+
+      setMajors([...majors]);
     }
 
     if (role === "siswa") {
-      axios
-        .get(`${proxy}/api/majors/view?kelasId=${user.user.kelasId}`)
-        .then((res) => {
-          const { data } = res;
+      fetchMajorStudent();
+    }
 
-          setMajors([...data]);
-        });
+    if (role === "teacher") {
+      fetchMajorsTeacher();
     }
 
     if (role === "admin") {
-      axios.get(`${proxy}/api/majors/view`).then((res) => {
-        const { data } = res;
-
-        setMajors([...data]);
-      });
+      fetchMajorAdmin();
     }
   }, [user.isAuthenticated.majorId]);
 

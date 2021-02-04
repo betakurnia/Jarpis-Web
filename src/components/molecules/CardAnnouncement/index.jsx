@@ -16,7 +16,7 @@ import clsx from "clsx";
 import dateformat from "dateformat";
 
 import color from "../../../utils/color";
-import { deleteAnnouncement } from "../../../redux/actions/announcementAction";
+import { deleteAnnouncementById } from "../../../api";
 
 function CardAnnouncementNew({
   id,
@@ -24,7 +24,7 @@ function CardAnnouncementNew({
   description,
   user,
   date,
-  deleteAnnouncement,
+  setAnnouncements,
 }) {
   const useStyles = makeStyles({
     description: {
@@ -87,8 +87,9 @@ function CardAnnouncementNew({
 
   const [open, setOpen] = useState(false);
 
-  const handleDeleteAnnnouncement = (e) => {
-    deleteAnnouncement(id);
+  const handleDeleteAnnnouncement = async (e) => {
+    const announcements = await deleteAnnouncementById(id);
+    setAnnouncements([...announcements]);
     setOpen(false);
   };
 
@@ -160,9 +161,6 @@ function CardAnnouncementNew({
 
 const mapStateToProps = (state) => ({
   user: state.user,
-  sucess: state.sucess,
 });
 
-export default connect(mapStateToProps, {
-  deleteAnnouncement,
-})(CardAnnouncementNew);
+export default connect(mapStateToProps)(CardAnnouncementNew);

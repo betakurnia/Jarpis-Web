@@ -6,9 +6,8 @@ import { BadgeResult as Badge } from "../../atoms/Badge";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { connect } from "react-redux";
-import axios from "axios";
 
-import proxy from "../../../utils/proxy";
+import { viewRecapitulations } from "../../../api";
 
 function RecapitulationStudent({ user }) {
   var dateFormat = require("dateformat");
@@ -81,14 +80,14 @@ function RecapitulationStudent({ user }) {
   );
 
   useEffect(() => {
-    axios
-      .get(`${proxy}/api/exams/view/recapitulations/${user.isAuthenticated.id}`)
-      .then((res) => {
-        const { data } = res;
+    async function fetchApi() {
+      const recapitulations = await viewRecapitulations(
+        user.isAuthenticated.id
+      );
 
-        setRecapitulation([...data]);
-      })
-      .catch((err) => console.log(err));
+      setRecapitulation([...recapitulations]);
+    }
+    fetchApi();
   }, []);
 
   return (
