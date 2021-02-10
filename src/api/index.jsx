@@ -38,6 +38,7 @@ export const addAnnouncement = async (history, announcementData) => {
   try {
     await axios.post(`${proxy}/api/announcement/create`, announcementData);
     history.push("/pengumuman");
+    return { errors: {} };
   } catch (err) {
     return { errors: err.response.data };
   }
@@ -50,6 +51,7 @@ export const updateAnnouncement = async (history, id, announcementData) => {
       announcementData
     );
     history.push("/pengumuman");
+    return { errors: {} };
   } catch (err) {
     return { errors: err.response.data };
   }
@@ -160,7 +162,7 @@ export const viewMajors = async (id) => {
 
 export const viewUsers = async () => {
   try {
-    const response = axios.get(`${proxy}/api/users/view`);
+    const response = await axios.get(`${proxy}/api/users/view`);
 
     return response.data;
   } catch (err) {
@@ -170,7 +172,9 @@ export const viewUsers = async () => {
 
 export const viewRecapitulations = async (id) => {
   try {
-    const response = axios.get(`${proxy}/api/exams/view/recapitulations/${id}`);
+    const response = await axios.get(
+      `${proxy}/api/exams/view/recapitulations/${id}`
+    );
 
     return response.data;
   } catch (err) {
@@ -180,7 +184,7 @@ export const viewRecapitulations = async (id) => {
 
 export const viewRecapitulationsByIdAndType = async (id, ujian) => {
   try {
-    const response = axios.get(
+    const response = await axios.get(
       `${proxy}/api/exams/view/recapitulation/${id}?type=${ujian}`
     );
 
@@ -192,7 +196,7 @@ export const viewRecapitulationsByIdAndType = async (id, ujian) => {
 
 export const deleteAnnouncementById = async (id) => {
   try {
-    const response = axios.post(`${proxy}/api/announcement/delete/${id}`);
+    const response = await axios.post(`${proxy}/api/announcement/delete/${id}`);
 
     return response.data;
   } catch (err) {

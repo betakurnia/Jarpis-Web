@@ -40,9 +40,11 @@ function AnnouncementUpdate({ history }) {
 
   const [announcement, setAnnouncement] = useState({
     title: "",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
   });
+
+  const [description, setDescription] = useState(
+    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+  );
 
   const [errors, setErrors] = useState([]);
 
@@ -59,12 +61,18 @@ function AnnouncementUpdate({ history }) {
     e.preventDefault();
 
     if (Boolean(!id)) {
-      const { errors } = await addAnnouncement(history, announcement);
+      const { errors } = await addAnnouncement(history, {
+        title: announcement.title,
+        description: description,
+      });
       setErrors({ ...errors });
     }
 
     if (Boolean(id)) {
-      const { errors } = await updateAnnouncement(history, id, announcement);
+      const { errors } = await updateAnnouncement(history, id, {
+        title: announcement.title,
+        description: description,
+      });
       setErrors({ ...errors });
     }
   };
@@ -72,10 +80,8 @@ function AnnouncementUpdate({ history }) {
   useEffect(() => {
     async function fetchApi() {
       const announcement = await viewAnnouncementById(id);
-      const { title, description } = announcement;
 
-      announcement["title"] = title;
-      announcement["description"] = description;
+      setDescription(announcement.description);
 
       setAnnouncement({ ...announcement });
     }
@@ -84,6 +90,8 @@ function AnnouncementUpdate({ history }) {
       fetchApi();
     }
   }, [id]);
+
+  console.log(announcement);
 
   return (
     <Paper title="Pengumuman">
@@ -95,7 +103,7 @@ function AnnouncementUpdate({ history }) {
           handleChange={handleChange}
           value={title}
         />
-        <CKEditor value={announcement} setValue={setAnnouncement} />
+        <CKEditor value={description} setValue={setDescription} />
         <ErrorSucess
           isError={!isEmpty(errors)}
           errorMessages={[errors.title, errors.description]}

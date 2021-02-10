@@ -9,6 +9,7 @@ import TheorySection from "../../molecules/TheorySection";
 
 import makeStyles from "@material-ui/styles/makeStyles";
 import PeopleIcon from "@material-ui/icons/People";
+import Alert from "@material-ui/lab/Alert";
 
 import axios from "axios";
 
@@ -30,6 +31,9 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
 
     description: {
       marginLeft: "0.5rem",
+    },
+    alert: {
+      marginBottom: "1.5rem",
     },
   });
 
@@ -95,6 +99,18 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
     />
   ));
 
+  const presentWarningNotStudent = !isStudent && (
+    <Alert className={classes.alert} severity="warning">
+      Presensi hanya tersedia untuk siswa dan guru
+    </Alert>
+  );
+
+  const warningNotStudent = !isStudent && (
+    <Alert severity="warning" className={classes.alert}>
+      Ujian hanya tersedia untuk siswa
+    </Alert>
+  );
+
   useEffect(() => {
     async function fetchApi() {
       const examData = await viewExams(id);
@@ -110,6 +126,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
 
   return (
     <div className={classes.root}>
+      {presentWarningNotStudent}
       {!isEmpty(presentSection) && (
         <Fragment>
           <Header title="Kehadiran" />
@@ -125,6 +142,7 @@ function Sections({ id, isStudent, isTeacher, majorName }) {
       )}
       {!isEmpty(examSections) && (
         <Fragment>
+          {warningNotStudent}
           <Header title="Ujian" />
           <div className={classes.subRoot}>{examSections}</div>
         </Fragment>

@@ -134,7 +134,7 @@ function Recapitulation({ id, user }) {
     setPresent({ ...present });
 
     async function fetchApi() {
-      const users = viewUsers();
+      const users = await viewUsers();
       setRecapitulation([...users]);
     }
 

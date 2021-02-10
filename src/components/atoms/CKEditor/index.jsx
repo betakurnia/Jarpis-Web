@@ -33,7 +33,7 @@ function CKEditors({ setValue, value }) {
       <div className={classes.ckEditor}>
         <CKEditor
           editor={ClassicEditor}
-          data={value.description}
+          data={value}
           onReady={(editor) => {
             // You can store the "editor" and use when it is needed.
             console.log("Editor is ready to use!", editor);
@@ -41,8 +41,7 @@ function CKEditors({ setValue, value }) {
           onChange={(event, editor) => {
             const data = editor.getData();
 
-            value["description"] = data;
-            setValue({ ...value });
+            setValue(data);
           }}
           onBlur={(event, editor) => {
             console.log("Blur.", editor);

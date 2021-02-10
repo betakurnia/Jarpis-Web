@@ -13,7 +13,7 @@ function Input({
   handleChange,
   type = "text",
   value,
-  idx,
+  idx = "",
 }) {
   const useStyles = makeStyles({
     root: {

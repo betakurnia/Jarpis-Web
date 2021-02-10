@@ -109,20 +109,20 @@ function ExamsStudent({ user }) {
 
   useEffect(() => {
     async function fetchApi() {
-      const ujian = await viewExamByIdUserIdAndType(
+      const ujians = await viewExamByIdUserIdAndType(
         id,
         user.isAuthenticated.id,
         ujian
       );
-      if (Boolean(ujian)) {
+      if (Boolean(ujians)) {
         setIsSuccess(true);
-        setExamStudentAnswer([...ujian.examStudentAnswer]);
-        setExam([...ujian.question]);
+        setExamStudentAnswer([...ujians.examStudentAnswer]);
+        setExam([...ujians.question]);
         setLoading(false);
       }
 
-      if (!Boolean(ujian)) {
-        const exam = viewExamByIdAndType(id, ujian);
+      if (!Boolean(ujians)) {
+        const exam = await viewExamByIdAndType(id, ujian);
 
         setExamStudentAnswer([...exam.examStudentAnswer]);
         setExam([...exam.question]);

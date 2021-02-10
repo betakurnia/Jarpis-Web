@@ -99,7 +99,9 @@ function Major({ user }) {
     async function fetchApi() {
       const majors = await viewMajors(id);
 
-      headerDOM.current.style.backgroundColor = majors.color;
+      if (majors) {
+        headerDOM.current.style.backgroundColor = majors.color;
+      }
 
       setMajor({ ...majors });
     }

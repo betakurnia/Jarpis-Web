@@ -138,27 +138,31 @@ function Presence({ user }) {
       .catch((err) => console.log(err.response.data));
   };
 
-  const tableBodys = presents.status.map((status) => (
-    <TableRow key={status}>
-      <TableCell>
-        {" "}
-        <p>
-          {dateFormat(
-            index * 604800000 + Date.parse(major.hoursOfSubject),
-            "mmmm d, yyyy "
-          )}
-        </p>
-        <p className={classes.date} test={index++}>
-          {dateFormat(major.hoursOfSubject, "dddd hh:MM TT")} -{" "}
-          {dateFormat(major.hoursOfSubjectFinish, "hh:MM TT")}
-        </p>
-      </TableCell>
-      <TableCell className={classes.disabled}>Absen sudah ditutup</TableCell>
-      <TableCell>
-        <Badge status={status} />
-      </TableCell>
-    </TableRow>
-  ));
+  const tableBodys = !isEmpty(presents)
+    ? presents.status.map((status) => (
+        <TableRow key={status}>
+          <TableCell>
+            {" "}
+            <p>
+              {dateFormat(
+                index * 604800000 + Date.parse(major.hoursOfSubject),
+                "mmmm d, yyyy "
+              )}
+            </p>
+            <p className={classes.date} test={index++}>
+              {dateFormat(major.hoursOfSubject, "dddd hh:MM TT")} -{" "}
+              {dateFormat(major.hoursOfSubjectFinish, "hh:MM TT")}
+            </p>
+          </TableCell>
+          <TableCell className={classes.disabled}>
+            Absen sudah ditutup
+          </TableCell>
+          <TableCell>
+            <Badge status={status} />
+          </TableCell>
+        </TableRow>
+      ))
+    : [];
 
   const tableUndoneBodys = undoneArray.map((undone) => (
     <TableRow key={undone}>

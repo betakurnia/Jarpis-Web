@@ -74,9 +74,9 @@ function RecapitulationValue() {
   ));
   useEffect(() => {
     async function fetchApi() {
-      const recapitulations = await viewRecapitulationsByIdAndType();
+      const recapitulations = await viewRecapitulationsByIdAndType(id, ujian);
 
-      setRecapitulations(...recapitulations);
+      setRecapitulations([...recapitulations]);
     }
 
     fetchApi();

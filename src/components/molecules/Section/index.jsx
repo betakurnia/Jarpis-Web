@@ -2,7 +2,6 @@ import React from "react";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 
@@ -39,15 +38,8 @@ function Section({ description, icon, title, id, isStudent }) {
     </Typography>
   );
 
-  const presentWarningNotStudent = !isStudent && (
-    <Alert className={classes.alert} severity="warning">
-      Presensi hanya tersedia untuk siswa dan guru
-    </Alert>
-  );
-
   return (
     <div>
-      {presentWarningNotStudent}
       <Grid container spacing={3}>
         <span className={classes.icon}> {icon}</span>
         <div>

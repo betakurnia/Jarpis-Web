@@ -8,7 +8,6 @@ import Dialogs from "../../atoms/Dialogs";
 
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Alert from "@material-ui/lab/Alert";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { withRouter } from "react-router-dom";
 
@@ -17,7 +16,6 @@ import { formatTitle } from "../../../utils/format";
 
 function ExamSection({
   id,
-  numberOfTheory,
   description,
   icon,
   isStudent,
@@ -70,12 +68,6 @@ function ExamSection({
     setOpenTeacher(false);
   };
 
-  const warningNotStudent = !isStudent && numberOfTheory === 0 && (
-    <Alert severity="warning" className={classes.alert}>
-      Ujian hanya tersedia untuk siswa
-    </Alert>
-  );
-
   const ableExamStudent = isStudent ? (
     <Typography
       variant="h6"
@@ -102,15 +94,13 @@ function ExamSection({
 
   return (
     <div>
-      {warningNotStudent}
-      {ableExamStudent}
-
       {editDeleteIconTeacher}
 
       <Grid container spacing={2}>
         <span className={classes.icon}> {icon}</span>
 
         <div>
+          {ableExamStudent}
           <Typography
             variant="body1"
             component="p"

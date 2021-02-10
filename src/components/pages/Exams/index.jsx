@@ -39,8 +39,6 @@ function Exams({ user }) {
 
   const { ujian, id } = useParams();
 
-  const [exams, setExams] = useState([]);
-
   const [dataAnswers] = useState([
     {
       value: "a",
@@ -89,10 +87,12 @@ function Exams({ user }) {
     setExam([...exam, ...question]);
   };
 
-  const handleChange = (e, id, idx) => {
+  const handleChange = (e, id, idx = -1) => {
     const { name, value } = e.target;
 
-    if (Boolean(idx)) {
+    console.log(idx);
+
+    if (idx >= 0 && idx <= 4) {
       exam[name].possibilitesAnswer[idx] = value;
       setExam([...exam]);
     }
@@ -115,13 +115,14 @@ function Exams({ user }) {
 
   const questionExams =
     !loading &&
-    exams.map(({ examName, answer, possibilitesAnswer }, i) => (
+    exam.map(({ examName, answer, possibilitesAnswer }, i) => (
       <div>
         <Input
           id={i}
           label={`Soal no ${i + 1}`}
           handleChange={handleChange}
           value={examName}
+          name={i}
         />
         <ul className={classes.root}>
           <RadioGroup
@@ -142,7 +143,7 @@ function Exams({ user }) {
                   name={i}
                   idx={idx}
                   handleChange={handleChange}
-                  value={possibilitesAnswer[0]}
+                  value={possibilitesAnswer[idx]}
                 />
               </li>
             ))}
@@ -173,6 +174,8 @@ function Exams({ user }) {
 
     fetchApi();
   }, [id]);
+
+  console.log(exam);
 
   return (
     <Paper title={formatUrl(ujian)}>
