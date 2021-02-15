@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-import ButtonInfo from "../../atoms/ButtonInfo";
+import ButtonDanger from "../../atoms/ButtonDanger";
 import ButtonRed from "../../atoms/ButtonRed";
+import ButtonInfo from "../../atoms/ButtonInfo";
 import EditIcon from "../../atoms/EditIcon";
 import DeleteIcon from "../../atoms/DeleteIcon";
 import Dialogs from "../../atoms/Dialogs";
@@ -132,7 +133,7 @@ function ExamSection({
           title={`Apakah anda yakin ingin mengapus ${title}`}
         >
           <ButtonRed handleClick={handleCloseTeacher}>Batal</ButtonRed>
-          <ButtonInfo handleClick={handleDeleteExam}>Ok</ButtonInfo>
+          <ButtonDanger handleClick={handleDeleteExam}>Ok</ButtonDanger>
         </Dialogs>
       </Grid>
     </div>

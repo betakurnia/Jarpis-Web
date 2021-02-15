@@ -91,8 +91,6 @@ function AnnouncementUpdate({ history }) {
     }
   }, [id]);
 
-  console.log(announcement);
-
   return (
     <Paper title="Pengumuman">
       <form onSubmit={onSubmit}>

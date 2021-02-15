@@ -101,11 +101,6 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
       label: "Umur",
       placeholder: "contoh: 14 tahun",
     },
-    {
-      id: "name",
-      label: "Nama Lengkap",
-      placeholder: "contoh: Beta Kurnia",
-    },
     { id: "address", label: "Alamat", placeholder: "contoh: Blater" },
     { id: "religion", label: "Agama", placeholder: "contoh: ISLAM" },
   ]);
