@@ -1,3 +1,3 @@
-const proxy = "http://localhost:5000";
+const proxy = "https://jarpiss-server.herokuapp.com/";
 
 export default proxy;

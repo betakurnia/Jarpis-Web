@@ -29,8 +29,9 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "npm run build && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
+    "heroku-postbuild": "npm install && npm run build",
     "test": "react-scripts test",
     "heroku-postbuild": "npm install && npm run build",
     "eject": "react-scripts eject"
