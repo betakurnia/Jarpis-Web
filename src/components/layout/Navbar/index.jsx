@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import css from "./style.css";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -95,6 +94,11 @@ function Navbar({ user, logoutUser, history }) {
         backgroundColor: color.primary,
         color: color.white,
       },
+    },
+
+    rootPadding: {
+      paddingTop: 0,
+      paddingBottom: 0,
     },
   }));
 
@@ -210,8 +214,6 @@ function Navbar({ user, logoutUser, history }) {
     }
   }, [user.isAuthenticated.role, user.isAuthenticated.majorId]);
 
-  console.log(currentMajor);
-
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
@@ -294,7 +296,7 @@ function Navbar({ user, logoutUser, history }) {
         </Toolbar>
         <Drawer anchor="left" open={isDrawerOpen} onClose={handleToggleDrawer}>
           <div onClick={handleToggleDrawer} onKeyDown={handleToggleDrawer}>
-            <List>
+            <List classes={{ root: classes.rootPadding }}>
               <Link to="/dashboard">
                 <ListItem
                   button
@@ -316,7 +318,13 @@ function Navbar({ user, logoutUser, history }) {
               {user.isAuthenticated.role === "siswa" ? (
                 <ListItem
                   button
-                  className={(classes.menuItem, classes.disabled)}
+                  className={
+                    (classes.menuItem,
+                    classes.disabled,
+                    {
+                      [classes.darkActive]: location.pathname === "/dashboard",
+                    })
+                  }
                 >
                   <ListItemIcon>
                     <ClassIcon />
@@ -515,9 +523,19 @@ function Navbar({ user, logoutUser, history }) {
                     <ListItem
                       button
                       key={recap.majorName}
-                      className={(classes.menuItem, classes.subTab)}
+                      className={clsx(classes.menuItem, classes.subTab, {
+                        [classes.darkActive]:
+                          location.pathname.split("/")[3] ===
+                          `UTS-${recap.majorName}`,
+                      })}
                     >
-                      <ListItemIcon>
+                      <ListItemIcon
+                        className={clsx({
+                          [classes.darkActive]:
+                            location.pathname.split("/")[3] ===
+                            `UTS-${recap.majorName}`,
+                        })}
+                      >
                         <CastForEducationIcon />
                       </ListItemIcon>
                       <ListItemText>UTS {recap.majorName}</ListItemText>
@@ -529,9 +547,19 @@ function Navbar({ user, logoutUser, history }) {
                     <ListItem
                       button
                       key={recap.majorName}
-                      className={(classes.menuItem, classes.subTab)}
+                      className={clsx(classes.menuItem, classes.subTab, {
+                        [classes.darkActive]:
+                          location.pathname.split("/")[3] ===
+                          `UAS-${recap.majorName}`,
+                      })}
                     >
-                      <ListItemIcon>
+                      <ListItemIcon
+                        className={clsx({
+                          [classes.darkActive]:
+                            location.pathname.split("/")[3] ===
+                            `UAS-${recap.majorName}`,
+                        })}
+                      >
                         <CastForEducationIcon />
                       </ListItemIcon>
                       <ListItemText>UAS {recap.majorName}</ListItemText>

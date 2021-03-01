@@ -91,6 +91,8 @@ function Major({ user }) {
 
   const [major, setMajor] = useState({});
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const { majorName, imageName, hoursOfSubject, hoursOfSubjectFinish } = major;
 
   const { role } = user.isAuthenticated;
@@ -99,11 +101,8 @@ function Major({ user }) {
     async function fetchApi() {
       const majors = await viewMajors(id);
 
-      if (majors) {
-        headerDOM.current.style.backgroundColor = majors.color;
-      }
-
       setMajor({ ...majors });
+      setIsLoading(false);
     }
 
     fetchApi();
@@ -133,18 +132,26 @@ function Major({ user }) {
   return (
     <div>
       {" "}
-      <BreadCrumb />
-      <div className={classes.header} ref={headerDOM}>
-        {header}
-      </div>
-      <div className={classes.root}>
-        <Sections
-          id={id}
-          isStudent={role === "siswa"}
-          isTeacher={role === "teacher"}
-          majorName={majorName}
-        />
-      </div>
+      {!isLoading ? (
+        !isEmpty(major) && (
+          <Fragment>
+            <BreadCrumb />
+            <div className={classes.header} style={{ background: major.color }}>
+              {header}
+            </div>
+            <div className={classes.root}>
+              <Sections
+                id={id}
+                isStudent={role === "siswa"}
+                isTeacher={role === "teacher"}
+                majorName={majorName}
+              />
+            </div>
+          </Fragment>
+        )
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 }

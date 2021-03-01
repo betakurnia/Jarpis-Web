@@ -182,13 +182,13 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
   };
 
   const defaultForms = defaultDataForms.map(
-    ({ id, label, placeholder, isPassword }) => (
+    ({ id, label, placeholder, type }) => (
       <Input
         id={id}
         label={label}
         placeholder={placeholder}
         handleChange={handleChange}
-        isPassword={isPassword}
+        type={type}
       />
     )
   );
@@ -228,7 +228,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
           </Typography>
         </FormLabel>
         <RadioGroup
-          aria-label="gender"
+          aria-label="role"
           name="Role"
           value={users.role}
           onChange={handleMenu}
@@ -243,7 +243,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
           <Fragment>
             <label className={classes.label}>Kelas</label>
             <NativeSelect
-              id="demo-customized-select-native"
+              id="class"
               style={{ marginTop: "0.5rem" }}
               value={users.kelas}
               onChange={(e) => {
@@ -316,6 +316,7 @@ function Register({ registerUser, error, sucess, clearErrorSucess }) {
             <Button
               type="submit"
               variant="contained"
+              color="secondary"
               fullWidth
               className={classes.btn}
             >

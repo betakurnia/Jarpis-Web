@@ -12,14 +12,14 @@ import { viewAnnouncements } from "../../../api";
 function Announcement() {
   const [announcements, setAnnouncements] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchApi() {
       const announcements = await viewAnnouncements();
 
       setAnnouncements([...announcements]);
-      setLoading(false);
+      setIsLoading(false);
     }
     fetchApi();
   }, []);
@@ -39,7 +39,7 @@ function Announcement() {
     <div>
       <Headers title="Pengumuman" />
       <Grid container spacing={2}>
-        {!loading ? (
+        {!isLoading ? (
           !isEmpty(announcements) ? (
             cardAnnouncements
           ) : (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 
 import Card from "../../atoms/Card";
 import Headers from "../../atoms/Headers";
@@ -15,6 +15,8 @@ import {
 
 function Dashboard({ user }) {
   const [majors, setMajors] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const { role, majorId } = user.isAuthenticated;
@@ -41,14 +43,17 @@ function Dashboard({ user }) {
 
     if (role === "siswa") {
       fetchMajorStudent();
+      setIsLoading(false);
     }
 
     if (role === "teacher") {
       fetchMajorsTeacher();
+      setIsLoading(false);
     }
 
     if (role === "admin") {
       fetchMajorAdmin();
+      setIsLoading(false);
     }
   }, [user.isAuthenticated.majorId]);
 
@@ -74,10 +79,16 @@ function Dashboard({ user }) {
 
   return (
     <div>
-      <Headers title="Mata Pelajaran" />
-      <Grid container spacing={3}>
-        {majorCards}
-      </Grid>
+      {!isLoading ? (
+        <Fragment>
+          <Headers title="Mata Pelajaran" />
+          <Grid container spacing={3}>
+            {majorCards}
+          </Grid>
+        </Fragment>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 }

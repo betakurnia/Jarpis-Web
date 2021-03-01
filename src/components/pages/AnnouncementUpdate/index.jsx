@@ -111,6 +111,7 @@ function AnnouncementUpdate({ history }) {
             <Button
               type="submit"
               variant="contained"
+              color="secondary"
               fullWidth
               className={classes.btn}
             >

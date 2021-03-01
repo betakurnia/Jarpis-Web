@@ -11,6 +11,7 @@ import PrivateRouteAdmin from "./utils/PrivateRouteAdmin";
 import setAuthToken from "./utils/setAuthToken";
 import store from "./store";
 import { setCurrentUser, logoutUser } from "./redux/actions/userAction";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -50,80 +51,97 @@ if (localStorage.jwtToken) {
   }
 }
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#20232a",
+    },
+    secondary: {
+      main: "#198754",
+    },
+  },
+});
+
 const App = () => {
   return (
     <div>
-      <Provider store={store}>
-        <Router>
-          <Route path="/">
-            <Navbar />
-          </Route>
-          <Route path="/" exact>
-            <Login />
-          </Route>
-          <Container maxWidth="lg">
-            <PrivateRoute component={Dashboard} path="/dashboard" />
-            <PrivateRoute component={Profile} path="/profile" />
-            <PrivateRoute component={RecapitulationStudent} path="/nilai" />
-            <Route path="/pengumuman" exact>
-              <Announcment />
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <Router>
+            <Route path="/">
+              <Navbar />
             </Route>
-            <PrivateRoute component={Major} path="/mata-pelajaran/:id" exact />
+            <Route path="/" exact>
+              <Login />
+            </Route>
+            <Container maxWidth="lg">
+              <PrivateRoute component={Dashboard} path="/dashboard" />
+              <PrivateRoute component={Profile} path="/profile" />
+              <PrivateRoute component={RecapitulationStudent} path="/nilai" />
+              <Route path="/pengumuman" exact>
+                <Announcment />
+              </Route>
+              <PrivateRoute
+                component={Major}
+                path="/mata-pelajaran/:id"
+                exact
+              />
 
-            <Switch>
-              <PrivateRoute
-                component={Presence}
-                path="/mata-pelajaran/presensi/:id"
+              <Switch>
+                <PrivateRoute
+                  component={Presence}
+                  path="/mata-pelajaran/presensi/:id"
+                  exact
+                />
+                <PrivateRoute
+                  component={ExamsStudent}
+                  path="/mata-pelajaran/:ujian/:id"
+                  exact
+                />
+              </Switch>
+              <PrivateRoute component={Presence} path="/presensi/:id" exact />
+              <PrivateRouteTeacher
+                component={Theory}
+                path="/guru/materi/:numberOfTheory/:id"
                 exact
               />
-              <PrivateRoute
-                component={ExamsStudent}
-                path="/mata-pelajaran/:ujian/:id"
+              <PrivateRouteTeacher
+                component={Exams}
+                path="/guru/ujian/:ujian/:id"
                 exact
               />
-            </Switch>
-            <PrivateRoute component={Presence} path="/presensi/:id" exact />
-            <PrivateRouteTeacher
-              component={Theory}
-              path="/guru/materi/:numberOfTheory/:id"
-              exact
-            />
-            <PrivateRouteTeacher
-              component={Exams}
-              path="/guru/ujian/:ujian/:id"
-              exact
-            />
-            <PrivateRouteAdmin
-              component={Register}
-              path="/admin/register"
-              exact
-            />
-            <PrivateRouteAdmin
-              component={Recapitulation}
-              path="/admin/rekapitulasi"
-              exact
-            />
-            <PrivateRouteTeacher
-              component={RecapitulationValue}
-              path="/guru/rekapitulasi/:ujian/:id"
-              exact
-            />
-            <PrivateRouteAdmin
-              component={AnnouncementUpdate}
-              path="/admin/pengumuman"
-              exact
-            />
-            <PrivateRouteAdmin
-              component={AnnouncementUpdate}
-              path="/admin/pengumuman/:id"
-            />
-          </Container>
-          <Route path="/">
-            {" "}
-            <Footer />
-          </Route>
-        </Router>
-      </Provider>
+              <PrivateRouteAdmin
+                component={Register}
+                path="/admin/register"
+                exact
+              />
+              <PrivateRouteAdmin
+                component={Recapitulation}
+                path="/admin/rekapitulasi"
+                exact
+              />
+              <PrivateRouteTeacher
+                component={RecapitulationValue}
+                path="/guru/rekapitulasi/:ujian/:id"
+                exact
+              />
+              <PrivateRouteAdmin
+                component={AnnouncementUpdate}
+                path="/admin/pengumuman"
+                exact
+              />
+              <PrivateRouteAdmin
+                component={AnnouncementUpdate}
+                path="/admin/pengumuman/:id"
+              />
+            </Container>
+            <Route path="/">
+              {" "}
+              <Footer />
+            </Route>
+          </Router>
+        </Provider>
+      </ThemeProvider>
     </div>
   );
 };

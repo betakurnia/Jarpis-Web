@@ -153,11 +153,11 @@ function Pengumuman({ sucess, error }) {
         <Grid container justify="center">
           <Grid item xs={12} md={4}>
             <Button
-              className="btn-light-black"
+              color="secondary"
               variant="contained"
               fullWidth
               type="submit"
-              style={{ marginTop: "0.5rem" }}
+              style={{ marginTop: "1.5rem" }}
             >
               Submit
             </Button>

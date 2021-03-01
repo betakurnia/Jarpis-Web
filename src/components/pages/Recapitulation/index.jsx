@@ -149,13 +149,6 @@ function Recapitulation({ id, user }) {
       <SimpleTable dataColumnHeaders={dataColumnHeaders}>
         {tableBodys}
       </SimpleTable>
-      <Pagination
-        className={classes.pagination}
-        count={10}
-        variant="outlined"
-        className="btn-light-black"
-        shape="rounded"
-      />
     </div>
   );
 }
