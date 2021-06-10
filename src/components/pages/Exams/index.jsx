@@ -152,30 +152,28 @@ function Exams({ user }) {
       </div>
     ));
 
-  useEffect(() => {
-    async function fetchApi() {
-      const exams = await viewExamByIdAndType(id, ujian);
+  async function fetchApi() {
+    const exams = await viewExamByIdAndType(id, ujian);
 
-      if (Boolean(exams)) {
-        setExam([...exams.question]);
-      }
-
-      if (!Boolean(exams)) {
-        exam.forEach((empty, i) => {
-          const question = {
-            possibilitesAnswer: [],
-          };
-          exam[i] = question;
-        });
-        setExam([...exam]);
-      }
-      setLoading(false);
+    if (exams) {
+      setExam([...exams.question]);
     }
 
+    if (!exams) {
+      exam.forEach((empty, i) => {
+        const question = {
+          possibilitesAnswer: [],
+        };
+        exam[i] = question;
+      });
+      setExam([...exam]);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
     fetchApi();
   }, [id]);
-
-  console.log(exam);
 
   return (
     <Paper title={formatUrl(ujian)}>

@@ -22,6 +22,29 @@ import color from "../../../utils/color";
 import isEmpty from "../../../utils/is-empty";
 import { loginUser } from "../../../redux/actions/userAction";
 
+const credential = [
+  {
+    role: "Siswa",
+    email: "siswa@gmail.com",
+    password: "siswa",
+  },
+  {
+    role: "Guru",
+    email: "guru@gmail.com",
+    password: "guru",
+  },
+  {
+    role: "Admin",
+    email: "admin@gmail.com",
+    password: "admin",
+  },
+  {
+    role: "Super Admin",
+    email: "superadmin@gmail.com",
+    password: "********",
+  },
+];
+
 function Login({ loginUser, error, history, user }) {
   const [users, setUser] = useState({
     username: "",
@@ -29,29 +52,6 @@ function Login({ loginUser, error, history, user }) {
   });
 
   const [open, setOpen] = useState(false);
-
-  const [credential] = useState([
-    {
-      role: "Siswa",
-      email: "siswa@gmail.com",
-      password: "siswa",
-    },
-    {
-      role: "Guru",
-      email: "guru@gmail.com",
-      password: "guru",
-    },
-    {
-      role: "Admin",
-      email: "admin@gmail.com",
-      password: "admin",
-    },
-    {
-      role: "Super Admin",
-      email: "superadmin@gmail.com",
-      password: "********",
-    },
-  ]);
 
   const useStyles = makeStyles({
     root: {

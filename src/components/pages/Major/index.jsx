@@ -97,14 +97,14 @@ function Major({ user }) {
 
   const { role } = user.isAuthenticated;
 
+  async function fetchApi() {
+    const majors = await viewMajors(id);
+
+    setMajor({ ...majors });
+    setIsLoading(false);
+  }
+
   useEffect(() => {
-    async function fetchApi() {
-      const majors = await viewMajors(id);
-
-      setMajor({ ...majors });
-      setIsLoading(false);
-    }
-
     fetchApi();
   }, [id]);
 

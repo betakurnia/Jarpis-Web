@@ -60,7 +60,7 @@ function AnnouncementUpdate({ history }) {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (Boolean(!id)) {
+    if (!id) {
       const { errors } = await addAnnouncement(history, {
         title: announcement.title,
         description: description,
@@ -68,7 +68,7 @@ function AnnouncementUpdate({ history }) {
       setErrors({ ...errors });
     }
 
-    if (Boolean(id)) {
+    if (id) {
       const { errors } = await updateAnnouncement(history, id, {
         title: announcement.title,
         description: description,
@@ -77,15 +77,15 @@ function AnnouncementUpdate({ history }) {
     }
   };
 
+  async function fetchApi() {
+    const announcement = await viewAnnouncementById(id);
+
+    setDescription(announcement.description);
+
+    setAnnouncement({ ...announcement });
+  }
+
   useEffect(() => {
-    async function fetchApi() {
-      const announcement = await viewAnnouncementById(id);
-
-      setDescription(announcement.description);
-
-      setAnnouncement({ ...announcement });
-    }
-
     if (id) {
       fetchApi();
     }

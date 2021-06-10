@@ -14,13 +14,14 @@ function Announcement() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchApi() {
-      const announcements = await viewAnnouncements();
+  async function fetchApi() {
+    const announcements = await viewAnnouncements();
 
-      setAnnouncements([...announcements]);
-      setIsLoading(false);
-    }
+    setAnnouncements([...announcements]);
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
     fetchApi();
   }, []);
 

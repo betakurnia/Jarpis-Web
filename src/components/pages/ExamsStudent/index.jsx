@@ -107,28 +107,29 @@ function ExamsStudent({ user }) {
     </Grid>
   );
 
-  useEffect(() => {
-    async function fetchApi() {
-      const ujians = await viewExamByIdUserIdAndType(
-        id,
-        user.isAuthenticated.id,
-        ujian
-      );
-      if (Boolean(ujians)) {
-        setIsSuccess(true);
-        setExamStudentAnswer([...ujians.examStudentAnswer]);
-        setExam([...ujians.question]);
-        setLoading(false);
-      }
-
-      if (!Boolean(ujians)) {
-        const exam = await viewExamByIdAndType(id, ujian);
-
-        setExamStudentAnswer([...exam.examStudentAnswer]);
-        setExam([...exam.question]);
-        setLoading(false);
-      }
+  async function fetchApi() {
+    const ujians = await viewExamByIdUserIdAndType(
+      id,
+      user.isAuthenticated.id,
+      ujian
+    );
+    if (ujians) {
+      setIsSuccess(true);
+      setExamStudentAnswer([...ujians.examStudentAnswer]);
+      setExam([...ujians.question]);
+      setLoading(false);
     }
+
+    if (!ujians) {
+      const exam = await viewExamByIdAndType(id, ujian);
+
+      setExamStudentAnswer([...exam.examStudentAnswer]);
+      setExam([...exam.question]);
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
     fetchApi();
   }, [id, ujian, user.isAuthenticated.id]);
 

@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 
 import { viewRecapitulations } from "../../../api";
 
+const dataColumnHeaders = ["Siswa", "Tipe", "Mata Pelajaran", "Nilai"];
+
 function RecapitulationStudent({ user }) {
   var dateFormat = require("dateformat");
   dateFormat.i18n = {
@@ -58,13 +60,6 @@ function RecapitulationStudent({ user }) {
   };
 
   const [recapitulations, setRecapitulation] = useState([]);
-
-  const [dataColumnHeaders] = useState([
-    "Siswa",
-    "Tipe",
-    "Mata Pelajaran",
-    "Nilai",
-  ]);
 
   const tableBodys = recapitulations.map(
     ({ userId, majorId, type, result }) => (

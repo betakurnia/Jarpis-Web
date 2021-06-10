@@ -72,13 +72,14 @@ function RecapitulationValue() {
       </TableCell>
     </TableRow>
   ));
+
+  async function fetchApi() {
+    const recapitulations = await viewRecapitulationsByIdAndType(id, ujian);
+
+    setRecapitulations([...recapitulations]);
+  }
+
   useEffect(() => {
-    async function fetchApi() {
-      const recapitulations = await viewRecapitulationsByIdAndType(id, ujian);
-
-      setRecapitulations([...recapitulations]);
-    }
-
     fetchApi();
   }, [id, ujian]);
 

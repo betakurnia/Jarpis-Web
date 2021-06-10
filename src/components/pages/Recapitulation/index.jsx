@@ -13,44 +13,12 @@ import { connect } from "react-redux";
 import color from "../../../utils/color";
 import { viewUsers } from "../../../api/";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  blue: {
-    backgroundColor: color.primary,
-    padding: "0.5rem 1rem",
-    color: color.white,
-    borderRadius: "0.5rem",
-  },
-  allowed: {
-    backgroundColor: color.info,
-    padding: "0.5rem 1rem",
-    color: color.white,
-    borderRadius: "0.5rem",
-  },
-  notAllow: {
-    backgroundColor: color.danger,
-    padding: "0.5rem 1rem",
-    color: color.white,
-    borderRadius: "0.5rem",
-  },
-  bgPrimary: {
-    backgroundColor: color.primary,
-  },
-  tableRow: {
-    "& > *": {
-      color: color.white,
-    },
-  },
-  container: {
-    marginTop: "3rem",
-  },
-  pagination: {
-    marginTop: "2rem",
-    color: color.primary,
-  },
-});
+const dataColumnHeaders = [
+  "Siswa",
+  "Mata Pelajaran",
+  "Total Kehadiran",
+  "Dapat Mengikuti Ujian",
+];
 
 function Recapitulation({ id, user }) {
   var dateFormat = require("dateformat");
@@ -100,16 +68,7 @@ function Recapitulation({ id, user }) {
     timeNames: ["a", "p", "am", "pm", "A", "P", "AM", "PM"],
   };
 
-  const classes = useStyles();
-
   const [recapitulations, setRecapitulation] = useState([]);
-
-  const [dataColumnHeaders] = useState([
-    "Siswa",
-    "Mata Pelajaran",
-    "Total Kehadiran",
-    "Dapat Mengikuti Ujian",
-  ]);
 
   const tableBodys = recapitulations.map(({ _id, userId, majorId, status }) => (
     <TableRow key={_id}>

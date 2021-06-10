@@ -18,36 +18,36 @@ function Dashboard({ user }) {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  async function fetchMajorStudent(kelasId) {
+    const majors = await viewMajorsStudent(kelasId);
+
+    setMajors([...majors]);
+  }
+
+  async function fetchMajorsTeacher(majorId) {
+    const majors = await viewMajorsTeacher(majorId);
+
+    setMajors([...majors]);
+  }
+
+  async function fetchMajorAdmin() {
+    const majors = await viewMajorsAdmin();
+
+    setMajors([...majors]);
+  }
+
   useEffect(() => {
     const { role, majorId } = user.isAuthenticated;
 
     const { kelasId } = user.user;
 
-    async function fetchMajorStudent() {
-      const majors = await viewMajorsStudent(kelasId);
-
-      setMajors([...majors]);
-    }
-
-    async function fetchMajorsTeacher() {
-      const majors = await viewMajorsTeacher(majorId);
-
-      setMajors([...majors]);
-    }
-
-    async function fetchMajorAdmin() {
-      const majors = await viewMajorsAdmin();
-
-      setMajors([...majors]);
-    }
-
     if (role === "siswa") {
-      fetchMajorStudent();
+      fetchMajorStudent(kelasId);
       setIsLoading(false);
     }
 
     if (role === "teacher") {
-      fetchMajorsTeacher();
+      fetchMajorsTeacher(majorId);
       setIsLoading(false);
     }
 
